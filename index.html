@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +7,9 @@
   <title>AFTER DARK</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+
 <script>
   if (sessionStorage.getItem("afterDarkLoader") === "1") {
     sessionStorage.removeItem("afterDarkLoader");
@@ -15,112 +18,119 @@
     window.location.replace("loading.html");
   }
 </script>
-  <header>
-    <h1>AFTER DARK</h1>
-    <p>WELCOME TO THE UNKNOWN.</p>
-  </header>
 
-  <nav>
+<header>
+  <h1>AFTER DARK</h1>
+  <p>WELCOME TO THE UNKNOWN.</p>
+</header>
+
+<nav>
   <a href="index.html">HOME</a>
+  <a href="discovery.html">DISCOVER</a>
   <a href="jjk.html">JUJUTSU KAISEN</a>
   <a href="fnaf.html">FNAF</a>
   <a href="#about">ABOUT</a>
   <a href="game.html">ARCADE</a>
-  <a href="discovery.html">DISCOVER</a>
-  </nav>
+  <a href="profile.html">PROFILE</a>
+</nav>
 
-  <main>
-    <section class="welcome">
-      <h2>ENTER AFTER DARK</h2>
-      <p>Your home for anime, horror and everything in between.</p>
-      <button onclick="welcomeMessage()">ENTER</button>
-    </section>
+<main>
 
-    <section class="featured">
-      <h2>FEATURED UNIVERSES</h2>
+  <section class="welcome">
+    <h2>ENTER AFTER DARK</h2>
+    <p>Your home for anime, horror and everything in between.</p>
+    <button onclick="welcomeMessage()">ENTER</button>
+  </section>
 
-      <div class="card">
-        <h3>JUJUTSU KAISEN</h3>
-        <p>Explore the world of curses.</p>
-      </div>
+  <section class="featured">
+    <h2>FEATURED UNIVERSES</h2>
 
-      <div class="card">
-        <h3>FIVE NIGHTS AT FREDDY'S</h3>
-        <p>Some things are better left unknown.</p>
-      </div>
-    </section>
-
-<section class="community-hub">
-
-  <h2>AFTER DARK COMMUNITY</h2>
-  <p class="hub-subtitle">YOUR WORLD. YOUR COMMUNITY.</p>
-
-  <div class="hub-grid">
-
-    <div class="hub-card">
-      <span>01</span>
-      <h3>PLAYER ACTIVITY</h3>
-      <p>See what's happening across AFTER DARK.</p>
-      <a href="discovery.html">EXPLORE</a>
+    <div class="card">
+      <h3>JUJUTSU KAISEN</h3>
+      <p>Explore the world of curses.</p>
     </div>
 
-    <div class="hub-card">
-      <span>02</span>
-      <h3>ANNOUNCEMENTS</h3>
-      <p>Stay updated with the latest platform news.</p>
-      <a href="discovery.html">VIEW UPDATES</a>
+    <div class="card">
+      <h3>FIVE NIGHTS AT FREDDY'S</h3>
+      <p>Some things are better left unknown.</p>
     </div>
+  </section>
 
-    <div class="hub-card">
-      <span>03</span>
-      <h3>POPULAR WORLDS</h3>
-      <p>Jump into your favorite universes.</p>
-      <a href="discovery.html">DISCOVER</a>
-    </div>
+  <section class="featured">
+    <h2>THE CHARACTER ARCHIVE</h2>
+    <p class="subtitle">EXPLORE YOUR FAVORITE UNIVERSES</p>
 
-  </div>
+    <div class="gallery">
 
-</section>
+      <a href="megumi.html" class="character">
+        <img src="https://placehold.co/300x400/171717/813bff?text=MEGUMI" alt="Megumi">
+        <h3>MEGUMI FUSHIGURO</h3>
+        <p>JUJUTSU KAISEN</p>
+      </a>
 
-    <section class="featured">
-      <h2>THE CHARACTER ARCHIVE</h2>
-      <p class="subtitle">EXPLORE YOUR FAVORITE UNIVERSES</p>
-
-      <div class="gallery">
-
-        <a href="megumi.html" class="character">
-          <img src="https://placehold.co/300x400/171717/ff3030?text=MEGUMI" alt="Megumi">
-          <h3>MEGUMI FUSHIGURO</h3>
-          <p>JUJUTSU KAISEN</p>
-        </a>
-
-        <div class="character">
-          <img src="https://placehold.co/300x400/171717/ff3030?text=GOJO" alt="Gojo">
-          <h3>SATORU GOJO</h3>
-          <p>JUJUTSU KAISEN</p>
-        </div>
-
-        <div class="character">
-          <img src="https://placehold.co/300x400/171717/ff3030?text=YUJI" alt="Yuji">
-          <h3>YUJI ITADORI</h3>
-          <p>JUJUTSU KAISEN</p>
-        </div>
-
-        <div class="character">
-          <img src="https://placehold.co/300x400/171717/ff3030?text=FREDDY" alt="Freddy">
-          <h3>FREDDY FAZBEAR</h3>
-          <p>FIVE NIGHTS AT FREDDY'S</p>
-        </div>
-
+      <div class="character">
+        <img src="https://placehold.co/300x400/171717/813bff?text=GOJO" alt="Gojo">
+        <h3>SATORU GOJO</h3>
+        <p>JUJUTSU KAISEN</p>
       </div>
-    </section>
-  </main>
 
-  <footer id="about">
-    <p>AFTER DARK © 2026</p>
-    <p>WELCOME TO THE UNKNOWN.</p>
-  </footer>
+      <div class="character">
+        <img src="https://placehold.co/300x400/171717/813bff?text=YUJI" alt="Yuji">
+        <h3>YUJI ITADORI</h3>
+        <p>JUJUTSU KAISEN</p>
+      </div>
 
-  <script src="script.js"></script>
+      <div class="character">
+        <img src="https://placehold.co/300x400/171717/813bff?text=FREDDY" alt="Freddy">
+        <h3>FREDDY FAZBEAR</h3>
+        <p>FIVE NIGHTS AT FREDDY'S</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- AFTER DARK COMMUNITY HUB -->
+
+  <section class="community-hub">
+
+    <h2>AFTER DARK COMMUNITY</h2>
+    <p class="hub-subtitle">YOUR WORLD. YOUR COMMUNITY.</p>
+
+    <div class="hub-grid">
+
+      <div class="hub-card">
+        <span>01</span>
+        <h3>PLAYER ACTIVITY</h3>
+        <p>See what's happening across AFTER DARK.</p>
+        <a href="discovery.html">EXPLORE</a>
+      </div>
+
+      <div class="hub-card">
+        <span>02</span>
+        <h3>ANNOUNCEMENTS</h3>
+        <p>Stay updated with the latest platform news.</p>
+        <a href="discovery.html">VIEW UPDATES</a>
+      </div>
+
+      <div class="hub-card">
+        <span>03</span>
+        <h3>POPULAR WORLDS</h3>
+        <p>Jump into your favorite universes.</p>
+        <a href="discovery.html">DISCOVER</a>
+      </div>
+
+    </div>
+
+  </section>
+
+</main>
+
+<footer id="about">
+  <p>AFTER DARK © 2026</p>
+  <p>WELCOME TO THE UNKNOWN.</p>
+</footer>
+
+<script src="script.js"></script>
+
 </body>
 </html>
