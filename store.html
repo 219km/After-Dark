@@ -1,0 +1,321 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Store | AFTER DARK</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #09050e;
+  color: white;
+  font-family: Arial, sans-serif;
+  animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+header {
+  padding: 22px 7%;
+  background: #100914;
+  border-bottom: 1px solid #502039;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.logo {
+  color: #ff315e;
+  font-size: 23px;
+  font-weight: bold;
+  letter-spacing: 3px;
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+nav a {
+  color: #c9b9d1;
+  text-decoration: none;
+  font-size: 12px;
+}
+
+nav a:hover {
+  color: #ff315e;
+}
+
+.container {
+  max-width: 1050px;
+  margin: auto;
+  padding: 35px 20px;
+}
+
+.hero {
+  padding: 35px;
+  background: linear-gradient(120deg, #351025, #180e2d);
+  border: 1px solid #642344;
+  margin-bottom: 30px;
+}
+
+.hero small {
+  color: #e65b91;
+  letter-spacing: 4px;
+}
+
+.hero h1 {
+  font-size: 38px;
+  margin: 15px 0;
+}
+
+.hero p {
+  color: #c4b6cc;
+  line-height: 1.7;
+}
+
+.balance {
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(0,0,0,.3);
+  display: inline-block;
+  color: #ffd0e4;
+  border: 1px solid #a52a63;
+}
+
+h2 {
+  color: #ed568a;
+  font-size: 17px;
+  letter-spacing: 3px;
+  margin: 30px 0 18px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+}
+
+.item {
+  background: #160d1e;
+  border: 1px solid #49203e;
+  padding: 22px;
+  transition: .3s;
+}
+
+.item:hover {
+  transform: translateY(-4px);
+  border-color: #ff315e;
+  box-shadow: 0 0 18px #45102d;
+}
+
+.item-icon {
+  font-size: 35px;
+  color: #e65b91;
+  margin-bottom: 15px;
+}
+
+.item h3 {
+  font-size: 15px;
+  margin-bottom: 9px;
+}
+
+.item p {
+  color: #a99aad;
+  font-size: 12px;
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+
+.price {
+  color: #f078aa;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.buy {
+  display: block;
+  margin-top: 15px;
+  padding: 11px;
+  text-align: center;
+  background: #79163e;
+  color: white;
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: 2px;
+  border: 1px solid #a52a63;
+}
+
+.buy:hover {
+  background: #b51e5b;
+}
+
+.note {
+  margin-top: 30px;
+  padding: 18px;
+  background: #190e22;
+  border-left: 3px solid #a52a63;
+  color: #b9a9c0;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+footer {
+  text-align: center;
+  padding: 30px;
+  color: #75647d;
+  font-size: 11px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">AFTER DARK</div>
+
+  <nav>
+    <a href="index.html">HOME</a>
+    <a href="discover.html">DISCOVER</a>
+    <a href="arcade.html">ARCADE</a>
+    <a href="community.html">COMMUNITY</a>
+    <a href="messages.html">MESSAGES</a>
+    <a href="profile.html">PROFILE</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  < class="hero">
+    <small>THE UNDERGROUND MARKET</small>
+    <h1>AFTER DARK STORE</h1>
+    <p>
+      Customize your identity.
+      Collect exclusive items.
+      Make your presence known.
+    </p>
+
+    <div class="balance">
+      YOUR BALANCE: 0 CR
+    </div>
+  <div class="balance">
+  YOUR BALANCE: <span id="storeBalance">500 CR</span>
+  </div>
+
+  <h2>PROFILE CUSTOMIZATION</h2>
+
+  <div class="grid">
+
+    <div class="item">
+      <div class="item-icon">◈</div>
+      <h3>CRIMSON PROFILE</h3>
+      <p>A dark red profile theme.</p>
+      <div class="price">250 CR</div>
+      <a href="#" class="buy">PURCHASE</a>
+    </div>
+
+    <div class="item">
+      <div class="item-icon">◇</div>
+      <h3>VOID PROFILE</h3>
+      <p>A mysterious purple profile theme.</p>
+      <div class="price">300 CR</div>
+      <a href="#" class="buy">PURCHASE</a>
+    </div>
+
+    <div class="item">
+      <div class="item-icon">✧</div>
+      <h3>NEON FRAME</h3>
+      <p>A glowing frame for your avatar.</p>
+      <div class="price">400 CR</div>
+      <a href="#" class="buy">PURCHASE</a>
+    </div>
+
+  </div>
+
+  <h2>PLAYER TITLES</h2>
+
+  <div class="grid">
+
+    <div class="item">
+      <div class="item-icon">★</div>
+      <h3>THE UNKNOWN</h3>
+      <p>A mysterious title displayed on your profile.</p>
+      <div class="price">150 CR</div>
+      <a href="#" class="buy">PURCHASE</a>
+    </div>
+
+    <div class="item">
+      <div class="item-icon">✦</div>
+      <h3>NIGHT WALKER</h3>
+      <p>For players who belong after dark.</p>
+      <div class="price">200 CR</div>
+      <a href="#" class="buy">PURCHASE</a>
+    </div>
+
+    <div class="item">
+      <div class="item-icon">⬡</div>
+      <h3>ELITE PLAYER</h3>
+      <p>Show off your player status.</p>
+      <div class="price">500 CR</div>
+      <a href="#" class="buy">PURCHASE</a>
+    </div>
+
+  </div>
+
+  <h2>EXCLUSIVE BADGES</h2>
+
+  <div class="grid">
+
+    <div class="item">
+      <div class="item-icon">◆</div>
+      <h3>SHADOW COLLECTOR</h3>
+      <p>An exclusive badge for your collection.</p>
+      <div class="price">350 CR</div>
+      <a href="#" class="buy">PURCHASE</a>
+    </div>
+
+    <div class="item">
+      <div class="item-icon">✹</div>
+      <h3>CRIMSON ELITE</h3>
+      <p>A rare crimson badge.</p>
+      <div class="price">600 CR</div>
+      <a href="#" class="buy">PURCHASE</a>
+    </div>
+
+  </div>
+
+  <div class="note">
+    <strong>STORE NOTICE</strong><br>
+    Items are currently previews.
+    Purchases and credit balances will become functional
+    when the AFTER DARK account system is connected.
+  </div>
+
+</div>
+
+<footer>
+  AFTER DARK © 2026
+</footer>
+<script src="economy.js"></script>
+
+<script>
+  const playerData = getPlayerData();
+
+  document.getElementById("storeBalance").textContent =
+    playerData.credits + " CR";
+</script>
+</body>
+</html>
