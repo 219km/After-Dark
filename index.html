@@ -7,7 +7,14 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
+<script>
+  if (sessionStorage.getItem("afterDarkLoader") === "1") {
+    sessionStorage.removeItem("afterDarkLoader");
+  } else {
+    sessionStorage.setItem("afterDarkLoader", "1");
+    window.location.replace("loading.html");
+  }
+</script>
   <header>
     <h1>AFTER DARK</h1>
     <p>WELCOME TO THE UNKNOWN.</p>
