@@ -1,0 +1,162 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AFTER DARK | ARCADE</title>
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    .arcade-lobby {
+      max-width: 950px;
+      margin: auto;
+      padding: 25px 18px;
+    }
+
+    .arcade-heading {
+      text-align: center;
+      padding: 35px 10px;
+    }
+
+    .arcade-heading h2 {
+      font-size: 32px;
+      color: #ff3030;
+      letter-spacing: 4px;
+    }
+
+    .arcade-section {
+      margin: 35px 0;
+    }
+
+    .arcade-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .game-card {
+      background: #151515;
+      border: 1px solid #393939;
+      border-radius: 12px;
+      padding: 22px;
+      text-align: center;
+      transition: 0.3s;
+    }
+
+    .game-card:hover {
+      border-color: #ff3030;
+      transform: translateY(-5px);
+    }
+
+    .game-card h3 {
+      color: #ff3030;
+    }
+
+    .game-card p {
+      color: #ccc;
+      min-height: 40px;
+    }
+
+    .play-button {
+      display: inline-block;
+      background: #ff3030;
+      color: white;
+      padding: 11px 25px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .play-button:hover {
+      background: #b80000;
+    }
+
+    .back-home {
+      text-align: center;
+      margin: 30px;
+    }
+
+    .back-home a {
+      color: #ff5555;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>AFTER DARK</h1>
+    <p>THE ARCADE</p>
+  </header>
+
+  <nav>
+    <a href="index.html">HOME</a>
+    <a href="jjk.html">JUJUTSU KAISEN</a>
+    <a href="fnaf.html">FNAF</a>
+    <a href="arcade.html">ARCADE</a>
+    <a href="profile.html">PROFILE</a>
+  </nav>
+
+  <main class="arcade-lobby">
+
+    <section class="arcade-heading">
+      <h2>AFTER DARK ARCADE</h2>
+      <p>CHOOSE YOUR GAME. ENTER IF YOU DARE.</p>
+      <p>SELECT A GAME BELOW TO BEGIN.</p>
+    </section>
+
+    <section class="arcade-section">
+      <h2>JUJUTSU KAISEN GAMES</h2>
+
+      <div class="arcade-grid">
+
+        <div class="game-card">
+          <h3>GUESS THE CHARACTER</h3>
+          <p>Can you recognize the JJK characters from their clues?</p>
+          <a href="game.html" class="play-button">PLAY</a>
+        </div>
+
+        <div class="game-card">
+          <h3>WHO SAID IT?</h3>
+          <p>Match the quote to the correct character.</p>
+          <a href="who-said-it.html" class="play-button">PLAY</a>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="arcade-section">
+      <h2>FNAF GAMES</h2>
+
+      <div class="arcade-grid">
+
+        <div class="game-card">
+          <h3>FNAF SURVIVAL</h3>
+          <p>Survive five nights of FNAF trivia.</p>
+          <a href="survival.html" class="play-button">PLAY</a>
+        </div>
+
+        <div class="game-card">
+          <h3>GUESS THE ANIMATRONIC</h3>
+          <p>Test your knowledge of the animatronics.</p>
+          <a href="fnaf-guess.html" class="play-button">PLAY</a>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="back-home">
+      <a href="index.html">← BACK TO HOME</a>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>AFTER DARK © 2026</p>
+    <p>WELCOME TO THE UNKNOWN.</p>
+  </footer>
+
+</body>
+</html>
