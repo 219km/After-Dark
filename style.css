@@ -1,4 +1,8 @@
-/* AFTER DARK */
+
+/* =================================
+   AFTER DARK 2.0
+   FUTURISTIC THEME
+================================= */
 
 * {
   margin: 0;
@@ -7,8 +11,8 @@
 }
 
 body {
-  background: #080808;
-  color: #eeeeee;
+  background: #080812;
+  color: #eeeeff;
   font-family: Arial, sans-serif;
 }
 
@@ -16,31 +20,31 @@ body {
 
 header {
   text-align: center;
-  padding: 55px 15px;
-  background: linear-gradient(180deg, #260000, #080808);
+  padding: 65px 15px;
+  background: linear-gradient(135deg, #080812, #17102d, #101c38);
+  border-bottom: 1px solid #5425a8;
 }
 
 header h1 {
   font-size: 42px;
   letter-spacing: 8px;
-  color: #ff3030;
-  animation: redGlow 2s infinite;
+  color: #a875ff;
+  animation: purpleGlow 2.5s infinite;
 }
 
 header p {
   margin-top: 12px;
   letter-spacing: 4px;
   font-size: 11px;
-  color: #aaaaaa;
+  color: #aaaacc;
 }
 
-@keyframes redGlow {
+@keyframes purpleGlow {
   0%, 100% {
-    text-shadow: 0 0 5px #ff0000;
+    text-shadow: 0 0 8px #813bff;
   }
-
   50% {
-    text-shadow: 0 0 25px #ff0000;
+    text-shadow: 0 0 28px #813bff, 0 0 45px #398bff;
   }
 }
 
@@ -52,88 +56,105 @@ nav {
   flex-wrap: wrap;
   gap: 22px;
   padding: 18px 10px;
-  border-top: 1px solid #292929;
-  border-bottom: 1px solid #292929;
+  background: #0c0c1a;
+  border-top: 1px solid #292044;
+  border-bottom: 1px solid #292044;
 }
 
 nav a {
-  color: #eeeeee;
+  color: #eeeeff;
   text-decoration: none;
   font-size: 11px;
   letter-spacing: 2px;
+  transition: .3s;
 }
 
 nav a:hover {
-  color: #ff3030;
+  color: #a875ff;
+  text-shadow: 0 0 10px #813bff;
 }
 
 /* BUTTONS */
 
 button {
-  background: #a00000;
+  background: linear-gradient(135deg, #5425a8, #2455a8);
   color: white;
-  border: none;
+  border: 1px solid #813bff;
+  border-radius: 5px;
   padding: 13px 25px;
   letter-spacing: 2px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: .3s;
 }
 
 button:hover {
-  background: #ff0000;
-  box-shadow: 0 0 20px #ff0000;
+  background: #813bff;
+  box-shadow: 0 0 20px #813bff;
 }
 
 /* WELCOME */
 
 .welcome {
   text-align: center;
-  padding: 90px 20px;
+  padding: 100px 20px;
+  background: radial-gradient(ellipse at center, #211344, #080812 75%);
 }
 
 .welcome h2 {
-  color: #ff3030;
+  color: #a875ff;
   letter-spacing: 4px;
   margin-bottom: 18px;
 }
 
 .welcome p {
-  color: #999999;
+  color: #aaaacc;
   margin-bottom: 25px;
+  line-height: 1.7;
 }
 
 /* FEATURED */
 
 .featured {
-  padding: 30px 20px;
+  padding: 40px 20px;
+  background: #080812;
 }
 
 .featured h2 {
-  color: #ff3030;
+  color: #a875ff;
   letter-spacing: 3px;
   margin-bottom: 20px;
 }
 
 .card {
-  background: #121212;
-  border: 1px solid #333333;
+  background: linear-gradient(145deg, #151326, #10182a);
+  border: 1px solid #35245b;
+  border-radius: 10px;
   padding: 25px;
   margin-bottom: 15px;
+  transition: .3s;
+  box-shadow: 0 0 15px #16102b;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  border-color: #813bff;
+  box-shadow: 0 0 22px #5425a8;
 }
 
 .card h3 {
-  color: #ff4444;
+  color: #b58aff;
   margin-bottom: 12px;
 }
 
 .card p {
-  color: #999999;
+  color: #aaa5bd;
+  line-height: 1.6;
 }
 
 /* CHARACTER ARCHIVE */
 
 .subtitle {
-  color: #777;
+  color: #8580a5;
   margin-bottom: 25px;
   font-size: 12px;
   letter-spacing: 2px;
@@ -147,36 +168,37 @@ button:hover {
 
 .character {
   display: block;
-  background: #111;
-  border: 1px solid #292929;
-  padding: 10px;
-  text-align: center;
+  background: #121126;
+  border: 1px solid #35245b;
+  border-radius: 8px;
+  overflow: hidden;
+  padding-bottom: 15px;
   text-decoration: none;
-  color: inherit;
-  transition: 0.3s;
+  transition: .3s;
 }
 
 .character:hover {
-  border-color: #ff3030;
-  box-shadow: 0 0 15px #8b0000;
+  border-color: #398bff;
+  box-shadow: 0 0 18px #5425a8;
   transform: translateY(-4px);
 }
 
 .character img {
   width: 100%;
   display: block;
-  margin-bottom: 12px;
 }
 
 .character h3 {
-  color: #ff3030;
+  color: #b58aff;
   font-size: 12px;
+  padding: 12px 8px 0;
 }
 
 .character p {
-  color: #777;
+  color: #8580a5;
   font-size: 10px;
   margin-top: 8px;
+  padding: 0 8px;
 }
 
 /* CHARACTER PROFILES */
@@ -188,7 +210,7 @@ button:hover {
 
 .profile h2,
 .profile h3 {
-  color: #ff3030;
+  color: #a875ff;
   margin-bottom: 15px;
 }
 
@@ -197,20 +219,20 @@ button:hover {
   max-width: 350px;
   margin: 25px auto;
   display: block;
-  border: 1px solid #444;
+  border: 1px solid #5425a8;
 }
 
 .profile p {
-  color: #aaa;
+  color: #aaaacc;
   margin: 12px;
 }
 
 .back {
   display: inline-block;
   margin-top: 30px;
-  color: #ff3030;
+  color: #a875ff;
   text-decoration: none;
-  border: 1px solid #ff3030;
+  border: 1px solid #813bff;
   padding: 12px 20px;
 }
 
@@ -224,17 +246,18 @@ button:hover {
 }
 
 .game-container h2 {
-  color: #ff3030;
+  color: #a875ff;
   letter-spacing: 4px;
   margin-bottom: 12px;
 }
 
 .game-box {
-  background: #111;
-  border: 1px solid #550000;
+  background: linear-gradient(145deg, #151326, #10182a);
+  border: 1px solid #5425a8;
+  border-radius: 10px;
   padding: 25px 18px;
   margin-top: 25px;
-  box-shadow: 0 0 20px #250000;
+  box-shadow: 0 0 20px #211344;
 }
 
 .difficulty {
@@ -246,21 +269,21 @@ button:hover {
 }
 
 .difficulty button {
-  background: #180000;
+  background: #17102d;
   color: white;
-  border: 1px solid #ff3030;
+  border: 1px solid #813bff;
   padding: 12px 16px;
   cursor: pointer;
   letter-spacing: 2px;
 }
 
 .difficulty button:focus {
-  background: #ff3030;
-  box-shadow: 0 0 15px #ff3030;
+  background: #5425a8;
+  box-shadow: 0 0 15px #813bff;
 }
 
 #category {
-  color: #ff3030;
+  color: #a875ff;
   font-size: 11px;
   letter-spacing: 3px;
   margin-bottom: 25px;
@@ -273,7 +296,7 @@ button:hover {
 }
 
 #clue {
-  color: #aaa;
+  color: #aaaacc;
   line-height: 1.6;
   margin-bottom: 25px;
 }
@@ -285,11 +308,16 @@ button:hover {
 
 .answer {
   width: 100%;
-  background: #850000;
+  background: #241445;
   color: white;
-  border: 1px solid #ff3030;
+  border: 1px solid #813bff;
   padding: 15px;
   cursor: pointer;
+  border-radius: 6px;
+}
+
+.answer:hover:not(:disabled) {
+  background: #5425a8;
 }
 
 .answer:disabled {
@@ -298,7 +326,7 @@ button:hover {
 }
 
 #feedback {
-  color: #ff4444;
+  color: #a875ff;
   margin-top: 22px;
   font-size: 13px;
 }
@@ -314,59 +342,14 @@ button:hover {
   display: none;
   width: 100%;
   margin-top: 20px;
-  background: #ff3030;
+  background: linear-gradient(135deg, #5425a8, #2455a8);
   color: white;
   padding: 15px;
   border: none;
   cursor: pointer;
 }
 
-/* FOOTER */
-
-footer {
-  text-align: center;
-  padding: 30px;
-  color: #666666;
-  font-size: 11px;
-}
-
-/* MOBILE */
-
-@media (max-width: 450px) {
-  header h1 {
-    font-size: 32px;
-    letter-spacing: 5px;
-  }
-
-  nav {
-    gap: 15px;
-  }
-
-  .gallery {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-.avatar {
-  width: 130px;
-  height: 130px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid #ff3030;
-  margin: 15px auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  font-size: 60px;
-}
-
-#avatar-upload {
-  display: block;
-  margin: 15px auto;
-  max-width: 100%;
-}
-
-/* AFTER DARK COMMUNITY HUB */
+/* COMMUNITY HUB */
 
 .community-hub {
   padding: 55px 20px;
@@ -433,4 +416,57 @@ footer {
   text-decoration: none;
   font-size: 11px;
   letter-spacing: 2px;
+}
+
+/* FOOTER */
+
+footer {
+  text-align: center;
+  padding: 30px;
+  background: #080812;
+  color: #81749e;
+  font-size: 11px;
+}
+
+/* PLAYER AVATAR */
+
+.avatar {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #813bff;
+  margin: 15px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-size: 60px;
+}
+
+#avatar-upload {
+  display: block;
+  margin: 15px auto;
+  max-width: 100%;
+}
+
+/* MOBILE */
+
+@media (max-width: 450px) {
+  header h1 {
+    font-size: 32px;
+    letter-spacing: 5px;
+  }
+
+  nav {
+    gap: 15px;
+  }
+
+  .gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .welcome {
+    padding: 75px 15px;
+  }
 }
