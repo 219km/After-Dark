@@ -1,0 +1,367 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guess the Animatronic | AFTER DARK</title>
+<link rel="stylesheet" href="style.css">
+
+<style>
+.fnaf-container {
+  max-width: 650px;
+  margin: 30px auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.fnaf-container h2 {
+  color: #ff3030;
+  letter-spacing: 3px;
+}
+
+.difficulty {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.difficulty button, #next, #restart {
+  background: #ff3030;
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.fnaf-box {
+  background: #111;
+  border: 1px solid #444;
+  border-radius: 15px;
+  padding: 25px 18px;
+}
+
+#clue {
+  background: #202020;
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px 0;
+  line-height: 1.6;
+}
+
+#answers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.answer {
+  background: #202020;
+  color: white;
+  border: 1px solid #555;
+  padding: 15px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.answer:hover:not(:disabled) {
+  background: #ff3030;
+}
+
+.answer:disabled {
+  opacity: .6;
+}
+
+.stats {
+  color: #ff5555;
+  font-weight: bold;
+}
+
+#feedback {
+  min-height: 25px;
+  font-weight: bold;
+}
+
+.back {
+  display: inline-block;
+  color: #ff5555;
+  text-decoration: none;
+  margin: 25px;
+}
+
+@media(max-width:400px) {
+  #answers {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>AFTER DARK</h1>
+  <p>FIVE NIGHTS AT FREDDY'S ARCADE</p>
+</header>
+
+<main class="fnaf-container">
+
+<h2>GUESS THE ANIMATRONIC</h2>
+<p>CAN YOU IDENTIFY WHAT LURKS IN THE DARK?</p>
+
+<div class="difficulty">
+  <button onclick="setDifficulty('easy')">EASY</button>
+  <button onclick="setDifficulty('medium')">MEDIUM</button>
+  <button onclick="setDifficulty('nightmare')">NIGHTMARE</button>
+</div>
+
+<div class="fnaf-box">
+
+<p id="level">EASY MODE</p>
+
+<h3 id="question">WHO AM I?</h3>
+
+<div id="clue">Your clues will appear here.</div>
+
+<div id="answers"></div>
+
+<p id="feedback"></p>
+
+<p class="stats" id="score">SCORE: 0</p>
+<p class="stats" id="streak">STREAK: 0</p>
+<p class="stats" id="credits">CREDITS: 0</p>
+
+<button id="next" onclick="nextQuestion()" style="display:none;">
+NEXT QUESTION
+</button>
+
+<button id="restart" onclick="restartGame()" style="display:none;">
+PLAY AGAIN
+</button>
+
+</div>
+
+<a class="back" href="arcade.html">← BACK TO ARCADE</a>
+
+</main>
+
+<script>
+const questions = {
+easy: [
+{
+clue: "I am a brown bear and the main mascot of Freddy Fazbear's Pizza.",
+answers: ["Bonnie", "Freddy", "Foxy", "Chica"],
+correct: 1
+},
+{
+clue: "I am a purple bunny who plays the guitar.",
+answers: ["Bonnie", "Freddy", "Chica", "Foxy"],
+correct: 0
+},
+{
+clue: "I am a yellow chicken who carries a cupcake.",
+answers: ["Mangle", "Balloon Boy", "Chica", "Freddy"],
+correct: 2
+},
+{
+clue: "I am a pirate fox who hides behind a curtain.",
+answers: ["Foxy", "Bonnie", "Freddy", "Golden Freddy"],
+correct: 0
+},
+{
+clue: "I am a balloon-carrying character who says 'Hello!'",
+answers: ["Puppet", "Balloon Boy", "Springtrap", "Freddy"],
+correct: 1
+}
+],
+
+medium: [
+{
+clue: "I am a broken, tangled animatronic from the second game.",
+answers: ["Toy Chica", "Mangle", "Withered Bonnie", "The Puppet"],
+correct: 1
+},
+{
+clue: "I am a mysterious golden bear who can appear in unusual ways.",
+answers: ["Freddy", "Golden Freddy", "Nightmare Freddy", "Lefty"],
+correct: 1
+},
+{
+clue: "I am the puppet-like animatronic associated with the music box.",
+answers: ["Circus Baby", "The Puppet", "Ballora", "Mangle"],
+correct: 1
+},
+{
+clue: "I am a rabbit animatronic with a damaged appearance and no face.",
+answers: ["Toy Bonnie", "Withered Bonnie", "Springtrap", "RWQFSFASXC"],
+correct: 1
+},
+{
+clue: "I am a clown-like animatronic who belongs to the underground facility.",
+answers: ["Circus Baby", "Chica", "Ballora", "Mangle"],
+correct: 0
+}
+],
+
+nightmare: [
+{
+clue: "I am an animatronic formed from the remains of several Funtime animatronics.",
+answers: ["Molten Freddy", "Ennard", "Lefty", "Scrap Baby"],
+correct: 1
+},
+{
+clue: "I am a shadowy counterpart of Toy Bonnie.",
+answers: ["Shadow Freddy", "RWQFSFASXC", "Nightmare", "Dreadbear"],
+correct: 1
+},
+{
+clue: "I am designed to capture the Puppet inside my body.",
+answers: ["Lefty", "Rockstar Freddy", "Molten Freddy", "Scraptrap"],
+correct: 0
+},
+{
+clue: "I am the damaged rabbit animatronic associated with William Afton.",
+answers: ["Burntrap", "Springtrap", "Glitchtrap", "Bonnie"],
+correct: 1
+},
+{
+clue: "I am the bear animatronic with a stomach mouth and smaller Freddles.",
+answers: ["Nightmare Freddy", "Funtime Freddy", "Withered Freddy", "Shadow Freddy"],
+correct: 0
+}
+]
+};
+
+let difficulty = "easy";
+let current = 0;
+let score = 0;
+let streak = 0;
+let credits = 0;
+let answered = false;
+
+function setDifficulty(level) {
+  difficulty = level;
+  restartGame();
+}
+
+function loadQuestion() {
+  const list = questions[difficulty];
+
+  if (current >= list.length) {
+    endGame();
+    return;
+  }
+
+  answered = false;
+
+  const q = list[current];
+
+  document.getElementById("level").textContent =
+    difficulty.toUpperCase() + " MODE";
+
+  document.getElementById("question").textContent =
+    "WHO AM I?";
+
+  document.getElementById("clue").textContent = q.clue;
+
+  document.getElementById("feedback").textContent = "";
+
+  document.getElementById("next").style.display = "none";
+  document.getElementById("restart").style.display = "none";
+
+  const area = document.getElementById("answers");
+  area.innerHTML = "";
+
+  q.answers.forEach((answer, index) => {
+    const button = document.createElement("button");
+    button.className = "answer";
+    button.textContent = answer;
+    button.onclick = () => checkAnswer(index);
+
+    area.appendChild(button);
+  });
+
+  updateStats();
+}
+
+function checkAnswer(selected) {
+  if (answered) return;
+
+  answered = true;
+
+  const q = questions[difficulty][current];
+  const buttons = document.querySelectorAll(".answer");
+
+  buttons.forEach(button => button.disabled = true);
+
+  if (selected === q.correct) {
+    const reward = difficulty === "easy" ? 100 :
+                   difficulty === "medium" ? 200 : 500;
+
+    score += reward;
+    streak++;
+
+    credits += difficulty === "easy" ? 5 :
+               difficulty === "medium" ? 10 : 25;
+
+    document.getElementById("feedback").textContent =
+      "CORRECT! YOU KNOW YOUR ANIMATRONICS!";
+  } else {
+    streak = 0;
+
+    document.getElementById("feedback").textContent =
+      "WRONG! IT WAS " + q.answers[q.correct];
+  }
+
+  updateStats();
+
+  document.getElementById("next").textContent =
+    current === questions[difficulty].length - 1
+    ? "SEE RESULTS" : "NEXT QUESTION";
+
+  document.getElementById("next").style.display = "inline-block";
+}
+
+function nextQuestion() {
+  current++;
+  loadQuestion();
+}
+
+function updateStats() {
+  document.getElementById("score").textContent = "SCORE: " + score;
+  document.getElementById("streak").textContent = "STREAK: " + streak;
+  document.getElementById("credits").textContent = "CREDITS: " + credits;
+}
+
+function endGame() {
+  document.getElementById("question").textContent = "NIGHT COMPLETE!";
+  document.getElementById("clue").textContent =
+    "YOU SURVIVED THE ANIMATRONIC CHALLENGE.";
+
+  document.getElementById("answers").innerHTML =
+    "<h3>FINAL SCORE: " + score + "</h3>";
+
+  document.getElementById("feedback").textContent =
+    "YOU COMPLETED " + difficulty.toUpperCase() + " MODE!";
+
+  document.getElementById("next").style.display = "none";
+  document.getElementById("restart").style.display = "inline-block";
+}
+
+function restartGame() {
+  current = 0;
+  score = 0;
+  streak = 0;
+  credits = 0;
+
+  loadQuestion();
+}
+
+loadQuestion();
+</script>
+
+</body>
+</html>
