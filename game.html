@@ -1,1 +1,238 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guess the Character | AFTER DARK</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      background: #080711;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    .game-container {
+      max-width: 650px;
+      margin: 35px auto;
+      padding: 25px;
+      background: #121020;
+      border: 1px solid #542b91;
+      border-radius: 18px;
+      box-shadow: 0 0 25px #542b9140;
+    }
+
+    .top {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .top h1 {
+      color: #b58aff;
+      letter-spacing: 3px;
+    }
+
+    .top p {
+      color: #aaa3bd;
+    }
+
+    .back {
+      display: inline-block;
+      color: #b58aff;
+      text-decoration: none;
+      margin-bottom: 20px;
+    }
+
+    .difficulty {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    .difficulty button {
+      flex: 1;
+      padding: 12px 5px;
+      background: #211a35;
+      color: white;
+      border: 1px solid #7145ad;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .difficulty button:hover {
+      background: #59318a;
+    }
+
+    .question-card {
+      padding: 20px;
+      background: #1b1730;
+      border-radius: 12px;
+      border: 1px solid #382653;
+    }
+
+    #category {
+      color: #b58aff;
+      font-size: 13px;
+      letter-spacing: 2px;
+    }
+
+    #clue {
+      color: #c4bdd3;
+      line-height: 1.6;
+    }
+
+    #question {
+      font-size: 21px;
+      margin-top: 20px;
+    }
+
+    #answers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    #answers button {
+      padding: 14px;
+      background: #241c3b;
+      color: white;
+      border: 1px solid #7546b7;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    #answers button:hover {
+      background: #59318a;
+    }
+
+    #feedback {
+      min-height: 25px;
+      margin-top: 18px;
+      color: #c7a2ff;
+      text-align: center;
+    }
+
+    #next-button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 14px;
+      background: #713bb3;
+      color: white;
+      border: none;
+      border-radius: 9px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      gap: 10px;
+      margin-top: 25px;
+      padding: 15px;
+      background: #1b1730;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .stats small {
+      display: block;
+      color: #aaa3bd;
+      margin-bottom: 7px;
+    }
+
+    .stats strong {
+      color: #c49aff;
+    }
+
+    .credits {
+      text-align: center;
+      margin-top: 20px;
+      color: #c49aff;
+    }
+
+    @media (max-width: 450px) {
+      #answers {
+        grid-template-columns: 1fr;
+      }
+
+      .game-container {
+        padding: 17px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="game-container">
+
+    <a class="back" href="arcade.html">← BACK TO ARCADE</a>
+
+    <header class="top">
+      <h1>AFTER DARK</h1>
+      <p>GUESS THE CHARACTER</p>
+      <p>Can you identify the character from the clues?</p>
+    </header>
+
+    <div class="difficulty">
+      <button onclick="setDifficulty('easy')">EASY</button>
+      <button onclick="setDifficulty('medium')">MEDIUM</button>
+      <button onclick="setDifficulty('nightmare')">NIGHTMARE</button>
+    </div>
+
+    <section class="question-card">
+
+      <p id="category">CATEGORY</p>
+
+      <p id="clue">Loading clue...</p>
+
+      <h2 id="question">Loading question...</h2>
+
+      <div id="answers"></div>
+
+      <p id="feedback"></p>
+
+      <button id="next-button" onclick="nextQuestion()">
+        NEXT QUESTION
+      </button>
+
+    </section>
+
+    <section class="stats">
+      <div>
+        <small>SCORE</small>
+        <strong id="score">0</strong>
+      </div>
+
+      <div>
+        <small>STREAK</small>
+        <strong id="streak">0</strong>
+      </div>
+
+      <div>
+        <small>CREDITS EARNED</small>
+        <strong id="credits-earned">0</strong>
+      </div>
+    </section>
+
+    <p class="credits">
+      YOUR BALANCE: <strong id="credits">0</strong> CR
+    </p>
+
+  </main>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
