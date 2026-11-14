@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loading | AFTER DARK</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #050509;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .loader {
+      animation: fadeIn 1.5s ease;
+      width: 85%;
+      max-width: 450px;
+    }
+
+    h1 {
+      font-size: 42px;
+      letter-spacing: 8px;
+      color: #a855f7;
+      text-shadow: 0 0 20px #9333ea;
+    }
+
+    p {
+      color: #aaa;
+      letter-spacing: 4px;
+      font-size: 11px;
+    }
+
+    .bar {
+      height: 4px;
+      width: 100%;
+      background: #222;
+      margin-top: 35px;
+      overflow: hidden;
+      border-radius: 10px;
+    }
+
+    .progress {
+      height: 100%;
+      width: 0;
+      background: #a855f7;
+      box-shadow: 0 0 15px #a855f7;
+      animation: load 3s linear forwards;
+    }
+
+    @keyframes load {
+      to { width: 100%; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="loader">
+    <h1>AFTER DARK</h1>
+    <p>WELCOME TO THE UNKNOWN</p>
+
+    <div class="bar">
+      <div class="progress"></div>
+    </div>
+
+    <p>INITIALIZING...</p>
+  </div>
+
+  <script>
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 3500);
+  </script>
+
+</body>
+</html>
