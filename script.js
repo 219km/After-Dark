@@ -1,17 +1,23 @@
-// ===================================
-// AFTER DARK
-// MAIN GAME SCRIPT
-// ===================================
 
+/* ===================================
+   AFTER DARK
+   MAIN GAME SCRIPT
+=================================== */
 
-// ===================================
-// PLAYER PROFILE
-// ===================================
+(() => {
+
+/* ===================================
+   PLAYER PROFILE
+=================================== */
 
 function getPlayerProfile() {
-  return JSON.parse(
-    localStorage.getItem("afterDarkProfile") || "{}"
-  );
+  try {
+    return JSON.parse(
+      localStorage.getItem("afterDarkProfile") || "{}"
+    );
+  } catch {
+    return {};
+  }
 }
 
 function savePlayerProfile(profile) {
@@ -26,20 +32,26 @@ function getProfile() {
 }
 
 function getCredits() {
-  const profile = getPlayerProfile();
-  return profile.credits || 0;
+  return getPlayerProfile().credits || 0;
 }
 
 function addCredits(amount) {
   const profile = getPlayerProfile();
+
   profile.credits = (profile.credits || 0) + amount;
+
   savePlayerProfile(profile);
+  updateRewardDisplay();
 }
 
 function getBadges() {
-  return JSON.parse(
-    localStorage.getItem("afterDarkBadges") || "[]"
-  );
+  try {
+    return JSON.parse(
+      localStorage.getItem("afterDarkBadges") || "[]"
+    );
+  } catch {
+    return [];
+  }
 }
 
 function awardBadge(badge) {
@@ -47,6 +59,7 @@ function awardBadge(badge) {
 
   if (!badges.includes(badge)) {
     badges.push(badge);
+
     localStorage.setItem(
       "afterDarkBadges",
       JSON.stringify(badges)
@@ -62,10 +75,9 @@ function updateRewardDisplay() {
   }
 }
 
-
-// ===================================
-// AVATAR FUNCTIONS
-// ===================================
+/* ===================================
+   AVATAR FUNCTIONS
+=================================== */
 
 function uploadAvatar() {
   const input = document.getElementById("avatar-upload");
@@ -85,9 +97,10 @@ function uploadAvatar() {
 
   reader.onload = function(event) {
     const profile = getPlayerProfile();
-    profile.avatarImage = event.target.result;
-    savePlayerProfile(profile);
 
+    profile.avatarImage = event.target.result;
+
+    savePlayerProfile(profile);
     loadProfile();
   };
 
@@ -96,9 +109,10 @@ function uploadAvatar() {
 
 function removeAvatar() {
   const profile = getPlayerProfile();
-  delete profile.avatarImage;
-  savePlayerProfile(profile);
 
+  delete profile.avatarImage;
+
+  savePlayerProfile(profile);
   loadProfile();
 }
 
@@ -110,9 +124,21 @@ function loadProfile() {
   const bio = document.getElementById("display-bio");
 
   if (avatar) {
-    avatar.innerHTML = profile.avatarImage
-      ? `<img src="${profile.avatarImage}" alt="Avatar" style="width:100%;height:100%;object-fit:cover;">`
-      : "👤";
+    avatar.innerHTML = "";
+
+    if (profile.avatarImage) {
+      const image = document.createElement("img");
+
+      image.src = profile.avatarImage;
+      image.alt = "Player Avatar";
+      image.style.width = "100%";
+      image.style.height = "100%";
+      image.style.objectFit = "cover";
+
+      avatar.appendChild(image);
+    } else {
+      avatar.textContent = "👤";
+    }
   }
 
   if (username) {
@@ -126,10 +152,9 @@ function loadProfile() {
   updateRewardDisplay();
 }
 
-
-// ===================================
-// GUESS THE CHARACTER QUESTIONS
-// ===================================
+/* ===================================
+   GUESS THE CHARACTER QUESTIONS
+=================================== */
 
 const questionBanks = {
 
@@ -231,169 +256,9 @@ const questionBanks = {
   ]
 };
 
-
-// ===================================
-// GUESS THE CHARACTER GAME
-// ===================================
-
-let difficulty = "easy";
-let gameQuestions = [];
-let currentQuestion = 0;
-let score = 0;
-let streak = 0;
-let answered = false;
-let creditsEarnedThisGame = 0;
-
-function shuffleQuestions(array) {
-  return [...array].sort(() => Math.random() - 0.5);
-}
-
-function setDifficulty(level) {
-  difficulty = level;
-  restartGame();
-}
-
-function showQuestion() {
-  const q = gameQuestions[currentQuestion];
-
-  if (!q) {
-    endGame();
-    return;
-  }
-
-  document.getElementById("category").textContent = q.category;
-  document.getElementById("question").textContent =
-    q.question || "WHO AM I?";
-
-  document.getElementById("clue").textContent =
-    difficulty === "nightmare"
-      ? q.question
-      : q.clue;
-
-  document.getElementById("feedback").textContent = "";
-
-  const buttons = document.querySelectorAll("#answers .answer");
-
-  buttons.forEach((button, index) => {
-    button.textContent = q.answers[index];
-    button.disabled = false;
-    button.style.display = "block";
-  });
-
-  document.getElementById("next-button").style.display = "none";
-  document.getElementById("restart-button").style.display = "none";
-
-  answered = false;
-  updateGameDisplay();
-}
-
-function checkAnswer(index) {
-  if (answered) return;
-
-  const q = gameQuestions[currentQuestion];
-  if (!q) return;
-
-  answered = true;
-
-  const buttons = document.querySelectorAll("#answers .answer");
-  const feedback = document.getElementById("feedback");
-
-  buttons.forEach(button => {
-    button.disabled = true;
-  });
-
-  if (index === q.correct) {
-    score++;
-    streak++;
-    creditsEarnedThisGame += 10;
-
-    feedback.textContent = "CORRECT! +10 CREDITS";
-    addCredits(10);
-
-  } else {
-    streak = 0;
-    feedback.textContent =
-      "INCORRECT! ANSWER: " + q.answers[q.correct];
-  }
-
-  document.getElementById("score").textContent = "SCORE: " + score;
-  document.getElementById("streak").textContent = "STREAK: " + streak;
-
-  document.getElementById("next-button").style.display = "block";
-
-  updateRewardDisplay();
-}
-
-function nextQuestion() {
-  currentQuestion++;
-
-  if (currentQuestion >= gameQuestions.length) {
-    endGame();
-  } else {
-    showQuestion();
-  }
-}
-
-function endGame() {
-  document.getElementById("question").textContent = "GAME COMPLETE!";
-  document.getElementById("clue").textContent =
-    "YOU FINISHED THE ROUND.";
-
-  document.getElementById("category").textContent = "AFTER DARK ARCADE";
-
-  document.getElementById("answers").innerHTML = "";
-
-  document.getElementById("feedback").textContent =
-    "FINAL SCORE: " + score + " / " + gameQuestions.length;
-
-  document.getElementById("next-button").style.display = "none";
-  document.getElementById("restart-button").style.display = "block";
-
-  if (score === gameQuestions.length) {
-    awardBadge("PERFECT ROUND");
-  }
-}
-
-function restartGame() {
-  score = 0;
-  streak = 0;
-  currentQuestion = 0;
-  creditsEarnedThisGame = 0;
-
-  gameQuestions = shuffleQuestions(questionBanks[difficulty]);
-
-  const answers = document.getElementById("answers");
-
-  if (answers) {
-    answers.innerHTML = `
-      <button class="answer" onclick="checkAnswer(0)">ANSWER 1</button>
-      <button class="answer" onclick="checkAnswer(1)">ANSWER 2</button>
-      <button class="answer" onclick="checkAnswer(2)">ANSWER 3</button>
-      <button class="answer" onclick="checkAnswer(3)">ANSWER 4</button>
-    `;
-
-    showQuestion();
-  }
-}
-
-function updateGameDisplay() {
-  const scoreDisplay = document.getElementById("score");
-  const streakDisplay = document.getElementById("streak");
-  const creditsDisplay = document.getElementById("credits-earned");
-
-  if (scoreDisplay) scoreDisplay.textContent = "SCORE: " + score;
-  if (streakDisplay) streakDisplay.textContent = "STREAK: " + streak;
-  if (creditsDisplay) {
-    creditsDisplay.textContent =
-      "CREDITS EARNED: " + creditsEarnedThisGame;
-  }
-}
-
-
-// ===================================
-// WHO SAID IT? QUESTIONS
-// Original fan-made lines, not actual anime dialogue
-// ===================================
+/* ===================================
+   WHO SAID IT QUESTIONS
+=================================== */
 
 const quoteQuestions = {
 
@@ -479,15 +344,232 @@ const quoteQuestions = {
   ]
 };
 
+/* ===================================
+   GUESS THE CHARACTER GAME
+=================================== */
+
+let difficulty = "easy";
+let gameQuestions = [];
+let currentQuestion = 0;
+let score = 0;
+let streak = 0;
+let answered = false;
+let creditsEarnedThisGame = 0;
+
+function shuffleQuestions(array) {
+  return [...array].sort(() => Math.random() - 0.5);
+}
+
+function setDifficulty(level) {
+  if (!questionBanks[level]) return;
+
+  difficulty = level;
+  restartGame();
+}
+
+function showQuestion() {
+  const q = gameQuestions[currentQuestion];
+
+  if (!q) {
+    endGame();
+    return;
+  }
+
+  const category = document.getElementById("category");
+  const question = document.getElementById("question");
+  const clue = document.getElementById("clue");
+  const feedback = document.getElementById("feedback");
+
+  if (!category || !question || !clue || !feedback) return;
+
+  category.textContent = q.category;
+  question.textContent = q.question || "WHO AM I?";
+  clue.textContent = q.clue || q.question || "";
+
+  feedback.textContent = "";
+
+  const buttons = document.querySelectorAll("#answers .answer");
+
+  buttons.forEach((button, index) => {
+    button.textContent = q.answers[index] || "";
+    button.disabled = false;
+    button.style.display = q.answers[index] ? "block" : "none";
+  });
+
+  const next = document.getElementById("next-button");
+  const restart = document.getElementById("restart-button");
+
+  if (next) next.style.display = "none";
+  if (restart) restart.style.display = "none";
+
+  answered = false;
+  updateGameDisplay();
+}
+
+function checkAnswer(index) {
+  if (answered) return;
+
+  const q = gameQuestions[currentQuestion];
+  if (!q) return;
+
+  answered = true;
+
+  const buttons = document.querySelectorAll("#answers .answer");
+  const feedback = document.getElementById("feedback");
+
+  buttons.forEach(button => {
+    button.disabled = true;
+  });
+
+  if (index === q.correct) {
+    score++;
+    streak++;
+    creditsEarnedThisGame += 10;
+
+    feedback.textContent = "CORRECT! +10 CREDITS";
+
+    addCredits(10);
+
+  } else {
+    streak = 0;
+
+    feedback.textContent =
+      "INCORRECT! ANSWER: " + q.answers[q.correct];
+  }
+
+  updateGameDisplay();
+
+  const next = document.getElementById("next-button");
+
+  if (next) {
+    next.style.display = "block";
+  }
+}
+
+function nextQuestion() {
+  currentQuestion++;
+
+  if (currentQuestion >= gameQuestions.length) {
+    endGame();
+  } else {
+    showQuestion();
+  }
+}
+
+function endGame() {
+  const question = document.getElementById("question");
+  const clue = document.getElementById("clue");
+  const category = document.getElementById("category");
+  const answers = document.getElementById("answers");
+  const feedback = document.getElementById("feedback");
+  const next = document.getElementById("next-button");
+  const restart = document.getElementById("restart-button");
+
+  if (question) question.textContent = "GAME COMPLETE!";
+  if (clue) clue.textContent = "YOU FINISHED THE ROUND.";
+  if (category) category.textContent = "AFTER DARK ARCADE";
+  if (answers) answers.innerHTML = "";
+
+  if (feedback) {
+    feedback.textContent =
+      "FINAL SCORE: " + score + " / " + gameQuestions.length;
+  }
+
+  if (next) next.style.display = "none";
+  if (restart) restart.style.display = "block";
+
+  if (score === gameQuestions.length) {
+    awardBadge("PERFECT ROUND");
+  }
+}
+
+function restartGame() {
+  score = 0;
+  streak = 0;
+  currentQuestion = 0;
+  creditsEarnedThisGame = 0;
+
+  gameQuestions = shuffleQuestions(questionBanks[difficulty]);
+
+  const answers = document.getElementById("answers");
+
+  if (!answers) return;
+
+  answers.innerHTML = `
+    <button class="answer" onclick="checkAnswer(0)">ANSWER 1</button>
+    <button class="answer" onclick="checkAnswer(1)">ANSWER 2</button>
+    <button class="answer" onclick="checkAnswer(2)">ANSWER 3</button>
+    <button class="answer" onclick="checkAnswer(3)">ANSWER 4</button>
+  `;
+
+  showQuestion();
+}
+
+function updateGameDisplay() {
+  const scoreDisplay = document.getElementById("score");
+  const streakDisplay = document.getElementById("streak");
+  const creditsDisplay = document.getElementById("credits-earned");
+
+  if (scoreDisplay) {
+    scoreDisplay.textContent = "SCORE: " + score;
+  }
+
+  if (streakDisplay) {
+    streakDisplay.textContent = "STREAK: " + streak;
+  }
+
+  if (creditsDisplay) {
+    creditsDisplay.textContent =
+      "CREDITS EARNED: " + creditsEarnedThisGame;
+  }
+}
+
+/* ===================================
+   MAKE GAME FUNCTIONS AVAILABLE
+=================================== */
+
+window.setDifficulty = setDifficulty;
+window.checkAnswer = checkAnswer;
+window.nextQuestion = nextQuestion;
+window.restartGame = restartGame;
+
+window.getPlayerProfile = getPlayerProfile;
+window.getProfile = getProfile;
+window.getCredits = getCredits;
+window.addCredits = addCredits;
+window.getBadges = getBadges;
+window.awardBadge = awardBadge;
+
+window.uploadAvatar = uploadAvatar;
+window.removeAvatar = removeAvatar;
+window.loadProfile = loadProfile;
+
+/* ===================================
+   START THE CORRECT PAGE
+=================================== */
 
 document.addEventListener("DOMContentLoaded", function() {
 
-  if (document.getElementById("answers")) {
+  // Start Guess the Character only
+  // on its actual game page.
+
+  if (
+    document.getElementById("question") &&
+    document.getElementById("next-button") &&
+    document.getElementById("answers")
+  ) {
     restartGame();
   }
+
+  // Load player profile only
+  // on the profile page.
 
   if (document.getElementById("avatar")) {
     loadProfile();
   }
 
+  updateRewardDisplay();
+
 });
+
+})();
