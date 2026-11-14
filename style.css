@@ -365,3 +365,72 @@ footer {
   margin: 15px auto;
   max-width: 100%;
 }
+
+/* AFTER DARK COMMUNITY HUB */
+
+.community-hub {
+  padding: 55px 20px;
+  text-align: center;
+  background: linear-gradient(180deg, #080812, #11102a);
+}
+
+.community-hub h2 {
+  color: #a875ff;
+  letter-spacing: 4px;
+  margin-bottom: 12px;
+}
+
+.hub-subtitle {
+  color: #8580a5;
+  font-size: 11px;
+  letter-spacing: 3px;
+  margin-bottom: 30px;
+}
+
+.hub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.hub-card {
+  background: linear-gradient(145deg, #17132d, #101b32);
+  border: 1px solid #5425a8;
+  border-radius: 10px;
+  padding: 28px 20px;
+  text-align: left;
+  transition: .3s;
+}
+
+.hub-card:hover {
+  transform: translateY(-5px);
+  border-color: #398bff;
+  box-shadow: 0 0 20px #5425a8;
+}
+
+.hub-card span {
+  color: #398bff;
+  font-size: 13px;
+  letter-spacing: 3px;
+}
+
+.hub-card h3 {
+  color: #b58aff;
+  margin: 18px 0 12px;
+}
+
+.hub-card p {
+  color: #aaa5bd;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.hub-card a {
+  color: #66a5ff;
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: 2px;
+}
