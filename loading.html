@@ -8,84 +8,121 @@
 
   <style>
     * {
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
     }
 
     body {
-      margin: 0;
       min-height: 100vh;
-      background: #050509;
+      background:
+        radial-gradient(circle at center, #17102e 0%, #090817 45%, #03030a 100%);
       color: white;
       font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
+      overflow: hidden;
+    }
+
+    .loading-container {
       text-align: center;
-      overflow: hidden;
-    }
-
-    .loader {
-      animation: fadeIn 1.5s ease;
       width: 85%;
-      max-width: 450px;
+      max-width: 420px;
+      animation: fadeIn 1.5s ease;
     }
 
-    h1 {
+    .logo {
       font-size: 42px;
+      font-weight: 900;
       letter-spacing: 8px;
-      color: #a855f7;
-      text-shadow: 0 0 20px #9333ea;
+      color: white;
+      text-shadow:
+        0 0 10px #8b5cff,
+        0 0 25px #6d35ff,
+        0 0 45px #4720a8;
+      margin-bottom: 12px;
     }
 
-    p {
-      color: #aaa;
-      letter-spacing: 4px;
+    .subtitle {
+      color: #aaa0c9;
+      font-size: 10px;
+      letter-spacing: 5px;
+      margin-bottom: 55px;
+    }
+
+    .loading-text {
+      color: #c7b5ff;
       font-size: 11px;
+      letter-spacing: 4px;
+      margin-bottom: 16px;
+      animation: pulse 1.5s infinite;
     }
 
-    .bar {
-      height: 4px;
+    .progress-bar {
       width: 100%;
-      background: #222;
-      margin-top: 35px;
-      overflow: hidden;
+      height: 3px;
+      background: #21183a;
       border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 12px #5729a8;
     }
 
     .progress {
       height: 100%;
-      width: 0;
-      background: #a855f7;
-      box-shadow: 0 0 15px #a855f7;
-      animation: load 3s linear forwards;
+      width: 0%;
+      background: linear-gradient(90deg, #713cff, #00c8ff);
+      box-shadow: 0 0 15px #8b5cff;
+      animation: load 3s ease forwards;
+    }
+
+    .footer {
+      margin-top: 25px;
+      color: #625a79;
+      font-size: 9px;
+      letter-spacing: 3px;
     }
 
     @keyframes load {
+      from { width: 0%; }
       to { width: 100%; }
     }
 
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <div class="loader">
-    <h1>AFTER DARK</h1>
-    <p>WELCOME TO THE UNKNOWN</p>
+  <main class="loading-container">
+    <h1 class="logo">AFTER DARK</h1>
+    <p class="subtitle">ENTER THE UNKNOWN</p>
 
-    <div class="bar">
+    <p class="loading-text">INITIALIZING SYSTEM...</p>
+
+    <div class="progress-bar">
       <div class="progress"></div>
     </div>
 
-    <p>INITIALIZING...</p>
-  </div>
+    <p class="footer">YOUR WORLD BEGINS HERE</p>
+  </main>
 
   <script>
-    setTimeout(() => {
+    setTimeout(function() {
       window.location.href = "index.html";
     }, 3500);
   </script>
