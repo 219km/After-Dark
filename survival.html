@@ -1,0 +1,839 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FNAF Survival | AFTER DARK</title>
+<link rel="stylesheet" href="style.css">
+
+<style>
+.survival-container {
+  max-width: 650px;
+  margin: 30px auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.survival-box {
+  background: #111;
+  border: 1px solid crimson;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 0 20px #6003;
+}
+
+.night-number {
+  color: crimson;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.survival-label {
+  color: #888;
+  font-size: 12px;
+  letter-spacing: 3px;
+}
+
+#survival-question {
+  font-size: 20px;
+  margin: 25px 0;
+  line-height: 1.5;
+}
+
+.survival-answer {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  margin: 12px 0;
+  background: #222;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: .2s;
+}
+
+.survival-answer:hover:not(:disabled) {
+  border-color: crimson;
+  background: #351010;
+}
+
+.survival-answer:disabled {
+  cursor: default;
+  opacity: .8;
+}
+
+.survival-answer.correct {
+  background: #164522;
+  border-color: #35c75a;
+}
+
+.survival-answer.wrong {
+  background: #511414;
+  border-color: crimson;
+}
+
+#survival-feedback {
+  min-height: 45px;
+  margin: 20px 0;
+  font-weight: bold;
+}
+
+.survival-button {
+  width: 100%;
+  padding: 14px;
+  margin: 8px 0;
+  background: crimson;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.survival-button:hover {
+  background: #a00020;
+}
+
+.survival-button:disabled {
+  opacity: .5;
+}
+
+.survival-stats {
+  display: flex;
+  justify-content: space-around;
+  gap: 10px;
+  margin: 20px 0;
+  padding: 15px;
+  background: #080808;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.survival-stats strong {
+  color: crimson;
+  display: block;
+  font-size: 20px;
+  margin-top: 5px;
+}
+
+#survival-progress {
+  color: #aaa;
+  font-size: 13px;
+}
+
+#survival-mode {
+  background: #222;
+  color: white;
+  border: 1px solid crimson;
+  padding: 12px;
+  width: 100%;
+  border-radius: 7px;
+  margin: 15px 0;
+}
+
+.survival-warning {
+  color: crimson;
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#survival-result {
+  font-size: 25px;
+  color: crimson;
+  margin: 20px 0;
+}
+
+#survival-explanation {
+  color: #aaa;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>AFTER DARK</h1>
+  <p>FNAF SURVIVAL</p>
+</header>
+
+<main class="survival-container">
+
+<h2>FIVE NIGHTS AT FREDDY'S</h2>
+<p>SURVIVE THE NIGHT SHIFT.</p>
+
+<div class="survival-box">
+
+  <p class="survival-label">FAZBEAR ENTERTAINMENT</p>
+
+  <div id="survival-menu">
+
+    <p class="survival-warning">WARNING: NIGHT SHIFT ASSIGNED</p>
+
+    <h2>WELCOME, NIGHT GUARD.</h2>
+
+    <p>
+      Your shift begins at midnight.
+      Your knowledge will determine whether
+      you survive until 6 AM.
+    </p>
+
+    <label for="survival-mode">SELECT DIFFICULTY</label>
+
+    <select id="survival-mode">
+      <option value="standard">STANDARD</option>
+      <option value="nightmare">NIGHTMARE</option>
+    </select>
+
+    <p id="mode-description">
+      STANDARD: Increasingly difficult FNAF questions.
+    </p>
+
+    <button class="survival-button" onclick="startSurvival()">
+      START NIGHT SHIFT
+    </button>
+
+  </div>
+
+  <div id="survival-game" class="hidden">
+
+    <p class="night-number" id="night-number">NIGHT 1</p>
+
+    <p class="survival-warning" id="night-difficulty">
+      SECURITY LEVEL: LOW
+    </p>
+
+    <div class="survival-stats">
+
+      <div>
+        NIGHT
+        <strong id="night-stat">1/5</strong>
+      </div>
+
+      <div>
+        SCORE
+        <strong id="survival-score">0</strong>
+      </div>
+
+      <div>
+        STREAK
+        <strong id="survival-streak">0</strong>
+      </div>
+
+    </div>
+
+    <p id="survival-progress">QUESTION 1 / 3</p>
+
+    <h3 id="survival-question">Loading...</h3>
+
+    <div id="survival-answers"></div>
+
+    <p id="survival-feedback"></p>
+
+    <p id="survival-explanation"></p>
+
+    <button
+      id="survival-next"
+      class="survival-button hidden"
+      onclick="nextSurvivalQuestion()">
+      NEXT QUESTION
+    </button>
+
+  </div>
+
+  <div id="survival-complete" class="hidden">
+
+    <p class="survival-warning">SHIFT TERMINATED</p>
+
+    <h2 id="survival-result">GAME COMPLETE</h2>
+
+    <p id="final-score"></p>
+
+    <p id="final-message"></p>
+
+    <button class="survival-button" onclick="startSurvival()">
+      PLAY AGAIN
+    </button>
+
+    <button class="survival-button" onclick="returnToMenu()">
+      MAIN MENU
+    </button>
+
+  </div>
+
+</div>
+
+<a class="back" href="index.html">BACK HOME</a>
+
+</main>
+
+<script>
+
+// ===================================
+// AFTER DARK
+// FNAF SURVIVAL GAME
+// ===================================
+
+
+// ===================================
+// QUESTION BANK
+// ===================================
+
+const survivalQuestions = {
+
+standard: [
+
+[
+{
+q: "In FNAF 1, what happens when Freddy reaches the player's office while the power is out?",
+a: ["He leaves immediately", "The game ends after his musical cue", "The player can still use the doors", "Bonnie appears instead"],
+c: 1,
+e: "Freddy's musical cue plays during the power-out sequence before the game over."
+},
+{
+q: "Which animatronic is primarily associated with the music box in FNAF 2?",
+a: ["Mangle", "The Puppet", "Toy Bonnie", "Balloon Boy"],
+c: 1,
+e: "The Puppet is kept at bay by winding the music box."
+},
+{
+q: "What is the name of the restaurant in the first FNAF game?",
+a: ["Fredbear's Family Diner", "Circus Baby's Pizza World", "Freddy Fazbear's Pizza", "Fazbear's Fright"],
+c: 2,
+e: "The first game takes place at Freddy Fazbear's Pizza."
+}
+],
+
+[
+{
+q: "Which character is responsible for the bite associated with the 1987 incident?",
+a: ["The exact identity is never confirmed", "Withered Freddy", "Foxy", "The Puppet"],
+c: 0,
+e: "The identity of the animatronic responsible for the Bite of '87 remains unconfirmed."
+},
+{
+q: "What does the player use to defend against Foxy in FNAF 1?",
+a: ["The music box", "The hallway light", "The security door", "The camera reboot"],
+c: 2,
+e: "Closing the left security door prevents Foxy from attacking."
+},
+{
+q: "Which animatronic is known for appearing in the Parts and Service room in FNAF 2?",
+a: ["Withered Bonnie", "Nightmare Fredbear", "Scrap Baby", "Funtime Freddy"],
+c: 0,
+e: "Withered Bonnie can be encountered in the Parts and Service room."
+}
+],
+
+[
+{
+q: "What is the name of the attraction in FNAF 3?",
+a: ["Fazbear's Fright", "Freddy's Mega Pizzaplex", "Circus Baby's Rental", "Fredbear's Family Diner"],
+c: 0,
+e: "Fazbear's Fright is the horror attraction where FNAF 3 takes place."
+},
+{
+q: "Which character is the main physical threat in FNAF 3?",
+a: ["Phantom Freddy", "Springtrap", "Phantom Mangle", "Phantom Foxy"],
+c: 1,
+e: "Springtrap is the main animatronic threat in FNAF 3."
+},
+{
+q: "What is the primary purpose of the audio devices in FNAF 3?",
+a: ["Restore power", "Attract Springtrap", "Repair ventilation", "Unlock hidden rooms"],
+c: 1,
+e: "Audio devices can lure Springtrap toward specific locations."
+}
+],
+
+[
+{
+q: "Which game introduces the Funtime animatronics?",
+a: ["FNAF 2", "FNAF 3", "Sister Location", "FNAF 4"],
+c: 2,
+e: "Sister Location introduces characters including Funtime Freddy and Funtime Foxy."
+},
+{
+q: "What is the name of the machine associated with extracting animatronic components in Sister Location?",
+a: ["The Scooper", "The Remnant Reactor", "The Music Box", "The Salvage Machine"],
+c: 0,
+e: "The Scooper is a major machine in Sister Location."
+},
+{
+q: "Which character is associated with the phrase 'I will put you back together'?",
+a: ["The Crying Child's mysterious speaker", "Phone Guy", "Henry Emily", "HandUnit"],
+c: 0,
+e: "The phrase appears in FNAF 4 and its speaker is part of the game's mystery."
+}
+],
+
+[
+{
+q: "What is the name of the restaurant featured in the FNAF 6 management sections?",
+a: ["Freddy Fazbear's Pizza Place", "Fredbear's Family Diner", "Fazbear's Fright", "Circus Baby's Pizza World"],
+c: 0,
+e: "The player operates Freddy Fazbear's Pizza Place in Pizzeria Simulator."
+},
+{
+q: "Which character is associated with the secret identity Scraptrap?",
+a: ["Michael Afton", "William Afton", "Henry Emily", "Jeremy Fitzgerald"],
+c: 1,
+e: "Scraptrap is a form of William Afton."
+},
+{
+q: "What is the name of the mysterious character who organizes the final plan in Pizzeria Simulator?",
+a: ["Phone Guy", "Henry Emily", "Phone Dude", "Fritz Smith"],
+c: 1,
+e: "Henry Emily organizes the plan that brings the remaining characters together."
+}
+]
+
+],
+
+
+// ===================================
+// NIGHTMARE QUESTION BANK
+// ===================================
+
+nightmare: [
+
+[
+{
+q: "In FNAF 1, which camera shows the backstage area containing spare animatronic heads?",
+a: ["CAM 1A", "CAM 3", "CAM 5", "CAM 2A"],
+c: 2,
+e: "CAM 5 shows the backstage area."
+},
+{
+q: "In FNAF 2, what happens if the player fails to wind the music box?",
+a: ["Foxy disappears", "The Puppet attacks", "The office lights turn off permanently", "Golden Freddy leaves"],
+c: 1,
+e: "The Puppet can escape its box if the music box is not maintained."
+},
+{
+q: "Which animatronic in FNAF 2 requires the flashlight to be used in the hallway to keep it away?",
+a: ["Withered Foxy", "Toy Chica", "The Puppet", "Balloon Boy"],
+c: 0,
+e: "Withered Foxy is deterred by shining the flashlight down the hallway."
+}
+],
+
+[
+{
+q: "In FNAF 3, which system is responsible for maintaining the building's air supply?",
+a: ["Audio Devices", "Ventilation", "Camera System", "Maintenance Panel"],
+c: 1,
+e: "The ventilation system must be monitored to avoid hallucinations and system failures."
+},
+{
+q: "Which hidden minigame is associated with the Happiest Day sequence?",
+a: ["BB's Air Adventure", "Mangle's Quest", "Chica's Party", "All of these are connected to the minigame sequence"],
+c: 3,
+e: "The Happiest Day sequence is connected to the hidden minigames."
+},
+{
+q: "Which animatronic is the only physical threat in the main FNAF 3 night gameplay?",
+a: ["Phantom Chica", "Springtrap", "Phantom Puppet", "Phantom Foxy"],
+c: 1,
+e: "The Phantom animatronics cause disruptions, while Springtrap is the physical threat."
+}
+],
+
+[
+{
+q: "In Sister Location, which character is encountered during the Ballora Gallery section?",
+a: ["Funtime Foxy", "Ballora", "Ennard", "Bidybab"],
+c: 1,
+e: "Ballora is encountered in Ballora Gallery."
+},
+{
+q: "What is the name of the character that speaks through the HandUnit system?",
+a: ["Michael", "HandUnit", "The Puppet", "Funtime Freddy"],
+c: 1,
+e: "HandUnit provides instructions throughout Sister Location."
+},
+{
+q: "What happens to the Funtime animatronics as part of the Ennard storyline?",
+a: ["They combine into Ennard", "They become the Toys", "They are moved to Fazbear's Fright", "They become the Phantoms"],
+c: 0,
+e: "Ennard is formed from the combined endoskeletons of the Funtime animatronics."
+}
+],
+
+[
+{
+q: "In Ultimate Custom Night, what is the highest preset difficulty of the 50/20 challenge?",
+a: ["Nightmare Mode", "Hardcore Mode", "50/20 Mode", "Golden Mode"],
+c: 2,
+e: "50/20 Mode is the famous maximum-difficulty challenge."
+},
+{
+q: "Which character's mechanic involves a controlled breathing pattern in FNAF 4?",
+a: ["Nightmare Foxy", "Nightmare Freddy", "Nightmare Fredbear", "Nightmare Chica"],
+c: 0,
+e: "Nightmare Foxy can be managed by using the closet and monitoring his progress."
+},
+{
+q: "What is the name of the company associated with the original animatronic restaurants?",
+a: ["Fazbear Entertainment", "Afton Robotics only", "Henry's Robotics", "Fredbear Corporation"],
+c: 0,
+e: "Fazbear Entertainment is the company behind the restaurant chain."
+}
+],
+
+[
+{
+q: "In FNAF 4, what is the name of the character whose appearance is associated with the final night minigames?",
+a: ["Michael Afton", "The Crying Child", "Henry Emily", "Jeremy Fitzgerald"],
+c: 1,
+e: "The Crying Child is central to the FNAF 4 minigame storyline."
+},
+{
+q: "Which character is associated with the line 'I always come back'?",
+a: ["Henry Emily", "William Afton", "Michael Afton", "Phone Guy"],
+c: 1,
+e: "William Afton is associated with this recurring phrase."
+},
+{
+q: "In Pizzeria Simulator, what is the name of the character who appears as Lefty?",
+a: ["The Puppet", "Circus Baby", "Elizabeth Afton", "Charlie Emily's brother"],
+c: 0,
+e: "Lefty was designed to capture and contain the Puppet."
+}
+]
+
+]
+
+};
+
+
+// ===================================
+// GAME VARIABLES
+// ===================================
+
+let currentMode = "standard";
+let currentNight = 0;
+let currentQuestion = 0;
+let score = 0;
+let streak = 0;
+let totalAnswered = 0;
+let answered = false;
+let questions = [];
+
+
+// ===================================
+// START GAME
+// ===================================
+
+function startSurvival() {
+
+  currentMode = document.getElementById("survival-mode").value;
+
+  currentNight = 0;
+  currentQuestion = 0;
+  score = 0;
+  streak = 0;
+  totalAnswered = 0;
+
+  document.getElementById("survival-menu").classList.add("hidden");
+  document.getElementById("survival-complete").classList.add("hidden");
+  document.getElementById("survival-game").classList.remove("hidden");
+
+  loadNight();
+}
+
+
+// ===================================
+// LOAD NIGHT
+// ===================================
+
+function loadNight() {
+
+  questions = survivalQuestions[currentMode][currentNight];
+  currentQuestion = 0;
+
+  document.getElementById("night-number").textContent =
+    "NIGHT " + (currentNight + 1);
+
+  document.getElementById("night-stat").textContent =
+    (currentNight + 1) + "/5";
+
+  const difficulties = currentMode === "nightmare"
+    ? ["EXTREME", "BRUTAL", "INSANE", "NIGHTMARE", "MAXIMUM NIGHTMARE"]
+    : ["LOW", "MODERATE", "HIGH", "CRITICAL", "DANGEROUS"];
+
+  document.getElementById("night-difficulty").textContent =
+    "SECURITY LEVEL: " + difficulties[currentNight];
+
+  showSurvivalQuestion();
+}
+
+
+// ===================================
+// SHOW QUESTION
+// ===================================
+
+function showSurvivalQuestion() {
+
+  const q = questions[currentQuestion];
+
+  if (!q) return;
+
+  answered = false;
+
+  document.getElementById("survival-question").textContent = q.q;
+
+  document.getElementById("survival-progress").textContent =
+    "QUESTION " + (currentQuestion + 1) + " / " + questions.length;
+
+  document.getElementById("survival-score").textContent = score;
+  document.getElementById("survival-streak").textContent = streak;
+
+  document.getElementById("survival-feedback").textContent = "";
+  document.getElementById("survival-explanation").textContent = "";
+
+  document.getElementById("survival-next").classList.add("hidden");
+
+  const container = document.getElementById("survival-answers");
+  container.innerHTML = "";
+
+  q.a.forEach((answer, index) => {
+
+    const button = document.createElement("button");
+
+    button.className = "survival-answer";
+    button.textContent = String.fromCharCode(65 + index) + ". " + answer;
+
+    button.onclick = () => checkSurvivalAnswer(index);
+
+    container.appendChild(button);
+
+  });
+
+}
+
+
+// ===================================
+// CHECK ANSWER
+// ===================================
+
+function checkSurvivalAnswer(index) {
+
+  if (answered) return;
+
+  answered = true;
+
+  const q = questions[currentQuestion];
+
+  const buttons = document.querySelectorAll(".survival-answer");
+
+  buttons.forEach((button, i) => {
+
+    button.disabled = true;
+
+    if (i === q.c) {
+      button.classList.add("correct");
+    }
+
+    if (i === index && index !== q.c) {
+      button.classList.add("wrong");
+    }
+
+  });
+
+  const feedback = document.getElementById("survival-feedback");
+
+  if (index === q.c) {
+
+    score += currentMode === "nightmare" ? 30 : 20;
+    streak++;
+    totalAnswered++;
+
+    feedback.textContent = currentMode === "nightmare"
+      ? "CORRECT! +30 CREDITS"
+      : "CORRECT! +20 CREDITS";
+
+    feedback.style.color = "#35c75a";
+
+    addSurvivalCredits(currentMode === "nightmare" ? 30 : 20);
+
+  } else {
+
+    streak = 0;
+    totalAnswered++;
+
+    feedback.textContent =
+      "INCORRECT! THE ANSWER WAS " + q.a[q.c];
+
+    feedback.style.color = "crimson";
+
+  }
+
+  document.getElementById("survival-explanation").textContent = q.e;
+
+  document.getElementById("survival-score").textContent = score;
+  document.getElementById("survival-streak").textContent = streak;
+
+  const nextButton = document.getElementById("survival-next");
+
+  nextButton.textContent =
+    currentQuestion === questions.length - 1
+      ? currentNight === 4 ? "FINISH GAME" : "NEXT NIGHT"
+      : "NEXT QUESTION";
+
+  nextButton.classList.remove("hidden");
+
+}
+
+
+// ===================================
+// NEXT QUESTION
+// ===================================
+
+function nextSurvivalQuestion() {
+
+  currentQuestion++;
+
+  if (currentQuestion < questions.length) {
+
+    showSurvivalQuestion();
+
+  } else if (currentNight < 4) {
+
+    currentNight++;
+    loadNight();
+
+  } else {
+
+    completeSurvival();
+
+  }
+
+}
+
+
+// ===================================
+// REWARDS
+// ===================================
+
+function addSurvivalCredits(amount) {
+
+  try {
+
+    const profile = JSON.parse(
+      localStorage.getItem("afterDarkProfile") || "{}"
+    );
+
+    profile.credits = (profile.credits || 0) + amount;
+
+    localStorage.setItem(
+      "afterDarkProfile",
+      JSON.stringify(profile)
+    );
+
+  } catch (error) {
+
+    console.log("Credits could not be saved.");
+
+  }
+
+}
+
+
+// ===================================
+// GAME COMPLETE
+// ===================================
+
+function completeSurvival() {
+
+  document.getElementById("survival-game").classList.add("hidden");
+
+  document.getElementById("survival-complete").classList.remove("hidden");
+
+  document.getElementById("survival-result").textContent =
+    "SHIFT COMPLETE";
+
+  document.getElementById("final-score").textContent =
+    "FINAL SCORE: " + score;
+
+  document.getElementById("final-message").textContent =
+    "YOU ANSWERED " + totalAnswered + " QUESTIONS. " +
+    "YOU GOT " + (currentMode === "nightmare" ? "30" : "20") +
+    " POINTS PER CORRECT ANSWER. WELCOME BACK TO AFTER DARK.";
+
+  try {
+
+    const badges = JSON.parse(
+      localStorage.getItem("afterDarkBadges") || "[]"
+    );
+
+    const badge = currentMode === "nightmare"
+      ? "NIGHTMARE SURVIVOR"
+      : "FNAF SURVIVOR";
+
+    if (!badges.includes(badge)) {
+      badges.push(badge);
+    }
+
+    localStorage.setItem(
+      "afterDarkBadges",
+      JSON.stringify(badges)
+    );
+
+  } catch (error) {
+
+    console.log("Badge could not be saved.");
+
+  }
+
+}
+
+
+// ===================================
+// RETURN TO MENU
+// ===================================
+
+function returnToMenu() {
+
+  document.getElementById("survival-complete").classList.add("hidden");
+  document.getElementById("survival-game").classList.add("hidden");
+  document.getElementById("survival-menu").classList.remove("hidden");
+
+}
+
+
+// ===================================
+// DIFFICULTY DESCRIPTION
+// ===================================
+
+document.getElementById("survival-mode").addEventListener("change", function() {
+
+  const description = document.getElementById("mode-description");
+
+  if (this.value === "nightmare") {
+
+    description.textContent =
+      "NIGHTMARE: Advanced mechanics, deep lore and extremely difficult questions.";
+
+  } else {
+
+    description.textContent =
+      "STANDARD: Increasingly difficult FNAF questions.";
+
+  }
+
+});
+
+</script>
+
+</body>
+</html>
