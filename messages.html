@@ -1,0 +1,258 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Messages | AFTER DARK</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #09050e;
+  color: white;
+  font-family: Arial, sans-serif;
+  animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+header {
+  padding: 22px 7%;
+  background: #100914;
+  border-bottom: 1px solid #502039;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.logo {
+  color: #ff315e;
+  font-size: 23px;
+  font-weight: bold;
+  letter-spacing: 3px;
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+nav a {
+  color: #c9b9d1;
+  text-decoration: none;
+  font-size: 12px;
+}
+
+nav a:hover {
+  color: #ff315e;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 35px 20px;
+}
+
+.heading {
+  margin-bottom: 25px;
+}
+
+.heading small {
+  color: #e65b91;
+  letter-spacing: 4px;
+}
+
+.heading h1 {
+  font-size: 35px;
+  margin-top: 12px;
+}
+
+.heading p {
+  color: #a99aad;
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.chat-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 420px;
+  border: 1px solid #49203e;
+  background: #120b19;
+}
+
+.sidebar {
+  border-right: 1px solid #49203e;
+  padding: 20px;
+}
+
+.sidebar h3 {
+  color: #e65b91;
+  letter-spacing: 2px;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.conversation {
+  padding: 15px;
+  background: #1d1125;
+  border: 1px solid #54213e;
+  color: #a99aad;
+  font-size: 12px;
+}
+
+.chat-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 25px;
+}
+
+.chat-icon {
+  font-size: 45px;
+  color: #c33c78;
+  margin-bottom: 15px;
+}
+
+.chat-area h2 {
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.chat-area p {
+  color: #a99aad;
+  font-size: 13px;
+  line-height: 1.7;
+  max-width: 350px;
+}
+
+.signin {
+  margin-top: 22px;
+  padding: 13px 22px;
+  background: #79163e;
+  border: 1px solid #c33c78;
+  color: white;
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+.signin:hover {
+  background: #b51e5b;
+}
+
+.privacy {
+  margin-top: 20px;
+  padding: 18px;
+  background: #190e22;
+  border-left: 3px solid #a52a63;
+  color: #b9a9c0;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+footer {
+  text-align: center;
+  padding: 30px;
+  color: #75647d;
+  font-size: 11px;
+}
+
+@media(max-width: 650px) {
+  .chat-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    border-right: none;
+    border-bottom: 1px solid #49203e;
+  }
+
+  .chat-area {
+    min-height: 300px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">AFTER DARK</div>
+
+  <nav>
+    <a href="index.html">HOME</a>
+    <a href="discover.html">DISCOVER</a>
+    <a href="arcade.html">ARCADE</a>
+    <a href="community.html">COMMUNITY</a>
+    <a href="messages.html">MESSAGES</a>
+    <a href="profile.html">PROFILE</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  <div class="heading">
+    <small>PRIVATE PLAYER SPACE</small>
+    <h1>MESSAGES</h1>
+    <p>Your conversations will appear here.</p>
+  </div>
+
+  <div class="chat-layout">
+
+    <aside class="sidebar">
+      <h3>CONVERSATIONS</h3>
+
+      <div class="conversation">
+        No conversations yet.
+      </div>
+    </aside>
+
+    <section class="chat-area">
+      <div class="chat-icon">✉</div>
+
+      <h2>YOUR SPACE IS WAITING</h2>
+
+      <p>
+        Sign in to connect with approved friends
+        and manage your conversations.
+        Your messages are not public.
+      </p>
+
+      <a href="profile.html" class="signin">
+        ACCOUNT FEATURES
+      </a>
+    </section>
+
+  </div>
+
+  <div class="privacy">
+    <strong>PRIVACY NOTICE</strong><br>
+    Keep personal information private.
+    Only connect with people you trust.
+    Blocking and reporting tools will be part of
+    the messaging system.
+  </div>
+
+</div>
+
+<footer>
+  AFTER DARK © 2026
+</footer>
+
+</body>
+</html>
