@@ -1,0 +1,236 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discover | AFTER DARK</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #09050e;
+  color: white;
+  font-family: Arial, sans-serif;
+  animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+header {
+  padding: 22px 7%;
+  background: #100914;
+  border-bottom: 1px solid #502039;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.logo {
+  color: #ff315e;
+  font-size: 23px;
+  font-weight: bold;
+  letter-spacing: 3px;
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+nav a {
+  color: #c9b9d1;
+  text-decoration: none;
+  font-size: 12px;
+}
+
+nav a:hover {
+  color: #ff315e;
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 35px 20px;
+}
+
+.intro {
+  padding: 40px 25px;
+  background: linear-gradient(120deg, #351025, #180e2d, #09050e);
+  border: 1px solid #642344;
+  margin-bottom: 35px;
+}
+
+.intro small {
+  color: #e65b91;
+  letter-spacing: 4px;
+}
+
+.intro h1 {
+  font-size: 38px;
+  margin: 15px 0;
+}
+
+.intro p {
+  color: #c4b6cc;
+  line-height: 1.7;
+}
+
+h2 {
+  color: #ed568a;
+  font-size: 17px;
+  letter-spacing: 3px;
+  margin: 30px 0 18px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+.card {
+  background: #160d1e;
+  border: 1px solid #49203e;
+  padding: 23px;
+  transition: .3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  border-color: #ff315e;
+  box-shadow: 0 0 18px #45102d;
+}
+
+.card .symbol {
+  font-size: 30px;
+  color: #ed568a;
+  margin-bottom: 15px;
+}
+
+.card h3 {
+  margin-bottom: 10px;
+}
+
+.card p {
+  color: #a99aad;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+
+.card a {
+  color: #ff6a9b;
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+
+footer {
+  text-align: center;
+  padding: 30px;
+  color: #75647d;
+  font-size: 11px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">AFTER DARK</div>
+
+  <nav>
+    <a href="index.html">HOME</a>
+    <a href="discover.html">DISCOVER</a>
+    <a href="arcade.html">ARCADE</a>
+    <a href="jjk.html">JUJUTSU KAISEN</a>
+    <a href="fnaf.html">FNAF</a>
+    <a href="profile.html">PROFILE</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  <section class="intro">
+    <small>THE WORLD IS YOURS</small>
+    <h1>DISCOVER</h1>
+    <p>
+      Explore different worlds inside AFTER DARK.
+      Find games, communities and new experiences.
+    </p>
+  </section>
+
+  <h2>FEATURED WORLDS</h2>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="symbol">01</div>
+      <h3>JUJUTSU KAISEN</h3>
+      <p>Enter the world of cursed energy and discover JJK games.</p>
+      <a href="jjk.html">EXPLORE WORLD</a>
+    </div>
+
+    <div class="card">
+      <div class="symbol">02</div>
+      <h3>FIVE NIGHTS AT FREDDY'S</h3>
+      <p>Explore the mysteries and games of Freddy Fazbear's world.</p>
+      <a href="fnaf.html">EXPLORE WORLD</a>
+    </div>
+
+    <div class="card">
+      <div class="symbol">03</div>
+      <h3>THE ARCADE</h3>
+      <p>Play challenges, trivia and mini games.</p>
+      <a href="arcade.html">ENTER ARCADE</a>
+    </div>
+
+  </div>
+
+  <h2>COMING SOON</h2>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="symbol">04</div>
+      <h3>COMMUNITIES</h3>
+      <p>Discover groups built around your favorite games and interests.</p>
+      <a href="#">COMING SOON</a>
+    </div>
+
+    <div class="card">
+      <div class="symbol">05</div>
+      <h3>PLAYER FEED</h3>
+      <p>See updates and posts from the AFTER DARK community.</p>
+      <a href="#">COMING SOON</a>
+    </div>
+
+    <div class="card">
+      <div class="symbol">06</div>
+      <h3>PLAYER HUB</h3>
+      <p>Build your player identity and customize your profile.</p>
+      <a href="profile.html">VIEW PROFILE</a>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  AFTER DARK © 2026
+</footer>
+
+</body>
+</html>
