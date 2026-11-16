@@ -488,17 +488,55 @@ footer {
 }
 
 
-/* CARD TEXT */
 
-.card h3 {
-  margin-top: 12px;
-  color: white;
+/* FEATURED UNIVERSES */
+
+.featured {
+  width: 100%;
+  padding: 30px 20px;
+  box-sizing: border-box;
 }
 
-.card p {
+.featured h2 {
+  text-align: center;
+  color: #b46aff;
+  font-size: 28px;
+  margin-bottom: 25px;
+}
+
+.universe-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 180px;
+  box-sizing: border-box;
+  padding: 25px 15px;
+  margin: 20px 0;
+  text-align: center;
+  text-decoration: none;
+  border: 1px solid rgba(180, 106, 255, 0.4);
+  border-radius: 25px;
+  background: rgba(25, 25, 50, 0.65);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+}
+
+.universe-card h3 {
+  margin: 0 0 12px;
+  color: white;
+  font-size: 22px;
+  text-decoration: none;
+}
+
+.universe-card p {
+  margin: 0;
   color: #cccccc;
   font-size: 14px;
+  text-decoration: none;
 }
+
 /* FEATURED UNIVERSE FIX */
 
 .featured a.universe-card {
