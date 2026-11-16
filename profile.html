@@ -17,12 +17,6 @@ body {
   background: #09050e;
   color: white;
   font-family: Arial, sans-serif;
-  animation: fadeIn 1s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
 }
 
 header {
@@ -78,39 +72,135 @@ nav a:hover {
 .profile-card {
   background: linear-gradient(135deg, #281027, #130d20);
   border: 1px solid #642344;
-  padding: 30px;
+  padding: 25px;
   text-align: center;
 }
 
+.banner {
+  height: 170px;
+  background: linear-gradient(135deg, #571333, #241339);
+  background-size: cover;
+  background-position: center;
+  border: 1px solid #642344;
+  margin-bottom: -50px;
+}
+
 .avatar {
-  width: 100px;
-  height: 100px;
+  width: 110px;
+  height: 110px;
   margin: auto;
   border-radius: 50%;
-  background: linear-gradient(135deg, #8b164d, #342052);
-  border: 2px solid #e64b88;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 35px;
+  background: #241339;
+  border: 3px solid #e64b88;
+  object-fit: cover;
+  display: block;
+  position: relative;
   box-shadow: 0 0 25px #711642;
 }
 
 .username {
   font-size: 24px;
-  margin-top: 18px;
+  margin-top: 15px;
 }
 
-.rank {
+.handle {
   color: #e65b91;
-  font-size: 11px;
-  letter-spacing: 3px;
-  margin-top: 8px;
+  font-size: 12px;
+  margin-top: 7px;
 }
 
 .description {
   color: #aa9bb3;
   font-size: 13px;
+  margin-top: 15px;
+}
+
+.upload-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.upload-buttons label,
+.save-btn {
+  display: inline-block;
+  padding: 12px 16px;
+  background: #9b174c;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.upload-buttons label:hover,
+.save-btn:hover {
+  background: #d32d70;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+h2 {
+  color: #ed568a;
+  font-size: 16px;
+  letter-spacing: 3px;
+  margin: 35px 0 15px;
+}
+
+.section {
+  background: #160d1e;
+  border: 1px solid #49203e;
+  padding: 22px;
+  margin-bottom: 12px;
+}
+
+.edit-field {
+  margin-bottom: 18px;
+}
+
+.edit-field label {
+  display: block;
+  color: #d7b9ce;
+  font-size: 11px;
+  letter-spacing: 2px;
+  margin-bottom: 9px;
+}
+
+.edit-field input,
+.edit-field textarea {
+  width: 100%;
+  padding: 13px;
+  background: #09050e;
+  border: 1px solid #49203e;
+  color: white;
+  outline: none;
+  font-family: Arial, sans-serif;
+}
+
+.edit-field input:focus,
+.edit-field textarea:focus {
+  border-color: #ff315e;
+}
+
+.edit-field textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.save-btn {
+  width: 100%;
+  margin-top: 5px;
+  font-weight: bold;
+}
+
+#profileMessage {
+  color: #ff80a8;
+  text-align: center;
+  font-size: 12px;
   margin-top: 15px;
 }
 
@@ -138,26 +228,6 @@ nav a:hover {
   color: #a99aad;
   font-size: 10px;
   letter-spacing: 1px;
-}
-
-h2 {
-  color: #ed568a;
-  font-size: 16px;
-  letter-spacing: 3px;
-  margin: 35px 0 15px;
-}
-
-.section {
-  background: #160d1e;
-  border: 1px solid #49203e;
-  padding: 22px;
-  margin-bottom: 12px;
-}
-
-.section p {
-  color: #a99aad;
-  font-size: 13px;
-  line-height: 1.7;
 }
 
 .credits-card {
@@ -224,16 +294,6 @@ h2 {
   opacity: .45;
 }
 
-.account-note {
-  margin-top: 25px;
-  padding: 18px;
-  background: #1c1024;
-  border-left: 3px solid #a52a63;
-  color: #b9a9c0;
-  font-size: 12px;
-  line-height: 1.7;
-}
-
 footer {
   text-align: center;
   padding: 30px;
@@ -273,17 +333,48 @@ footer {
 
   <div class="profile-card">
 
-    <div class="avatar">?</div>
+    <div class="banner" id="profileBanner"></div>
 
-    <div class="username">GUEST PLAYER</div>
+    <img
+      id="profileImage"
+      class="avatar"
+      src="https://placehold.co/200x200/241339/ffffff?text=AD"
+      alt="Profile picture"
+    >
 
-    <div class="rank">ROOKIE PLAYER</div>
+    <div class="username" id="profileName">LOADING...</div>
+    <div class="handle" id="profileUsername"></div>
 
-    <p class="description">
-      Exploring the unknown.
+    <p class="description" id="profileBio">
+      Loading profile...
     </p>
 
+    <div class="upload-buttons">
+
+      <label for="pictureInput">
+        CHANGE PROFILE PICTURE
+      </label>
+
+      <input
+        type="file"
+        id="pictureInput"
+        accept="image/png,image/jpeg,image/webp"
+      >
+
+      <label for="bannerInput">
+        CHANGE BANNER
+      </label>
+
+      <input
+        type="file"
+        id="bannerInput"
+        accept="image/png,image/jpeg,image/webp"
+      >
+
+    </div>
+
     <div class="stats">
+
       <div class="stat">
         <strong>0</strong>
         <span>LEVEL</span>
@@ -295,10 +386,52 @@ footer {
       </div>
 
       <div class="stat">
-        <strong>0</strong>
+        <strong id="gamesPlayed">0</strong>
         <span>GAMES PLAYED</span>
       </div>
+
     </div>
+
+  </div>
+
+  <h2>EDIT YOUR PROFILE</h2>
+
+  <div class="section">
+
+    <div class="edit-field">
+      <label>DISPLAY NAME</label>
+      <input
+        type="text"
+        id="editName"
+        maxlength="30"
+        placeholder="Your display name"
+      >
+    </div>
+
+    <div class="edit-field">
+      <label>USERNAME</label>
+      <input
+        type="text"
+        id="editUsername"
+        maxlength="20"
+        placeholder="Your username"
+      >
+    </div>
+
+    <div class="edit-field">
+      <label>BIO</label>
+      <textarea
+        id="editBio"
+        maxlength="250"
+        placeholder="Tell everyone about yourself..."
+      ></textarea>
+    </div>
+
+    <button class="save-btn" id="saveProfile">
+      SAVE CHANGES
+    </button>
+
+    <p id="profileMessage"></p>
 
   </div>
 
@@ -312,7 +445,7 @@ footer {
 
     <a href="store.html" class="store-btn">VISIT STORE</a>
   </div>
-<a href="store.html">STORE</a>
+
   <h2>BADGE COLLECTION</h2>
 
   <div class="badges">
@@ -351,20 +484,25 @@ footer {
     <p>MORE WORLDS COMING SOON</p>
   </div>
 
-  <div class="account-note">
-    <strong>GUEST PROFILE</strong><br>
-    Your profile is currently a preview.
-    Credits, purchases and badge progress will
-    be saved to player accounts when the account
-    system is added.
-  </div>
-
 </div>
 
 <footer>
   AFTER DARK © 2026
 </footer>
-  <script src="economy.js"></script>
+
+<script src="economy.js"></script>
+
+<script>
+const playerData = getPlayerData();
+
+document.getElementById("creditBalance").textContent =
+  playerData.credits + " CR";
+
+document.getElementById("gamesPlayed").textContent =
+  playerData.gamesPlayed;
+</script>
+
 <script type="module" src="profile.js"></script>
+
 </body>
 </html>
