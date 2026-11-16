@@ -158,17 +158,79 @@ footer {
 
     <div class="character-grid">
 
-        <div class="character-card">
-            <img src="https://placehold.co/400x500/171329/ffffff?text=MEGUMI" alt="Megumi Fushiguro">
+        <div class="character-card" onclick="openProfile('megumi')">
+            <img src="megumi.jpg" alt="Megumi Fushiguro">
             <h3>MEGUMI FUSHIGURO</h3>
-            <p>Ten Shadows Technique. Tokyo Jujutsu High student.</p>
+            <p>Ten Shadows Technique</p>
         </div>
 
-        <div class="character-card">
-            <img src="https://placehold.co/400x500/171329/ffffff?text=YUJI" alt="Yuji Itadori">
+        <div class="character-card" onclick="openProfile('yuji')">
+            <img src="yuji.jpg" alt="Yuji Itadori">
             <h3>YUJI ITADORI</h3>
-            <p>A kindhearted student with incredible physical strength.</p>
+            <p>Jujutsu Sorcerer</p>
         </div>
+
+        <div class="character-card" onclick="openProfile('gojo')">
+            <img src="gojo.jpg" alt="Satoru Gojo">
+            <h3>SATORU GOJO</h3>
+            <p>Limitless Technique</p>
+        </div>
+
+        <div class="character-card" onclick="openProfile('sukuna')">
+            <img src="sukuna.jpg" alt="Ryomen Sukuna">
+            <h3>RYOMEN SUKUNA</h3>
+            <p>King of Curses</p>
+        </div>
+
+        <div class="character-card" onclick="openProfile('nobara')">
+            <img src="nobara.jpg" alt="Nobara Kugisaki">
+            <h3>NOBARA KUGISAKI</h3>
+            <p>Straw Doll Technique</p>
+        </div>
+
+        <div class="character-card" onclick="openProfile('geto')">
+            <img src="geto.jpg" alt="Suguru Geto">
+            <h3>SUGURU GETO</h3>
+            <p>Cursed Spirit Manipulation</p>
+        </div>
+
+    </div>
+</section>
+
+
+        <div class="character-card" onclick="openProfile('yuji')">
+            <img src="yuji.jpg" alt="Yuji Itadori">
+            <h3>YUJI ITADORI</h3>
+            <p>Jujutsu Sorcerer</p>
+        </div>
+
+        <div class="character-card" onclick="openProfile('gojo')">
+            <img src="gojo.jpg" alt="Satoru Gojo">
+            <h3>SATORU GOJO</h3>
+            <p>Limitless Technique</p>
+        </div>
+
+        <div class="character-card" onclick="openProfile('sukuna')">
+            <img src="sukuna.jpg" alt="Ryomen Sukuna">
+            <h3>RYOMEN SUKUNA</h3>
+            <p>King of Curses</p>
+        </div>
+
+        <div class="character-card" onclick="openProfile('nobara')">
+            <img src="nobara.jpg" alt="Nobara Kugisaki">
+            <h3>NOBARA KUGISAKI</h3>
+            <p>Straw Doll Technique</p>
+        </div>
+
+        <div class="character-card" onclick="openProfile('geto')">
+            <img src="geto.jpg" alt="Suguru Geto">
+            <h3>SUGURU GETO</h3>
+            <p>Cursed Spirit Manipulation</p>
+        </div>
+
+    </div>
+</section>
+
 
         <div class="character-card">
             <img src="https://placehold.co/400x500/171329/ffffff?text=GOJO" alt="Satoru Gojo">
@@ -224,6 +286,119 @@ footer {
     AFTER DARK © 2026
     <p>JUJUTSU KAISEN UNIVERSE</p>
 </footer>
+
+<div id="profileModal" class="profile-modal">
+    <div class="profile-content">
+        <button class="close-profile" onclick="closeProfile()">×</button>
+        <h2 id="profileName"></h2>
+        <p id="profileDescription"></p>
+        <h3>ABILITIES</h3>
+        <p id="profileAbility"></p>
+    </div>
+</div>
+
+<style>
+.profile-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.profile-content {
+    background: #171522;
+    border: 1px solid #a38bff;
+    border-radius: 18px;
+    padding: 30px;
+    max-width: 420px;
+    width: 100%;
+    position: relative;
+    text-align: center;
+}
+
+.profile-content h2 {
+    color: #c5b6ff;
+}
+
+.profile-content h3 {
+    color: #a38bff;
+}
+
+.profile-content p {
+    color: #c4c0d0;
+    line-height: 1.6;
+}
+
+.close-profile {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    background: none;
+    color: white;
+    border: none;
+    font-size: 30px;
+    cursor: pointer;
+}
+</style>
+
+<script>
+const characters = {
+    megumi: {
+        name: "MEGUMI FUSHIGURO",
+        description: "A Tokyo Jujutsu High student who uses the Ten Shadows Technique.",
+        ability: "Ten Shadows Technique, Divine Dogs, Nue and other shikigami."
+    },
+    yuji: {
+        name: "YUJI ITADORI",
+        description: "A student who became involved in the world of jujutsu after an encounter with a cursed object.",
+        ability: "Exceptional physical abilities, Divergent Fist and Black Flash."
+    },
+    gojo: {
+        name: "SATORU GOJO",
+        description: "A teacher at Tokyo Jujutsu High and one of the strongest sorcerers.",
+        ability: "Limitless, Infinity, Six Eyes and Hollow Purple."
+    },
+    sukuna: {
+        name: "RYOMEN SUKUNA",
+        description: "Known as the King of Curses.",
+        ability: "Cleave, Dismantle and Domain Expansion."
+    },
+    nobara: {
+        name: "NOBARA KUGISAKI",
+        description: "A confident Tokyo Jujutsu High student.",
+        ability: "Straw Doll Technique, Resonance and Hairpin."
+    },
+    geto: {
+        name: "SUGURU GETO",
+        description: "A powerful sorcerer who can control cursed spirits.",
+        ability: "Cursed Spirit Manipulation and Maximum: Uzumaki."
+    }
+};
+
+function openProfile(character) {
+    const info = characters[character];
+
+    document.getElementById("profileName").textContent = info.name;
+    document.getElementById("profileDescription").textContent = info.description;
+    document.getElementById("profileAbility").textContent = info.ability;
+
+    document.getElementById("profileModal").style.display = "flex";
+}
+
+function closeProfile() {
+    document.getElementById("profileModal").style.display = "none";
+}
+
+document.getElementById("profileModal").addEventListener("click", function(event) {
+    if (event.target === this) {
+        closeProfile();
+    }
+});
+</script>
 
 </body>
 </html>
