@@ -1,404 +1,156 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JUJUTSU KAISEN | AFTER DARK</title>
+  <link rel="stylesheet" href="style.css">
 
-<title>JUJUTSU KAISEN | AFTER DARK</title>
+  <style>
+    .jjk-hero {
+      text-align: center;
+      padding: 65px 20px;
+      background: radial-gradient(ellipse at center, #211344, #080812 75%);
+    }
 
-<link rel="stylesheet" href="style.css">
+    .jjk-hero h2 {
+      color: #b58aff;
+      font-size: 28px;
+      letter-spacing: 4px;
+      margin-bottom: 15px;
+    }
 
-<style>
-body {
-    background: #08090f;
-    color: white;
-    font-family: Arial, sans-serif;
-    margin: 0;
-}
+    .jjk-hero p {
+      color: #aaaacc;
+      line-height: 1.7;
+    }
 
-.jjk-header {
-    padding: 25px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #292638;
-}
+    .jjk-characters {
+      padding: 35px 20px;
+    }
 
-.jjk-header h2 {
-    letter-spacing: 4px;
-    color: #b9a5ff;
-}
+    .jjk-characters h2 {
+      color: #a875ff;
+      letter-spacing: 3px;
+      margin-bottom: 25px;
+    }
 
-.back-btn {
-    text-decoration: none;
-    color: white;
-    border: 1px solid #8874c9;
-    padding: 10px 16px;
-    border-radius: 20px;
-}
+    .jjk-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 15px;
+    }
 
-.hero {
-    text-align: center;
-    padding: 75px 20px;
-    background: linear-gradient(180deg, #171329, #08090f);
-}
+    .jjk-card {
+      display: block;
+      background: #151326;
+      border: 1px solid #5425a8;
+      border-radius: 12px;
+      padding: 20px 12px;
+      text-align: center;
+      text-decoration: none;
+      transition: .3s;
+    }
 
-.hero h1 {
-    font-size: 42px;
-    letter-spacing: 5px;
-    margin-bottom: 10px;
-}
+    .jjk-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 20px #5425a8;
+      border-color: #a875ff;
+    }
 
-.hero p {
-    color: #aaa4bb;
-}
+    .jjk-card h3 {
+      color: #b58aff;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
 
-.section {
-    padding: 35px 20px;
-    max-width: 1100px;
-    margin: auto;
-}
+    .jjk-card p {
+      color: #aaa5bd;
+      font-size: 11px;
+    }
 
-.section h2 {
-    letter-spacing: 3px;
-    color: #b9a5ff;
-    margin-bottom: 25px;
-}
+    .jjk-back {
+      display: inline-block;
+      margin: 30px 20px;
+      padding: 12px 20px;
+      color: #b58aff;
+      border: 1px solid #813bff;
+      border-radius: 6px;
+      text-decoration: none;
+    }
 
-.character-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 20px;
-}
-
-.character-card {
-    background: #14131e;
-    border: 1px solid #302b43;
-    border-radius: 15px;
-    overflow: hidden;
-    transition: 0.3s;
-}
-
-.character-card:hover {
-    transform: translateY(-6px);
-    border-color: #a38bff;
-}
-
-.character-card img {
-    width: 100%;
-    height: 210px;
-    object-fit: cover;
-}
-
-.character-card h3 {
-    padding: 0 12px;
-    color: #c5b6ff;
-}
-
-.character-card p {
-    padding: 0 12px 15px;
-    font-size: 13px;
-    color: #aaa6b5;
-}
-
-.feature-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 18px;
-}
-
-.feature-card {
-    background: #171522;
-    border: 1px solid #39314e;
-    border-radius: 15px;
-    padding: 25px;
-    text-decoration: none;
-    color: white;
-    transition: 0.3s;
-}
-
-.feature-card:hover {
-    background: #252039;
-    border-color: #a38bff;
-}
-
-.feature-card h3 {
-    color: #c5b6ff;
-}
-
-.feature-card p {
-    color: #aaa6b5;
-    font-size: 14px;
-}
-
-footer {
-    text-align: center;
-    padding: 30px;
-    color: #777;
-    border-top: 1px solid #292638;
-    margin-top: 40px;
-}
-</style>
+    @media (max-width: 400px) {
+      .jjk-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<header class="jjk-header">
-    <h2>AFTER DARK</h2>
-    <a href="index.html" class="back-btn">← HOME</a>
+<header>
+  <h1>AFTER DARK</h1>
+  <p>WELCOME TO THE UNKNOWN.</p>
 </header>
 
-<section class="hero">
-    <h1>JUJUTSU KAISEN</h1>
+<main>
+
+  <section class="jjk-hero">
+    <h2>JUJUTSU KAISEN</h2>
     <p>ENTER THE WORLD OF CURSES.</p>
-</section>
+    <p>Discover sorcerers, cursed spirits and unforgettable characters.</p>
+  </section>
 
-<section class="section">
-    <h2>CHARACTER GALLERY</h2>
+  <section class="jjk-characters">
 
-    <div class="character-grid">
+    <h2>CHARACTER ARCHIVE</h2>
 
-        <div class="character-card" onclick="openProfile('megumi')">
-            <img src="megumi.jpg" alt="Megumi Fushiguro">
-            <h3>MEGUMI FUSHIGURO</h3>
-            <p>Ten Shadows Technique</p>
-        </div>
+    <div class="jjk-grid">
 
-        <div class="character-card" onclick="openProfile('yuji')">
-            <img src="yuji.jpg" alt="Yuji Itadori">
-            <h3>YUJI ITADORI</h3>
-            <p>Jujutsu Sorcerer</p>
-        </div>
+      <a href="megumi.html" class="jjk-card">
+        <h3>MEGUMI FUSHIGURO</h3>
+        <p>JUJUTSU SORCERER</p>
+      </a>
 
-        <div class="character-card" onclick="openProfile('gojo')">
-            <img src="gojo.jpg" alt="Satoru Gojo">
-            <h3>SATORU GOJO</h3>
-            <p>Limitless Technique</p>
-        </div>
+      <a href="gojo.html" class="jjk-card">
+        <h3>SATORU GOJO</h3>
+        <p>THE STRONGEST</p>
+      </a>
 
-        <div class="character-card" onclick="openProfile('sukuna')">
-            <img src="sukuna.jpg" alt="Ryomen Sukuna">
-            <h3>RYOMEN SUKUNA</h3>
-            <p>King of Curses</p>
-        </div>
+      <a href="yuji.html" class="jjk-card">
+        <h3>YUJI ITADORI</h3>
+        <p>JUJUTSU SORCERER</p>
+      </a>
 
-        <div class="character-card" onclick="openProfile('nobara')">
-            <img src="nobara.jpg" alt="Nobara Kugisaki">
-            <h3>NOBARA KUGISAKI</h3>
-            <p>Straw Doll Technique</p>
-        </div>
+      <a href="sukuna.html" class="jjk-card">
+        <h3>RYOMEN SUKUNA</h3>
+        <p>THE KING OF CURSES</p>
+      </a>
 
-        <div class="character-card" onclick="openProfile('geto')">
-            <img src="geto.jpg" alt="Suguru Geto">
-            <h3>SUGURU GETO</h3>
-            <p>Cursed Spirit Manipulation</p>
-        </div>
+      <a href="nobara.html" class="jjk-card">
+        <h3>NOBARA KUGISAKI</h3>
+        <p>JUJUTSU SORCERER</p>
+      </a>
+
+      <a href="geto.html" class="jjk-card">
+        <h3>SUGURU GETO</h3>
+        <p>CURSE USER</p>
+      </a>
 
     </div>
-</section>
 
+    <a href="index.html" class="jjk-back">BACK TO HOME</a>
 
-        <div class="character-card" onclick="openProfile('yuji')">
-            <img src="yuji.jpg" alt="Yuji Itadori">
-            <h3>YUJI ITADORI</h3>
-            <p>Jujutsu Sorcerer</p>
-        </div>
+  </section>
 
-        <div class="character-card" onclick="openProfile('gojo')">
-            <img src="gojo.jpg" alt="Satoru Gojo">
-            <h3>SATORU GOJO</h3>
-            <p>Limitless Technique</p>
-        </div>
-
-        <div class="character-card" onclick="openProfile('sukuna')">
-            <img src="sukuna.jpg" alt="Ryomen Sukuna">
-            <h3>RYOMEN SUKUNA</h3>
-            <p>King of Curses</p>
-        </div>
-
-        <div class="character-card" onclick="openProfile('nobara')">
-            <img src="nobara.jpg" alt="Nobara Kugisaki">
-            <h3>NOBARA KUGISAKI</h3>
-            <p>Straw Doll Technique</p>
-        </div>
-
-        <div class="character-card" onclick="openProfile('geto')">
-            <img src="geto.jpg" alt="Suguru Geto">
-            <h3>SUGURU GETO</h3>
-            <p>Cursed Spirit Manipulation</p>
-        </div>
-
-    </div>
-</section>
-
-
-        <div class="character-card">
-            <img src="https://placehold.co/400x500/171329/ffffff?text=GOJO" alt="Satoru Gojo">
-            <h3>SATORU GOJO</h3>
-            <p>The strongest modern-day jujutsu sorcerer.</p>
-        </div>
-
-        <div class="character-card">
-            <img src="https://placehold.co/400x500/171329/ffffff?text=SUKUNA" alt="Ryomen Sukuna">
-            <h3>RYOMEN SUKUNA</h3>
-            <p>The King of Curses.</p>
-        </div>
-
-        <div class="character-card">
-            <img src="https://placehold.co/400x500/171329/ffffff?text=NOBARA" alt="Nobara Kugisaki">
-            <h3>NOBARA KUGISAKI</h3>
-            <p>A confident sorcerer who uses Straw Doll Technique.</p>
-        </div>
-
-        <div class="character-card">
-            <img src="https://placehold.co/400x500/171329/ffffff?text=GETO" alt="Suguru Geto">
-            <h3>SUGURU GETO</h3>
-            <p>A powerful sorcerer with Cursed Spirit Manipulation.</p>
-        </div>
-
-    </div>
-</section>
-
-<section class="section">
-    <h2>EXPLORE JUJUTSU KAISEN</h2>
-
-    <div class="feature-grid">
-
-        <a href="game.html" class="feature-card">
-            <h3>GUESS THE CHARACTER</h3>
-            <p>Test your knowledge of JJK characters.</p>
-        </a>
-
-        <a href="quotes.html" class="feature-card">
-            <h3>WHO SAID IT?</h3>
-            <p>Can you recognize the character behind the quote?</p>
-        </a>
-
-        <a href="characters.html" class="feature-card">
-            <h3>CHARACTER DATABASE</h3>
-            <p>Explore the characters of Jujutsu Kaisen.</p>
-        </a>
-
-    </div>
-</section>
+</main>
 
 <footer>
-    AFTER DARK © 2026
-    <p>JUJUTSU KAISEN UNIVERSE</p>
+  <p>AFTER DARK © 2026</p>
+  <p>WELCOME TO THE UNKNOWN.</p>
 </footer>
-
-<div id="profileModal" class="profile-modal">
-    <div class="profile-content">
-        <button class="close-profile" onclick="closeProfile()">×</button>
-        <h2 id="profileName"></h2>
-        <p id="profileDescription"></p>
-        <h3>ABILITIES</h3>
-        <p id="profileAbility"></p>
-    </div>
-</div>
-
-<style>
-.profile-modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.85);
-    z-index: 9999;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
-.profile-content {
-    background: #171522;
-    border: 1px solid #a38bff;
-    border-radius: 18px;
-    padding: 30px;
-    max-width: 420px;
-    width: 100%;
-    position: relative;
-    text-align: center;
-}
-
-.profile-content h2 {
-    color: #c5b6ff;
-}
-
-.profile-content h3 {
-    color: #a38bff;
-}
-
-.profile-content p {
-    color: #c4c0d0;
-    line-height: 1.6;
-}
-
-.close-profile {
-    position: absolute;
-    right: 15px;
-    top: 10px;
-    background: none;
-    color: white;
-    border: none;
-    font-size: 30px;
-    cursor: pointer;
-}
-</style>
-
-<script>
-const characters = {
-    megumi: {
-        name: "MEGUMI FUSHIGURO",
-        description: "A Tokyo Jujutsu High student who uses the Ten Shadows Technique.",
-        ability: "Ten Shadows Technique, Divine Dogs, Nue and other shikigami."
-    },
-    yuji: {
-        name: "YUJI ITADORI",
-        description: "A student who became involved in the world of jujutsu after an encounter with a cursed object.",
-        ability: "Exceptional physical abilities, Divergent Fist and Black Flash."
-    },
-    gojo: {
-        name: "SATORU GOJO",
-        description: "A teacher at Tokyo Jujutsu High and one of the strongest sorcerers.",
-        ability: "Limitless, Infinity, Six Eyes and Hollow Purple."
-    },
-    sukuna: {
-        name: "RYOMEN SUKUNA",
-        description: "Known as the King of Curses.",
-        ability: "Cleave, Dismantle and Domain Expansion."
-    },
-    nobara: {
-        name: "NOBARA KUGISAKI",
-        description: "A confident Tokyo Jujutsu High student.",
-        ability: "Straw Doll Technique, Resonance and Hairpin."
-    },
-    geto: {
-        name: "SUGURU GETO",
-        description: "A powerful sorcerer who can control cursed spirits.",
-        ability: "Cursed Spirit Manipulation and Maximum: Uzumaki."
-    }
-};
-
-function openProfile(character) {
-    const info = characters[character];
-
-    document.getElementById("profileName").textContent = info.name;
-    document.getElementById("profileDescription").textContent = info.description;
-    document.getElementById("profileAbility").textContent = info.ability;
-
-    document.getElementById("profileModal").style.display = "flex";
-}
-
-function closeProfile() {
-    document.getElementById("profileModal").style.display = "none";
-}
-
-document.getElementById("profileModal").addEventListener("click", function(event) {
-    if (event.target === this) {
-        closeProfile();
-    }
-});
-</script>
 
 </body>
 </html>
