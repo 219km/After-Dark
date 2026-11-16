@@ -481,3 +481,42 @@ footer {
   border-color: #813bff;
   box-shadow: 0 0 22px #5425a8;
 }
+/* FIX FEATURED UNIVERSE CARDS */
+
+.universe-card {
+  display: block;
+  width: 100%;
+  padding: 25px;
+  margin-bottom: 20px;
+
+  background: linear-gradient(145deg, #151326, #10182a);
+  border: 1px solid #5425a8;
+  border-radius: 15px;
+
+  text-decoration: none;
+  color: white;
+
+  position: relative;
+  overflow: hidden;
+  transition: 0.3s ease;
+}
+
+.universe-card h3 {
+  color: #b58aff;
+  font-size: 20px;
+  margin-bottom: 12px;
+  text-decoration: none;
+}
+
+.universe-card p {
+  color: #aaa5bd;
+  font-size: 14px;
+  line-height: 1.6;
+  text-decoration: none;
+}
+
+.universe-card:hover {
+  transform: translateY(-5px);
+  border-color: #813bff;
+  box-shadow: 0 0 22px #5425a8;
+}
