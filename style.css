@@ -449,74 +449,42 @@ footer {
   margin: 15px auto;
   max-width: 100%;
 }
-/* UNIVERSE CARDS */
+
+/* JJK AND FNAF CARD IMAGES */
 
 .card {
   overflow: hidden;
   border-radius: 15px;
   position: relative;
-  display: block;
-  text-decoration: none;
-  cursor: pointer;
 }
 
-.universe-card {
-  padding: 25px;
-  margin-bottom: 15px;
-}
-
-.universe-card h3 {
-  color: #b58aff;
-  margin-bottom: 12px;
-}
-
-.universe-card p {
-  color: #aaa5bd;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.universe-card:hover {
-  transform: translateY(-5px);
-  border-color: #813bff;
-  box-shadow: 0 0 22px #5425a8;
-}
-/* FIX FEATURED UNIVERSE CARDS */
-
-.universe-card {
+.universe-card img {
   display: block;
   width: 100%;
-  padding: 25px;
-  margin-bottom: 20px;
-
-  background: linear-gradient(145deg, #151326, #10182a);
-  border: 1px solid #5425a8;
-  border-radius: 15px;
-
-  text-decoration: none;
-  color: white;
-
+  height: 200px;
+  object-fit: cover;
+  visibility: visible;
+  opacity: 1;
   position: relative;
-  overflow: hidden;
-  transition: 0.3s ease;
+  z-index: 2;
 }
 
-.universe-card h3 {
-  color: #b58aff;
-  font-size: 20px;
-  margin-bottom: 12px;
-  text-decoration: none;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
 }
 
-.universe-card p {
-  color: #aaa5bd;
+.card img:hover {
+  transform: scale(1.05);
+}
+
+/* CARD TEXT */
+
+.card h3 {
+  margin-top: 12px;
+  color: white;
+}
+
+.card p {
+  color: #cccccc;
   font-size: 14px;
-  line-height: 1.6;
-  text-decoration: none;
-}
-
-.universe-card:hover {
-  transform: translateY(-5px);
-  border-color: #813bff;
-  box-shadow: 0 0 22px #5425a8;
 }
