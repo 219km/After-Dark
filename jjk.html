@@ -8,6 +8,11 @@
   <link rel="stylesheet" href="style.css">
 
   <style>
+    .jjk-page {
+      background: #080812;
+      min-height: 100vh;
+    }
+
     .jjk-hero {
       text-align: center;
       padding: 65px 20px;
@@ -30,7 +35,7 @@
       padding: 35px 20px;
     }
 
-    .jjk-characters h2 {
+    .jjk-characters > h2 {
       color: #a875ff;
       letter-spacing: 3px;
       margin-bottom: 25px;
@@ -44,25 +49,21 @@
 
     .jjk-card {
       display: block;
-      background: #151326;
+      min-width: 0;
+      min-height: 120px;
+      padding: 20px 12px;
+      background: linear-gradient(145deg, #151326, #10182a);
       border: 1px solid #5425a8;
       border-radius: 12px;
-      padding: 20px 12px;
       text-align: center;
       text-decoration: none;
       transition: .3s;
     }
 
-    .jjk-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 0 20px #5425a8;
-      border-color: #a875ff;
-    }
-
     .jjk-card h3 {
       color: #b58aff;
       font-size: 13px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .jjk-card p {
@@ -70,9 +71,15 @@
       font-size: 11px;
     }
 
+    .jjk-card:hover {
+      transform: translateY(-5px);
+      border-color: #a875ff;
+      box-shadow: 0 0 20px #5425a8;
+    }
+
     .jjk-back {
       display: inline-block;
-      margin: 30px 20px;
+      margin-top: 30px;
       padding: 12px 20px;
       color: #b58aff;
       border: 1px solid #813bff;
@@ -82,13 +89,24 @@
 
     @media (max-width: 400px) {
       .jjk-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .jjk-card {
+        padding: 16px 8px;
+      }
+
+      .jjk-card h3 {
+        font-size: 12px;
       }
     }
   </style>
 </head>
 
 <body>
+
+<div class="jjk-page">
 
 <header>
   <h1>AFTER DARK</h1>
@@ -151,6 +169,8 @@
   <p>AFTER DARK © 2026</p>
   <p>WELCOME TO THE UNKNOWN.</p>
 </footer>
+
+</div>
 
 </body>
 </html>
