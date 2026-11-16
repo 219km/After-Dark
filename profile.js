@@ -187,3 +187,4 @@ pictureInput.addEventListener("change", () => {
 bannerInput.addEventListener("change", () => {
   uploadImage(bannerInput.files[0], "banner");
 });
+console.log("AFTER DARK PROFILE JS LOADED");
