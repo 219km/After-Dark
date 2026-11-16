@@ -1,48 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JJK | AFTER DARK</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>JUJUTSU KAISEN | AFTER DARK</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+body {
+    background: #08090f;
+    color: white;
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+
+.jjk-header {
+    padding: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #292638;
+}
+
+.jjk-header h2 {
+    letter-spacing: 4px;
+    color: #b9a5ff;
+}
+
+.back-btn {
+    text-decoration: none;
+    color: white;
+    border: 1px solid #8874c9;
+    padding: 10px 16px;
+    border-radius: 20px;
+}
+
+.hero {
+    text-align: center;
+    padding: 75px 20px;
+    background: linear-gradient(180deg, #171329, #08090f);
+}
+
+.hero h1 {
+    font-size: 42px;
+    letter-spacing: 5px;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    color: #aaa4bb;
+}
+
+.section {
+    padding: 35px 20px;
+    max-width: 1100px;
+    margin: auto;
+}
+
+.section h2 {
+    letter-spacing: 3px;
+    color: #b9a5ff;
+    margin-bottom: 25px;
+}
+
+.character-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+}
+
+.character-card {
+    background: #14131e;
+    border: 1px solid #302b43;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+.character-card:hover {
+    transform: translateY(-6px);
+    border-color: #a38bff;
+}
+
+.character-card img {
+    width: 100%;
+    height: 210px;
+    object-fit: cover;
+}
+
+.character-card h3 {
+    padding: 0 12px;
+    color: #c5b6ff;
+}
+
+.character-card p {
+    padding: 0 12px 15px;
+    font-size: 13px;
+    color: #aaa6b5;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+}
+
+.feature-card {
+    background: #171522;
+    border: 1px solid #39314e;
+    border-radius: 15px;
+    padding: 25px;
+    text-decoration: none;
+    color: white;
+    transition: 0.3s;
+}
+
+.feature-card:hover {
+    background: #252039;
+    border-color: #a38bff;
+}
+
+.feature-card h3 {
+    color: #c5b6ff;
+}
+
+.feature-card p {
+    color: #aaa6b5;
+    font-size: 14px;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #777;
+    border-top: 1px solid #292638;
+    margin-top: 40px;
+}
+</style>
 </head>
+
 <body>
 
-<header>
-  <h1>AFTER DARK</h1>
-  <p>JUJUTSU KAISEN ARCHIVE</p>
+<header class="jjk-header">
+    <h2>AFTER DARK</h2>
+    <a href="index.html" class="back-btn">← HOME</a>
 </header>
 
-<main class="featured">
-  <h2>JUJUTSU KAISEN</h2>
-  <p class="subtitle">ENTER THE WORLD OF CURSES</p>
+<section class="hero">
+    <h1>JUJUTSU KAISEN</h1>
+    <p>ENTER THE WORLD OF CURSES.</p>
+</section>
 
-  <div class="gallery">
+<section class="section">
+    <h2>CHARACTER GALLERY</h2>
 
-    <a href="megumi.html" class="character">
-      <img src="https://placehold.co/300x400/171717/ff3030?text=MEGUMI">
-      <h3>MEGUMI FUSHIGURO</h3>
-    </a>
+    <div class="character-grid">
 
-    <div class="character">
-      <img src="https://placehold.co/300x400/171717/ff3030?text=GOJO">
-      <h3>SATORU GOJO</h3>
+        <div class="character-card">
+            <img src="https://placehold.co/400x500/171329/ffffff?text=MEGUMI" alt="Megumi Fushiguro">
+            <h3>MEGUMI FUSHIGURO</h3>
+            <p>Ten Shadows Technique. Tokyo Jujutsu High student.</p>
+        </div>
+
+        <div class="character-card">
+            <img src="https://placehold.co/400x500/171329/ffffff?text=YUJI" alt="Yuji Itadori">
+            <h3>YUJI ITADORI</h3>
+            <p>A kindhearted student with incredible physical strength.</p>
+        </div>
+
+        <div class="character-card">
+            <img src="https://placehold.co/400x500/171329/ffffff?text=GOJO" alt="Satoru Gojo">
+            <h3>SATORU GOJO</h3>
+            <p>The strongest modern-day jujutsu sorcerer.</p>
+        </div>
+
+        <div class="character-card">
+            <img src="https://placehold.co/400x500/171329/ffffff?text=SUKUNA" alt="Ryomen Sukuna">
+            <h3>RYOMEN SUKUNA</h3>
+            <p>The King of Curses.</p>
+        </div>
+
+        <div class="character-card">
+            <img src="https://placehold.co/400x500/171329/ffffff?text=NOBARA" alt="Nobara Kugisaki">
+            <h3>NOBARA KUGISAKI</h3>
+            <p>A confident sorcerer who uses Straw Doll Technique.</p>
+        </div>
+
+        <div class="character-card">
+            <img src="https://placehold.co/400x500/171329/ffffff?text=GETO" alt="Suguru Geto">
+            <h3>SUGURU GETO</h3>
+            <p>A powerful sorcerer with Cursed Spirit Manipulation.</p>
+        </div>
+
     </div>
+</section>
 
-    <div class="character">
-      <img src="https://placehold.co/300x400/171717/ff3030?text=YUJI">
-      <h3>YUJI ITADORI</h3>
+<section class="section">
+    <h2>EXPLORE JUJUTSU KAISEN</h2>
+
+    <div class="feature-grid">
+
+        <a href="game.html" class="feature-card">
+            <h3>GUESS THE CHARACTER</h3>
+            <p>Test your knowledge of JJK characters.</p>
+        </a>
+
+        <a href="quotes.html" class="feature-card">
+            <h3>WHO SAID IT?</h3>
+            <p>Can you recognize the character behind the quote?</p>
+        </a>
+
+        <a href="characters.html" class="feature-card">
+            <h3>CHARACTER DATABASE</h3>
+            <p>Explore the characters of Jujutsu Kaisen.</p>
+        </a>
+
     </div>
+</section>
 
-    <div class="character">
-      <img src="https://placehold.co/300x400/171717/ff3030?text=SUKUNA">
-      <h3>RYOMEN SUKUNA</h3>
-    </div>
-
-  </div>
-
-  <a class="back" href="index.html">BACK HOME</a>
-</main>
+<footer>
+    AFTER DARK © 2026
+    <p>JUJUTSU KAISEN UNIVERSE</p>
+</footer>
 
 </body>
 </html>
