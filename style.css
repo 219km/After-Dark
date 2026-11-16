@@ -488,3 +488,29 @@ footer {
   color: #cccccc;
   font-size: 14px;
 }
+/* FEATURED UNIVERSE FIX */
+
+.featured a.universe-card {
+  display: block !important;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 25px;
+  margin-bottom: 20px;
+
+  background: linear-gradient(145deg, #151326, #10182a);
+  border: 1px solid #5425a8;
+  border-radius: 15px;
+
+  text-decoration: none !important;
+  color: white;
+}
+
+.featured a.universe-card h3,
+.featured a.universe-card p {
+  text-decoration: none !important;
+}
+
+.featured a.universe-card:hover {
+  border-color: #813bff;
+  box-shadow: 0 0 22px #5425a8;
+}
