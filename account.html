@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AFTER DARK | Account</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #09050e;
+  color: white;
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.account-box {
+  width: 100%;
+  max-width: 420px;
+  background: linear-gradient(135deg, #281027, #130d20);
+  border: 1px solid #642344;
+  padding: 35px 25px;
+  box-shadow: 0 0 35px #270d28;
+}
+
+.logo {
+  color: #ff315e;
+  font-size: 25px;
+  font-weight: bold;
+  letter-spacing: 4px;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.subtitle {
+  text-align: center;
+  color: #a99aad;
+  font-size: 12px;
+  margin-bottom: 30px;
+}
+
+h2 {
+  color: #ed568a;
+  text-align: center;
+  letter-spacing: 3px;
+  font-size: 17px;
+  margin-bottom: 25px;
+}
+
+label {
+  display: block;
+  color: #d7b9ce;
+  font-size: 12px;
+  margin: 15px 0 8px;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  background: #09050e;
+  border: 1px solid #49203e;
+  color: white;
+  outline: none;
+}
+
+input:focus {
+  border-color: #ff315e;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 22px;
+  background: #a51c52;
+  border: none;
+  color: white;
+  font-weight: bold;
+  letter-spacing: 2px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #d32d70;
+}
+
+.switch {
+  text-align: center;
+  color: #b9a9c0;
+  font-size: 12px;
+  margin-top: 22px;
+}
+
+.switch a {
+  color: #ff568b;
+  text-decoration: none;
+}
+
+#message {
+  text-align: center;
+  font-size: 12px;
+  margin-top: 15px;
+  color: #ff80a8;
+}
+
+.back {
+  display: block;
+  text-align: center;
+  color: #a99aad;
+  text-decoration: none;
+  font-size: 12px;
+  margin-top: 25px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="account-box">
+
+  <div class="logo">AFTER DARK</div>
+  <p class="subtitle">YOUR WORLD. YOUR IDENTITY.</p>
+
+  <h2 id="formTitle">CREATE ACCOUNT</h2>
+
+  <form id="accountForm">
+
+    <div id="nameField">
+      <label>DISPLAY NAME</label>
+      <input id="displayName" type="text"
+      placeholder="Your display name">
+    </div>
+
+    <div id="usernameField">
+      <label>USERNAME</label>
+      <input id="username" type="text"
+      placeholder="Choose a username">
+    </div>
+
+    <label>EMAIL ADDRESS</label>
+    <input id="email" type="email"
+    placeholder="Enter your email" required>
+
+    <label>PASSWORD</label>
+    <input id="password" type="password"
+    placeholder="At least 6 characters"
+    minlength="6" required>
+
+    <button type="submit" id="submitButton">
+      CREATE ACCOUNT
+    </button>
+
+  </form>
+
+  <p id="message"></p>
+
+  <div class="switch">
+    <span id="switchText">Already have an account?</span>
+    <a href="#" id="switchMode">LOG IN</a>
+  </div>
+
+  <a href="index.html" class="back">BACK TO HOME</a>
+
+</div>
+
+<script type="module" src="account.js"></script>
+
+</body>
+</html>
