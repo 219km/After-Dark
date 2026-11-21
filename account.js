@@ -119,7 +119,7 @@ form.addEventListener("submit", async (e) => {
 
   } catch (error) {
 
-    message.textContent = error.message;
+    message.textContent = "ERROR: " + error.code + " | " + error.message;
 
   }
 });
