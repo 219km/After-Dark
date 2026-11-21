@@ -19,7 +19,8 @@ import {
 
 const conversationList =
   document.getElementById("conversationList");
-
+const userSearch = document.getElementById("userSearch");
+const searchResults = document.getElementById("searchResults");
 const chatArea =
   document.getElementById("chatArea");
 
