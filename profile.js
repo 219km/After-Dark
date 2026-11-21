@@ -5,11 +5,11 @@ import {
   onAuthStateChanged,
   updateProfile
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-
 import {
   doc,
   getDoc,
-  updateDoc
+  updateDoc,
+  setDoc
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
 const CLOUD_NAME = "lyewttef";
@@ -53,7 +53,14 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     profileData = snapshot.data();
-    showProfile();
+
+await setDoc(doc(db, "publicUsers", user.uid), {
+  displayName: profileData.displayName || "Player",
+  username: profileData.username || "",
+  profilePicture: profileData.profilePicture || ""
+});
+
+showProfile();
 
   } catch (error) {
     message.textContent = error.message;
