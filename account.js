@@ -111,7 +111,11 @@ form.addEventListener("submit", async (e) => {
         banner: "",
         createdAt: serverTimestamp()
       });
-
+await setDoc(doc(db, "publicUsers", user.uid), {
+  displayName: displayName,
+  username: username,
+  profilePicture: ""
+});
       message.textContent = "Account created!";
 
       window.location.href = "profile.html";
