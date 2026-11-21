@@ -2,128 +2,290 @@
 import { auth, db } from "./firebase.js";
 
 import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  updateProfile
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
 import {
+  collection,
   doc,
-  setDoc,
+  query,
+  where,
+  orderBy,
+  limit,
+  getDocs,
+  addDoc,
+  updateDoc,
+  onSnapshot,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-window.addEventListener("error", (event) => {
-  document.getElementById("message").textContent =
-    "ERROR: " + event.message;
-});
-const form = document.getElementById("accountForm");
-const message = document.getElementById("message");
-const switchMode = document.getElementById("switchMode");
 
-let isLogin = false;
+const userSearch = document.getElementById("userSearch");
+const searchResults = document.getElementById("searchResults");
+const conversationList = document.getElementById("conversationList");
 
-switchMode.addEventListener("click", (e) => {
-  e.preventDefault();
+const emptyChat = document.getElementById("emptyChat");
+const activeChat = document.getElementById("activeChat");
+const chatTitle = document.getElementById("chatTitle");
+const messagesList = document.getElementById("messagesList");
 
-  isLogin = !isLogin;
+const messageForm = document.getElementById("messageForm");
+const messageInput = document.getElementById("messageInput");
 
-  document.getElementById("formTitle").textContent =
-    isLogin ? "WELCOME BACK" : "CREATE ACCOUNT";
+let currentUser = null;
+let activeConversationId = null;
+let unsubscribeMessages = null;
 
-  document.getElementById("submitButton").textContent =
-    isLogin ? "LOG IN" : "CREATE ACCOUNT";
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.href = "account.html";
+    return;
+  }
 
-  document.getElementById("switchText").textContent =
-    isLogin ? "Need an account?" : "Already have an account?";
-
-  switchMode.textContent = isLogin ? "SIGN UP" : "LOG IN";
-
-  document.getElementById("nameField").style.display =
-    isLogin ? "none" : "block";
-
-  document.getElementById("usernameField").style.display =
-    isLogin ? "none" : "block";
-
-  message.textContent = "";
+  currentUser = user;
+  loadConversations();
 });
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+userSearch.addEventListener("input", async () => {
+  const term = userSearch.value.trim().toLowerCase();
 
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
+  searchResults.innerHTML = "";
 
-  message.textContent = "Please wait...";
+  if (term.length < 2) {
+    searchResults.textContent = "Type at least 2 characters.";
+    return;
+  }
+
+  searchResults.textContent = "Searching...";
 
   try {
+    const usersQuery = query(
+      collection(db, "publicUsers"),
+      where("username", ">=", term),
+      where("username", "<=", term + "\uf8ff"),
+      orderBy("username"),
+      limit(10)
+    );
 
-    if (isLogin) {
+    const snapshot = await getDocs(usersQuery);
 
-      await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+    searchResults.innerHTML = "";
 
-      message.textContent = "Login successful!";
-
-      window.location.href = "profile.html";
-
-    } else {
-
-      const displayName =
-        document.getElementById("displayName").value.trim();
-
-      const username =
-        document.getElementById("username").value
-          .trim()
-          .toLowerCase()
-          .replace(/^@/, "");
-
-      if (!displayName || !username) {
-        throw new Error("Please fill in your name and username.");
-      }
-
-      if (!/^[a-z0-9_]{3,20}$/.test(username)) {
-        throw new Error(
-          "Username must be 3-20 characters using letters, numbers or underscores."
-        );
-      }
-
-      const userCredential =
-        await createUserWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
-
-      const user = userCredential.user;
-
-      await updateProfile(user, {
-        displayName: displayName
-      });
-
-      await setDoc(doc(db, "users", user.uid), {
-        displayName: displayName,
-        username: username,
-        bio: "Welcome to AFTER DARK.",
-        profilePicture: "",
-        banner: "",
-        createdAt: serverTimestamp()
-      });
-await setDoc(doc(db, "publicUsers", user.uid), {
-  displayName: displayName,
-  username: username,
-  profilePicture: ""
-});
-      message.textContent = "Account created!";
-
-      window.location.href = "profile.html";
+    if (snapshot.empty) {
+      searchResults.textContent = "No players found.";
+      return;
     }
 
+    snapshot.forEach((userDoc) => {
+      const user = {
+        uid: userDoc.id,
+        ...userDoc.data()
+      };
+
+      if (user.uid === currentUser.uid) return;
+
+      const button = document.createElement("button");
+      button.className = "conversation";
+
+      button.textContent =
+        (user.displayName || "Player") + " @" + user.username;
+
+      button.addEventListener("click", () => {
+        openConversation(user);
+      });
+
+      searchResults.appendChild(button);
+    });
+
   } catch (error) {
-
-    message.textContent = "ERROR: " + error.code + " | " + error.message;
-
+    searchResults.textContent = error.message;
   }
+});
+
+async function loadConversations() {
+  const conversationsQuery = query(
+    collection(db, "conversations"),
+    where("participants", "array-contains", currentUser.uid)
+  );
+
+  onSnapshot(conversationsQuery, (snapshot) => {
+    conversationList.innerHTML = "";
+
+    if (snapshot.empty) {
+      conversationList.textContent = "No conversations yet.";
+      return;
+    }
+
+    snapshot.forEach((conversationDoc) => {
+      const data = conversationDoc.data();
+
+      const otherUid = data.participants.find(
+        id => id !== currentUser.uid
+      );
+
+      const otherName =
+        data.participantNames?.[otherUid] || "Player";
+
+      const button = document.createElement("button");
+      button.className = "conversation";
+      button.textContent = otherName;
+
+      button.addEventListener("click", () => {
+        openConversation({
+          uid: otherUid,
+          displayName: otherName
+        }, conversationDoc.id);
+      });
+
+      conversationList.appendChild(button);
+    });
+
+  }, (error) => {
+    conversationList.textContent = error.message;
+  });
+}
+
+async function openConversation(targetUser, existingId = null) {
+  try {
+    let conversationId = existingId;
+
+    if (!conversationId) {
+      const conversationsQuery = query(
+        collection(db, "conversations"),
+        where("participants", "array-contains", currentUser.uid)
+      );
+
+      const snapshot = await getDocs(conversationsQuery);
+
+      const existing = snapshot.docs.find((item) =>
+        item.data().participants.includes(targetUser.uid)
+      );
+
+      if (existing) {
+        conversationId = existing.id;
+      } else {
+        const newConversation = await addDoc(
+          collection(db, "conversations"),
+          {
+            participants: [
+              currentUser.uid,
+              targetUser.uid
+            ],
+            participantNames: {
+              [currentUser.uid]:
+                currentUser.displayName || "Player",
+              [targetUser.uid]:
+                targetUser.displayName || "Player"
+            },
+            lastMessage: "",
+            lastMessageAt: serverTimestamp()
+          }
+        );
+
+        conversationId = newConversation.id;
+      }
+    }
+
+    activeConversationId = conversationId;
+
+    emptyChat.style.display = "none";
+    activeChat.style.display = "block";
+
+    chatTitle.textContent =
+      targetUser.displayName || "Player";
+
+    if (unsubscribeMessages) {
+      unsubscribeMessages();
+    }
+
+    const messagesQuery = query(
+      collection(db, "conversations", conversationId, "messages"),
+      orderBy("createdAt", "asc")
+    );
+
+    unsubscribeMessages = onSnapshot(messagesQuery, (snapshot) => {
+      messagesList.innerHTML = "";
+
+      snapshot.forEach((messageDoc) => {
+        const data = messageDoc.data();
+
+        const bubble = document.createElement("div");
+
+        bubble.style.padding = "12px";
+        bubble.style.margin = "8px 0";
+        bubble.style.background =
+          data.senderId === currentUser.uid
+            ? "#54213e"
+            : "#24162d";
+        bubble.style.borderRadius = "8px";
+        bubble.style.textAlign =
+          data.senderId === currentUser.uid
+            ? "right"
+            : "left";
+
+        const sender = document.createElement("strong");
+        sender.textContent =
+          data.senderId === currentUser.uid
+            ? "You"
+            : targetUser.displayName || "Player";
+
+        const content = document.createElement("p");
+        content.textContent = data.text;
+
+        bubble.appendChild(sender);
+        bubble.appendChild(content);
+
+        messagesList.appendChild(bubble);
+      });
+
+      messagesList.scrollTop = messagesList.scrollHeight;
+
+    }, (error) => {
+      messagesList.textContent = error.message;
+    });
+
+  } catch (error) {
+    alert("Couldn't open conversation: " + error.message);
+  }
+}
+
+messageForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const text = messageInput.value.trim();
+
+  if (!text || !activeConversationId) return;
+
+  const sendButton = messageForm.querySelector("button");
+  sendButton.disabled = true;
+
+  try {
+    await addDoc(
+      collection(
+        db,
+        "conversations",
+        activeConversationId,
+        "messages"
+      ),
+      {
+        senderId: currentUser.uid,
+        text: text,
+        createdAt: serverTimestamp()
+      }
+    );
+
+    await updateDoc(
+      doc(db, "conversations", activeConversationId),
+      {
+        lastMessage: text,
+        lastMessageAt: serverTimestamp()
+      }
+    );
+
+    messageInput.value = "";
+
+  } catch (error) {
+    alert("Message failed: " + error.message);
+  }
+
+  sendButton.disabled = false;
 });
