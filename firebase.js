@@ -14,11 +14,6 @@ const firebaseConfig = {
   appId: "1:1024873321734:web:a4e3671bdacda6c56fba87",
   measurementId: "G-95MW13VHYX"
 };
-Are you using npm and a bundler like webpack or Rollup? Check out the modular SDK.
-
-Learn more about Firebase for web: Get Started, Web SDK API Reference, Samples
-
-
 
 const app = initializeApp(firebaseConfig);
 
