@@ -12,7 +12,7 @@ import {
   setDoc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-
+console.log("AFTER DARK ACCOUNT JS LOADED");
 const form = document.getElementById("accountForm");
 const message = document.getElementById("message");
 const switchMode = document.getElementById("switchMode");
