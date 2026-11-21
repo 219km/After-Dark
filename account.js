@@ -56,8 +56,8 @@ switchMode.addEventListener("click", (event) => {
 
   nameField.style.display = isLogin ? "none" : "block";
   usernameField.style.display = isLogin ? "none" : "block";
-
-  message.textContent = "";
+console.log("ACCOUNT DATA SAVED");
+  message.textContent = "SUCCESS";
 });
 
 accountForm.addEventListener("submit", async (event) => {
