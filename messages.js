@@ -7,24 +7,33 @@ import {
 
 import {
   collection,
+  doc,
   query,
   where,
   orderBy,
   onSnapshot,
   addDoc,
-  serverTimestamp,
   getDocs,
+  updateDoc,
+  serverTimestamp,
   limit
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
-const conversationList =
-  document.getElementById("conversationList");
 const userSearch = document.getElementById("userSearch");
 const searchResults = document.getElementById("searchResults");
-const chatArea =
-  document.getElementById("chatArea");
+const conversationList = document.getElementById("conversationList");
+
+const emptyChat = document.getElementById("emptyChat");
+const activeChat = document.getElementById("activeChat");
+const chatTitle = document.getElementById("chatTitle");
+const messagesList = document.getElementById("messagesList");
+
+const messageForm = document.getElementById("messageForm");
+const messageInput = document.getElementById("messageInput");
 
 let currentUser = null;
+let activeConversationId = null;
+let unsubscribeMessages = null;
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {
@@ -35,38 +44,6 @@ onAuthStateChanged(auth, (user) => {
   currentUser = user;
   loadConversations();
 });
-
-function loadConversations() {
-  const conversationsRef = collection(db, "conversations");
-
-  const q = query(
-    conversationsRef,
-    where("participants", "array-contains", currentUser.uid)
-  );
-
-  onSnapshot(q, (snapshot) => {
-    conversationList.innerHTML = "";
-
-    if (snapshot.empty) {
-      conversationList.textContent = "No conversations yet.";
-      return;
-    }
-
-    snapshot.forEach((document) => {
-      const data = document.data();
-
-      const item = document.createElement("div");
-      item.className = "conversation";
-      item.textContent = data.participantNames?.[
-        data.participants.find(id => id !== currentUser.uid)
-      ] || "Conversation";
-
-      conversationList.appendChild(item);
-    });
-  }, (error) => {
-    conversationList.textContent = error.message;
-  });
-}
 
 userSearch.addEventListener("input", async () => {
   const term = userSearch.value.trim().toLowerCase();
@@ -96,19 +73,216 @@ userSearch.addEventListener("input", async () => {
     }
 
     snapshot.forEach((userDoc) => {
-      const user = userDoc.data();
+      const user = {
+        uid: userDoc.id,
+        ...userDoc.data()
+      };
 
-      if (userDoc.id === currentUser.uid) return;
+      if (user.uid === currentUser.uid) return;
 
       const button = document.createElement("button");
+      button.className = "conversation";
 
       button.textContent =
         (user.displayName || "Player") + " @" + user.username;
+
+      button.addEventListener("click", () => {
+        openConversation(user);
+      });
 
       searchResults.appendChild(button);
     });
 
   } catch (error) {
-    searchResults.textContent = "Search error: " + error.message;
+    searchResults.textContent = error.message;
   }
+});
+
+function loadConversations() {
+  const q = query(
+    collection(db, "conversations"),
+    where("participants", "array-contains", currentUser.uid)
+  );
+
+  onSnapshot(q, (snapshot) => {
+    conversationList.innerHTML = "";
+
+    if (snapshot.empty) {
+      conversationList.textContent = "No conversations yet.";
+      return;
+    }
+
+    snapshot.forEach((conversationDoc) => {
+      const data = conversationDoc.data();
+
+      const otherUid = data.participants.find(
+        id => id !== currentUser.uid
+      );
+
+      const otherName =
+        data.participantNames?.[otherUid] || "Player";
+
+      const button = document.createElement("button");
+      button.className = "conversation";
+      button.textContent = otherName;
+
+      button.addEventListener("click", () => {
+        openConversation({
+          uid: otherUid,
+          displayName: otherName
+        }, conversationDoc.id);
+      });
+
+      conversationList.appendChild(button);
+    });
+
+  }, (error) => {
+    conversationList.textContent = error.message;
+  });
+}
+
+async function openConversation(targetUser, existingId = null) {
+  try {
+    let conversationId = existingId;
+
+    if (!conversationId) {
+      const q = query(
+        collection(db, "conversations"),
+        where("participants", "array-contains", currentUser.uid)
+      );
+
+      const snapshot = await getDocs(q);
+
+      const existing = snapshot.docs.find((item) =>
+        item.data().participants.includes(targetUser.uid)
+      );
+
+      if (existing) {
+        conversationId = existing.id;
+      } else {
+        const newConversation = await addDoc(
+          collection(db, "conversations"),
+          {
+            participants: [
+              currentUser.uid,
+              targetUser.uid
+            ],
+            participantNames: {
+              [currentUser.uid]:
+                currentUser.displayName || "Player",
+              [targetUser.uid]:
+                targetUser.displayName || "Player"
+            },
+            lastMessage: "",
+            lastMessageAt: serverTimestamp()
+          }
+        );
+
+        conversationId = newConversation.id;
+      }
+    }
+
+    activeConversationId = conversationId;
+
+    emptyChat.style.display = "none";
+    activeChat.style.display = "block";
+
+    chatTitle.textContent =
+      targetUser.displayName || "Player";
+
+    if (unsubscribeMessages) {
+      unsubscribeMessages();
+    }
+
+    const messagesQuery = query(
+      collection(db, "conversations", conversationId, "messages"),
+      orderBy("createdAt", "asc")
+    );
+
+    unsubscribeMessages = onSnapshot(messagesQuery, (snapshot) => {
+      messagesList.innerHTML = "";
+
+      snapshot.forEach((messageDoc) => {
+        const data = messageDoc.data();
+
+        const bubble = document.createElement("div");
+
+        bubble.style.padding = "12px";
+        bubble.style.margin = "8px 0";
+        bubble.style.background =
+          data.senderId === currentUser.uid
+            ? "#54213e"
+            : "#24162d";
+        bubble.style.borderRadius = "8px";
+        bubble.style.textAlign =
+          data.senderId === currentUser.uid
+            ? "right"
+            : "left";
+
+        const sender = document.createElement("strong");
+        sender.textContent =
+          data.senderId === currentUser.uid
+            ? "You"
+            : targetUser.displayName || "Player";
+
+        const content = document.createElement("p");
+        content.textContent = data.text;
+
+        bubble.appendChild(sender);
+        bubble.appendChild(content);
+
+        messagesList.appendChild(bubble);
+      });
+
+      messagesList.scrollTop = messagesList.scrollHeight;
+
+    }, (error) => {
+      messagesList.textContent = error.message;
+    });
+
+  } catch (error) {
+    alert("Couldn't open conversation: " + error.message);
+  }
+}
+
+messageForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const text = messageInput.value.trim();
+
+  if (!text || !activeConversationId) return;
+
+  const sendButton = messageForm.querySelector("button");
+  sendButton.disabled = true;
+
+  try {
+    await addDoc(
+      collection(
+        db,
+        "conversations",
+        activeConversationId,
+        "messages"
+      ),
+      {
+        senderId: currentUser.uid,
+        text: text,
+        createdAt: serverTimestamp()
+      }
+    );
+
+    await updateDoc(
+      doc(db, "conversations", activeConversationId),
+      {
+        lastMessage: text,
+        lastMessageAt: serverTimestamp()
+      }
+    );
+
+    messageInput.value = "";
+
+  } catch (error) {
+    alert("Message failed: " + error.message);
+  }
+
+  sendButton.disabled = false;
 });
