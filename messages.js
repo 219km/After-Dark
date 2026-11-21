@@ -87,8 +87,9 @@ userSearch.addEventListener("input", async () => {
         (user.displayName || "Player") + " @" + user.username;
 
       button.addEventListener("click", () => {
-        openConversation(user);
-      });
+  alert("PLAYER CLICKED: " + user.username);
+  openConversation(user);
+});
 
       searchResults.appendChild(button);
     });
