@@ -215,15 +215,45 @@ footer {
   <div class="chat-layout">
 
     <aside class="sidebar">
-      <h3>CONVERSATIONS</h3>
+  <h3>FIND PLAYERS</h3>
 
-      <div id="conversationList"></div>
-      
+  <input
+    id="userSearch"
+    type="text"
+    placeholder="Search usernames..."
+  >
+
+  <div id="searchResults"></div>
+
+  <h3 style="margin-top:25px;">CONVERSATIONS</h3>
+
+  <div id="conversationList">
+    No conversations yet.
+  </div>
     </aside>
 
-    <section class="chat-area" id="chatArea">
-      <div class="chat-icon">✉</div>
+    <div id="emptyChat">
+  <div class="chat-icon">✉</div>
+  <h2>YOUR SPACE IS WAITING</h2>
+  <p>Search for a player to start a private conversation.</p>
+</div>
 
+<div id="activeChat" style="display:none; width:100%;">
+  <h2 id="chatTitle">Conversation</h2>
+
+  <div id="messagesList"></div>
+
+  <form id="messageForm">
+    <input
+      id="messageInput"
+      type="text"
+      maxlength="2000"
+      placeholder="Write a message..."
+      required
+    >
+    <button type="submit">SEND</button>
+  </form>
+</div>
       <h2>YOUR SPACE IS WAITING</h2>
 
       <p>
