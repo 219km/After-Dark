@@ -12,7 +12,9 @@ import {
   orderBy,
   onSnapshot,
   addDoc,
-  serverTimestamp
+  serverTimestamp,
+  getDocs,
+  limit
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
 const conversationList =
