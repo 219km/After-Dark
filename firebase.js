@@ -6,13 +6,19 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth
 import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCTY3yCOzL-uz0iq2qFMwLP5raJ3gltMko",
+  authDomain: "after-dark-39761.firebaseapp.com",
+  projectId: "after-dark-39761",
+  storageBucket: "after-dark-39761.firebasestorage.app",
+  messagingSenderId: "1024873321734",
+  appId: "1:1024873321734:web:a4e3671bdacda6c56fba87",
+  measurementId: "G-95MW13VHYX"
 };
+Are you using npm and a bundler like webpack or Rollup? Check out the modular SDK.
+
+Learn more about Firebase for web: Get Started, Web SDK API Reference, Samples
+
+
 
 const app = initializeApp(firebaseConfig);
 
