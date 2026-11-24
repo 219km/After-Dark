@@ -27,6 +27,7 @@ const emptyChat = document.getElementById("emptyChat");
 const activeChat = document.getElementById("activeChat");
 const chatTitle = document.getElementById("chatTitle");
 const messagesList = document.getElementById("messagesList");
+const chatAvatar = document.querySelector(".chat-avatar");
 
 const messageForm = document.getElementById("messageForm");
 const messageInput = document.getElementById("messageInput");
@@ -44,6 +45,8 @@ onAuthStateChanged(auth, (user) => {
   currentUser = user;
   loadConversations();
 });
+
+// SEARCH PLAYERS
 
 userSearch.addEventListener("input", async () => {
   const term = userSearch.value.trim().toLowerCase();
@@ -87,9 +90,8 @@ userSearch.addEventListener("input", async () => {
         (user.displayName || "Player") + " @" + user.username;
 
       button.addEventListener("click", () => {
-  alert("PLAYER CLICKED: " + user.username);
-  openConversation(user);
-});
+        openConversation(user);
+      });
 
       searchResults.appendChild(button);
     });
@@ -98,6 +100,8 @@ userSearch.addEventListener("input", async () => {
     searchResults.textContent = error.message;
   }
 });
+
+// LOAD CONVERSATIONS
 
 function loadConversations() {
   const q = query(
@@ -141,6 +145,8 @@ function loadConversations() {
     conversationList.textContent = error.message;
   });
 }
+
+// OPEN CONVERSATION
 
 async function openConversation(targetUser, existingId = null) {
   try {
@@ -186,10 +192,14 @@ async function openConversation(targetUser, existingId = null) {
     activeConversationId = conversationId;
 
     emptyChat.style.display = "none";
-    activeChat.style.display = "block";
+    activeChat.style.display = "flex";
 
-    chatTitle.textContent =
-      targetUser.displayName || "Player";
+    const otherName = targetUser.displayName || "Player";
+
+    chatTitle.textContent = otherName;
+
+    chatAvatar.textContent =
+      otherName.charAt(0).toUpperCase();
 
     if (unsubscribeMessages) {
       unsubscribeMessages();
@@ -206,33 +216,47 @@ async function openConversation(targetUser, existingId = null) {
       snapshot.forEach((messageDoc) => {
         const data = messageDoc.data();
 
+        const isMine = data.senderId === currentUser.uid;
+
+        // MESSAGE ROW
+
+        const row = document.createElement("div");
+        row.className = "message-row";
+
+        if (isMine) {
+          row.classList.add("mine");
+        } else {
+          const avatar = document.createElement("div");
+          avatar.className = "message-avatar";
+          avatar.textContent =
+            otherName.charAt(0).toUpperCase();
+
+          row.appendChild(avatar);
+        }
+
+        // MESSAGE BUBBLE
+
         const bubble = document.createElement("div");
+        bubble.className = "message-bubble";
 
-        bubble.style.padding = "12px";
-        bubble.style.margin = "8px 0";
-        bubble.style.background =
-          data.senderId === currentUser.uid
-            ? "#54213e"
-            : "#24162d";
-        bubble.style.borderRadius = "8px";
-        bubble.style.textAlign =
-          data.senderId === currentUser.uid
-            ? "right"
-            : "left";
+        // SENDER NAME
 
-        const sender = document.createElement("strong");
-        sender.textContent =
-          data.senderId === currentUser.uid
-            ? "You"
-            : targetUser.displayName || "Player";
+        const sender = document.createElement("span");
+        sender.className = "message-sender";
+        sender.textContent = isMine ? "You" : otherName;
+
+        // MESSAGE TEXT
 
         const content = document.createElement("p");
-        content.textContent = data.text;
+        content.className = "message-text";
+        content.textContent = data.text || "";
 
         bubble.appendChild(sender);
         bubble.appendChild(content);
 
-        messagesList.appendChild(bubble);
+        row.appendChild(bubble);
+
+        messagesList.appendChild(row);
       });
 
       messagesList.scrollTop = messagesList.scrollHeight;
@@ -245,6 +269,8 @@ async function openConversation(targetUser, existingId = null) {
     alert("Couldn't open conversation: " + error.message);
   }
 }
+
+// SEND MESSAGE
 
 messageForm.addEventListener("submit", async (event) => {
   event.preventDefault();
