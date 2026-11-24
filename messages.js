@@ -38,6 +38,8 @@ const messagesList = document.getElementById("messagesList");
 const messageForm = document.getElementById("messageForm");
 const messageInput = document.getElementById("messageInput");
 const typingIndicator = document.getElementById("typingIndicator");
+const chatLayout = document.querySelector(".chat-layout");
+const backToMessages = document.getElementById("backToMessages");
 
 let currentUser = null;
 let currentConversation = null;
@@ -317,7 +319,7 @@ async function openConversation(userId, userData) {
 
     currentConversation = conversationId;
     otherUser = userId;
-
+chatLayout.classList.add("dm-open");
     const displayName =
       userData.displayName ||
       userData.username ||
