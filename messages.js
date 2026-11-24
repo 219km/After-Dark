@@ -469,21 +469,12 @@ function listenForMessages() {
 // DISPLAY MESSAGE
 // =====================================
 
+
 function renderMessage(message) {
   const mine = message.senderId === currentUser.uid;
 
   const row = document.createElement("div");
-  row.className = mine
-    ? "message-row mine"
-    : "message-row";
-
-  if (!mine) {
-    const avatar = document.createElement("div");
-    avatar.className = "message-avatar";
-    avatar.textContent = getInitial(chatTitle.textContent);
-
-    row.appendChild(avatar);
-  }
+  row.className = mine ? "message-row mine" : "message-row";
 
   const bubble = document.createElement("div");
   bubble.className = "message-bubble";
@@ -500,20 +491,25 @@ function renderMessage(message) {
   time.className = "message-time";
   time.textContent = formatTime(message.createdAt);
 
-  bubble.append(sender, text, time);
-  row.appendChild(bubble);
+  bubble.appendChild(sender);
+  bubble.appendChild(text);
+  bubble.appendChild(time);
 
+  row.appendChild(bubble);
   messagesList.appendChild(row);
 }
+
 
 // =====================================
 // SEND MESSAGE
 // =====================================
 
+
 messageForm.addEventListener("submit", async event => {
   event.preventDefault();
 
   if (isSending || !currentUser || !currentConversation) {
+    console.error("No active conversation or user.");
     return;
   }
 
@@ -533,19 +529,18 @@ messageForm.addEventListener("submit", async event => {
       currentConversation
     );
 
-    await addDoc(
-      collection(
-        db,
-        "conversations",
-        currentConversation,
-        "messages"
-      ),
-      {
-        senderId: currentUser.uid,
-        text,
-        createdAt: serverTimestamp()
-      }
+    const messagesRef = collection(
+      db,
+      "conversations",
+      currentConversation,
+      "messages"
     );
+
+    await addDoc(messagesRef, {
+      senderId: currentUser.uid,
+      text: text,
+      createdAt: serverTimestamp()
+    });
 
     await updateDoc(conversationRef, {
       lastMessage: text,
@@ -553,17 +548,19 @@ messageForm.addEventListener("submit", async event => {
     });
 
     messageInput.value = "";
-    await setTypingStatus(false);
+    setTypingStatus(false);
 
   } catch (error) {
-    console.error("Send message error:", error);
-    alert("Message couldn't be sent. Check your connection and Firestore rules.");
+    console.error("SEND ERROR:", error);
+    alert("Message failed: " + error.message);
+
   } finally {
     isSending = false;
     sendButton.disabled = false;
     messageInput.focus();
   }
 });
+
 
 // =====================================
 // TYPING INDICATOR
