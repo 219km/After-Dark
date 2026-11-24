@@ -139,6 +139,7 @@ onAuthStateChanged(auth, async user => {
   loadConversations();
 });
 
+
 // SEARCH USERS
 
 userSearch.addEventListener("input", async () => {
@@ -146,7 +147,16 @@ userSearch.addEventListener("input", async () => {
 
   searchResults.innerHTML = "";
 
-  if (term.length < 2 || !currentUser) return;
+  if (term.length < 2) {
+    return;
+  }
+
+  if (!currentUser) {
+    searchResults.textContent = "Waiting for login...";
+    return;
+  }
+
+  searchResults.textContent = "Searching...";
 
   try {
     const usersQuery = query(
@@ -158,6 +168,13 @@ userSearch.addEventListener("input", async () => {
     );
 
     const snapshot = await getDocs(usersQuery);
+
+    searchResults.innerHTML = "";
+
+    if (snapshot.empty) {
+      searchResults.textContent = "No users found.";
+      return;
+    }
 
     snapshot.forEach(userDoc => {
       if (userDoc.id === currentUser.uid) return;
@@ -178,9 +195,10 @@ userSearch.addEventListener("input", async () => {
 
   } catch (error) {
     console.error("User search error:", error);
-    searchResults.textContent = "Unable to search users.";
+    searchResults.textContent = "Search error: " + error.message;
   }
 });
+
 
 // START OR OPEN CONVERSATION
 
