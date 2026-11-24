@@ -17,18 +17,12 @@ body {
   background: #09050e;
   color: white;
   font-family: Arial, sans-serif;
-  animation: fadeIn 1s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
 }
 
 header {
-  padding: 22px 7%;
+  padding: 18px 6%;
   background: #100914;
-  border-bottom: 1px solid #502039;
+  border-bottom: 1px solid #49203e;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -46,7 +40,7 @@ header {
 nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 18px;
+  gap: 17px;
 }
 
 nav a {
@@ -60,88 +54,304 @@ nav a:hover {
 }
 
 .container {
-  max-width: 1100px;
+  max-width: 1250px;
   margin: auto;
-  padding: 35px 20px;
+  padding: 30px 20px;
 }
 
-.intro {
-  padding: 40px 25px;
-  background: linear-gradient(120deg, #351025, #180e2d, #09050e);
-  border: 1px solid #642344;
-  margin-bottom: 35px;
+.welcome {
+  margin-bottom: 25px;
 }
 
-.intro small {
-  color: #e65b91;
+.welcome small {
+  color: #ed568a;
   letter-spacing: 4px;
 }
 
-.intro h1 {
-  font-size: 38px;
-  margin: 15px 0;
+.welcome h1 {
+  font-size: 36px;
+  margin: 12px 0;
 }
 
-.intro p {
-  color: #c4b6cc;
-  line-height: 1.7;
+.welcome p {
+  color: #a99aad;
+  font-size: 14px;
 }
 
-h2 {
+.search-box {
+  margin: 25px 0;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 16px;
+  background: #160d1e;
+  border: 1px solid #54213e;
+  color: white;
+  outline: none;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+.search-box input:focus {
+  border-color: #ff315e;
+}
+
+.categories {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  margin-bottom: 30px;
+}
+
+.categories button {
+  background: #190f20;
+  border: 1px solid #49203e;
+  color: #c9b9d1;
+  padding: 10px 18px;
+  border-radius: 20px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.categories button.active,
+.categories button:hover {
+  background: #ff315e;
+  color: white;
+  border-color: #ff315e;
+}
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 30px 0 17px;
+}
+
+.section-title h2 {
   color: #ed568a;
-  font-size: 17px;
-  letter-spacing: 3px;
-  margin: 30px 0 18px;
+  font-size: 16px;
+  letter-spacing: 2px;
 }
 
-.grid {
+.section-title span {
+  color: #8f7b94;
+  font-size: 11px;
+}
+
+.game-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   gap: 18px;
 }
 
-.card {
+.game-card {
   background: #160d1e;
   border: 1px solid #49203e;
-  padding: 23px;
-  transition: .3s;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: .25s;
 }
 
-.card:hover {
-  transform: translateY(-5px);
+.game-card:hover {
+  transform: translateY(-4px);
   border-color: #ff315e;
   box-shadow: 0 0 18px #45102d;
 }
 
-.card .symbol {
-  font-size: 30px;
-  color: #ed568a;
-  margin-bottom: 15px;
+.game-cover {
+  height: 145px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
 }
 
-.card h3 {
-  margin-bottom: 10px;
+.game-cover span {
+  font-size: 38px;
+  font-weight: bold;
+  letter-spacing: 3px;
+  text-shadow: 0 3px 15px #000;
 }
 
-.card p {
+.cover-jjk {
+  background: linear-gradient(135deg, #271044, #84254e, #12091d);
+}
+
+.cover-fnaf {
+  background: linear-gradient(135deg, #39230f, #8c3724, #10090e);
+}
+
+.cover-arcade {
+  background: linear-gradient(135deg, #101c47, #6736a1, #180b2b);
+}
+
+.cover-roblox {
+  background: linear-gradient(135deg, #164a54, #267d83, #10131d);
+}
+
+.cover-minecraft {
+  background: linear-gradient(135deg, #254a24, #7c8435, #171b13);
+}
+
+.cover-anime {
+  background: linear-gradient(135deg, #501d48, #a13d75, #190b24);
+}
+
+.game-info {
+  padding: 17px;
+}
+
+.game-info h3 {
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+
+.game-info p {
   color: #a99aad;
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.6;
-  margin-bottom: 18px;
+  min-height: 38px;
 }
 
-.card a {
+.game-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.game-tag {
+  color: #e65b91;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.game-info a {
   color: #ff6a9b;
   text-decoration: none;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.activity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 15px;
+}
+
+.activity-card {
+  background: #160d1e;
+  border: 1px solid #49203e;
+  border-radius: 9px;
+  padding: 17px;
+}
+
+.activity-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 13px;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff315e, #6d3191);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.activity-top h3 {
+  font-size: 13px;
+}
+
+.activity-top small {
+  color: #8f7b94;
+  font-size: 10px;
+}
+
+.activity-card p {
+  color: #c9b9d1;
   font-size: 12px;
-  letter-spacing: 2px;
+  line-height: 1.6;
+}
+
+.activity-note {
+  color: #8f7b94;
+  font-size: 11px;
+  margin-top: 12px;
+}
+
+.empty-message {
+  display: none;
+  color: #a99aad;
+  padding: 25px;
+  text-align: center;
 }
 
 footer {
   text-align: center;
-  padding: 30px;
+  padding: 35px;
   color: #75647d;
   font-size: 11px;
+}
+
+@media(max-width: 600px) {
+  header {
+    padding: 17px 5%;
+  }
+
+  nav {
+    gap: 12px;
+  }
+
+  nav a {
+    font-size: 10px;
+  }
+
+  .container {
+    padding: 25px 14px;
+  }
+
+  .welcome h1 {
+    font-size: 30px;
+  }
+
+  .game-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 11px;
+  }
+
+  .game-cover {
+    height: 110px;
+  }
+
+  .game-cover span {
+    font-size: 25px;
+  }
+
+  .game-info {
+    padding: 12px;
+  }
+
+  .game-info h3 {
+    font-size: 12px;
+  }
+
+  .game-info p {
+    font-size: 11px;
+  }
+
+  .game-meta {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
 }
 </style>
 </head>
@@ -155,82 +365,231 @@ footer {
     <a href="index.html">HOME</a>
     <a href="discovery.html">DISCOVER</a>
     <a href="arcade.html">ARCADE</a>
-    <a href="jjk.html">JUJUTSU KAISEN</a>
-    <a href="fnaf.html">FNAF</a>
+    <a href="community.html">COMMUNITY</a>
+    <a href="messages.html">MESSAGES</a>
     <a href="profile.html">PROFILE</a>
   </nav>
 </header>
 
-<div class="container">
+<main class="container">
 
-  <section class="intro">
-    <small>THE WORLD IS YOURS</small>
+  <section class="welcome">
+    <small>YOUR NEXT OBSESSION STARTS HERE</small>
     <h1>DISCOVER</h1>
-    <p>
-      Explore different worlds inside AFTER DARK.
-      Find games, communities and new experiences.
-    </p>
+    <p>Explore games, find new worlds and see what's happening.</p>
   </section>
 
-  <h2>FEATURED WORLDS</h2>
+  <div class="search-box">
+    <input
+      type="text"
+      id="gameSearch"
+      placeholder="Search games, worlds and categories..."
+    >
+  </div>
 
-  <div class="grid">
+  <div class="categories">
+    <button class="active" data-category="all">For You</button>
+    <button data-category="anime">Anime</button>
+    <button data-category="horror">Horror</button>
+    <button data-category="gaming">Gaming</button>
+    <button data-category="arcade">Arcade</button>
+  </div>
 
-    <div class="card">
-      <div class="symbol">01</div>
-      <h3>JUJUTSU KAISEN</h3>
-      <p>Enter the world of cursed energy and discover JJK games.</p>
-      <a href="jjk.html">EXPLORE WORLD</a>
+  <div class="section-title">
+    <h2>FEATURED GAMES</h2>
+    <span>EXPLORE WORLDS</span>
+  </div>
+
+  <div class="game-grid" id="gameGrid">
+
+    <div class="game-card" data-category="anime">
+      <div class="game-cover cover-jjk">
+        <span>JJK</span>
+      </div>
+      <div class="game-info">
+        <h3>JUJUTSU KAISEN</h3>
+        <p>Enter the world of cursed energy and powerful sorcerers.</p>
+        <div class="game-meta">
+          <span class="game-tag">ANIME</span>
+          <a href="jjk.html">EXPLORE →</a>
+        </div>
+      </div>
     </div>
 
-    <div class="card">
-      <div class="symbol">02</div>
-      <h3>FIVE NIGHTS AT FREDDY'S</h3>
-      <p>Explore the mysteries and games of Freddy Fazbear's world.</p>
-      <a href="fnaf.html">EXPLORE WORLD</a>
+    <div class="game-card" data-category="horror">
+      <div class="game-cover cover-fnaf">
+        <span>FNAF</span>
+      </div>
+      <div class="game-info">
+        <h3>FIVE NIGHTS AT FREDDY'S</h3>
+        <p>Discover the mysteries hiding inside Freddy Fazbear's world.</p>
+        <div class="game-meta">
+          <span class="game-tag">HORROR</span>
+          <a href="fnaf.html">EXPLORE →</a>
+        </div>
+      </div>
     </div>
 
-    <div class="card">
-      <div class="symbol">03</div>
-      <h3>THE ARCADE</h3>
-      <p>Play challenges, trivia and mini games.</p>
-      <a href="arcade.html">ENTER ARCADE</a>
+    <div class="game-card" data-category="arcade">
+      <div class="game-cover cover-arcade">
+        <span>ARCADE</span>
+      </div>
+      <div class="game-info">
+        <h3>THE ARCADE</h3>
+        <p>Play mini games, challenges and trivia.</p>
+        <div class="game-meta">
+          <span class="game-tag">ARCADE</span>
+          <a href="arcade.html">PLAY NOW →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-card" data-category="gaming">
+      <div class="game-cover cover-roblox">
+        <span>ROBLOX</span>
+      </div>
+      <div class="game-info">
+        <h3>ROBLOX</h3>
+        <p>Explore different experiences and multiplayer worlds.</p>
+        <div class="game-meta">
+          <span class="game-tag">GAMING</span>
+          <a href="#">COMING SOON</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-card" data-category="gaming">
+      <div class="game-cover cover-minecraft">
+        <span>MINECRAFT</span>
+      </div>
+      <div class="game-info">
+        <h3>MINECRAFT</h3>
+        <p>Build, explore and discover endless possibilities.</p>
+        <div class="game-meta">
+          <span class="game-tag">GAMING</span>
+          <a href="#">COMING SOON</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-card" data-category="anime">
+      <div class="game-cover cover-anime">
+        <span>ANIME</span>
+      </div>
+      <div class="game-info">
+        <h3>ANIME WORLD</h3>
+        <p>Find anime fans and explore different anime worlds.</p>
+        <div class="game-meta">
+          <span class="game-tag">ANIME</span>
+          <a href="#">COMING SOON</a>
+        </div>
+      </div>
     </div>
 
   </div>
 
-  <h2>COMING SOON</h2>
+  <div class="empty-message" id="emptyMessage">
+    No games found.
+  </div>
 
-  <div class="grid">
+  <div class="section-title">
+    <h2>PLAYER ACTIVITY</h2>
+    <span>COMMUNITY UPDATES</span>
+  </div>
 
-    <div class="card">
-      <div class="symbol">04</div>
-      <h3>COMMUNITIES</h3>
-      <p>Discover groups built around your favorite games and interests.</p>
-      <a href="#">COMING SOON</a>
+  <div class="activity-grid">
+
+    <div class="activity-card">
+      <div class="activity-top">
+        <div class="avatar">A</div>
+        <div>
+          <h3>AFTER DARK PLAYER</h3>
+          <small>Community highlight</small>
+        </div>
+      </div>
+      <p>What game are you playing lately? Share what you're exploring with the community.</p>
+      <div class="activity-note">PLAYER FEED PREVIEW</div>
     </div>
 
-    <div class="card">
-      <div class="symbol">05</div>
-      <h3>PLAYER FEED</h3>
-      <p>See updates and posts from the AFTER DARK community.</p>
-      <a href="#">COMING SOON</a>
+    <div class="activity-card">
+      <div class="activity-top">
+        <div class="avatar">G</div>
+        <div>
+          <h3>GAMING COMMUNITY</h3>
+          <small>Community highlight</small>
+        </div>
+      </div>
+      <p>Discover new games, meet other players and find your next favorite world.</p>
+      <div class="activity-note">COMMUNITY PREVIEW</div>
     </div>
 
-    <div class="card">
-      <div class="symbol">06</div>
-      <h3>PLAYER HUB</h3>
-      <p>Build your player identity and customize your profile.</p>
-      <a href="profile.html">VIEW PROFILE</a>
+    <div class="activity-card">
+      <div class="activity-top">
+        <div class="avatar">N</div>
+        <div>
+          <h3>NEW DISCOVERIES</h3>
+          <small>Community highlight</small>
+        </div>
+      </div>
+      <p>There's always something new to explore inside AFTER DARK.</p>
+      <div class="activity-note">MORE ACTIVITY COMING SOON</div>
     </div>
 
   </div>
 
-</div>
+</main>
 
 <footer>
   AFTER DARK © 2026
 </footer>
+
+<script>
+const searchInput = document.getElementById("gameSearch");
+const cards = document.querySelectorAll(".game-card");
+const categoryButtons = document.querySelectorAll(".categories button");
+const emptyMessage = document.getElementById("emptyMessage");
+
+let selectedCategory = "all";
+
+function filterGames() {
+  const search = searchInput.value.toLowerCase();
+  let visibleCount = 0;
+
+  cards.forEach(card => {
+    const text = card.textContent.toLowerCase();
+    const category = card.dataset.category;
+
+    const matchesSearch = text.includes(search);
+    const matchesCategory =
+      selectedCategory === "all" ||
+      category === selectedCategory;
+
+    if (matchesSearch && matchesCategory) {
+      card.style.display = "";
+      visibleCount++;
+    } else {
+      card.style.display = "none";
+    }
+  });
+
+  emptyMessage.style.display =
+    visibleCount === 0 ? "block" : "none";
+}
+
+searchInput.addEventListener("input", filterGames);
+
+categoryButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    categoryButtons.forEach(item =>
+      item.classList.remove("active")
+    );
+
+    button.classList.add("active");
+    selectedCategory = button.dataset.category;
+    filterGames();
+  });
+});
+</script>
 
 </body>
 </html>
