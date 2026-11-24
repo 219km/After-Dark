@@ -8,6 +8,7 @@ import {
 import {
   collection,
   doc,
+  getDoc,
   query,
   where,
   orderBy,
@@ -22,40 +23,70 @@ import {
 const userSearch = document.getElementById("userSearch");
 const searchResults = document.getElementById("searchResults");
 const conversationList = document.getElementById("conversationList");
-
 const emptyChat = document.getElementById("emptyChat");
 const activeChat = document.getElementById("activeChat");
 const chatTitle = document.getElementById("chatTitle");
 const messagesList = document.getElementById("messagesList");
-const chatAvatar = document.querySelector(".chat-avatar");
-
 const messageForm = document.getElementById("messageForm");
 const messageInput = document.getElementById("messageInput");
 
 let currentUser = null;
-let activeConversationId = null;
-let unsubscribeMessages = null;
+let currentConversation = null;
+let messagesUnsubscribe = null;
+let conversationsUnsubscribe = null;
 
-onAuthStateChanged(auth, (user) => {
+let publicUserData = {};
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  })[char]);
+}
+
+function getInitial(name) {
+  return (name || "P").charAt(0).toUpperCase();
+}
+
+function formatTime(timestamp) {
+  if (!timestamp?.toDate) return "";
+
+  return timestamp.toDate().toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
+
+// LOAD CURRENT USER
+
+onAuthStateChanged(auth, async user => {
   if (!user) {
-    window.location.href = "account.html";
+    currentUser = null;
     return;
   }
 
   currentUser = user;
+
+  const userDoc = await getDoc(doc(db, "publicUsers", user.uid));
+
+  publicUserData = userDoc.exists()
+    ? userDoc.data()
+    : {};
+
   loadConversations();
 });
 
-// SEARCH PLAYERS
+// SEARCH USERS
 
 userSearch.addEventListener("input", async () => {
   const term = userSearch.value.trim().toLowerCase();
 
   searchResults.innerHTML = "";
 
-  if (term.length < 2) return;
-
-  searchResults.textContent = "Searching...";
+  if (term.length < 2 || !currentUser) return;
 
   try {
     const usersQuery = query(
@@ -68,226 +99,249 @@ userSearch.addEventListener("input", async () => {
 
     const snapshot = await getDocs(usersQuery);
 
-    searchResults.innerHTML = "";
+    snapshot.forEach(userDoc => {
+      if (userDoc.id === currentUser.uid) return;
 
-    if (snapshot.empty) {
-      searchResults.textContent = "No players found.";
-      return;
-    }
-
-    snapshot.forEach((userDoc) => {
-      const user = {
-        uid: userDoc.id,
-        ...userDoc.data()
-      };
-
-      if (user.uid === currentUser.uid) return;
+      const user = userDoc.data();
 
       const button = document.createElement("button");
-      button.className = "conversation";
 
       button.textContent =
-        (user.displayName || "Player") + " @" + user.username;
+        `${user.displayName || "Player"} / @${user.username}`;
 
       button.addEventListener("click", () => {
-        openConversation(user);
+        startConversation(userDoc.id, user);
       });
 
       searchResults.appendChild(button);
     });
 
   } catch (error) {
-    searchResults.textContent = error.message;
+    console.error("User search error:", error);
+    searchResults.textContent = "Unable to search users.";
   }
 });
+
+// START OR OPEN CONVERSATION
+
+async function startConversation(targetId, targetUser) {
+  try {
+    const conversationsQuery = query(
+      collection(db, "conversations"),
+      where("participants", "array-contains", currentUser.uid)
+    );
+
+    const snapshot = await getDocs(conversationsQuery);
+
+    let conversationId = null;
+
+    snapshot.forEach(conversationDoc => {
+      const participants = conversationDoc.data().participants || [];
+
+      if (participants.includes(targetId)) {
+        conversationId = conversationDoc.id;
+      }
+    });
+
+    if (!conversationId) {
+      const currentName =
+        publicUserData.displayName ||
+        currentUser.displayName ||
+        "Player";
+
+      const targetName = targetUser.displayName || "Player";
+
+      const newConversation = await addDoc(
+        collection(db, "conversations"),
+        {
+          participants: [currentUser.uid, targetId],
+
+          participantNames: {
+            [currentUser.uid]: currentName,
+            [targetId]: targetName
+          },
+
+          lastMessage: "",
+          lastMessageAt: serverTimestamp()
+        }
+      );
+
+      conversationId = newConversation.id;
+    }
+
+    userSearch.value = "";
+    searchResults.innerHTML = "";
+
+    openConversation(conversationId, targetUser.displayName || "Player");
+
+  } catch (error) {
+    console.error("Conversation error:", error);
+    alert("Could not open conversation.");
+  }
+}
 
 // LOAD CONVERSATIONS
 
 function loadConversations() {
-  const q = query(
+  if (conversationsUnsubscribe) {
+    conversationsUnsubscribe();
+  }
+
+  const conversationsQuery = query(
     collection(db, "conversations"),
     where("participants", "array-contains", currentUser.uid)
   );
 
-  onSnapshot(q, (snapshot) => {
-    conversationList.innerHTML = "";
+  conversationsUnsubscribe = onSnapshot(
+    conversationsQuery,
+    snapshot => {
+      conversationList.innerHTML = "";
 
-    if (snapshot.empty) {
-      conversationList.textContent = "No conversations yet.";
-      return;
-    }
+      const conversations = [];
 
-    snapshot.forEach((conversationDoc) => {
-      const data = conversationDoc.data();
-
-      const otherUid = data.participants.find(
-        id => id !== currentUser.uid
-      );
-
-      const otherName =
-        data.participantNames?.[otherUid] || "Player";
-
-      const button = document.createElement("button");
-      button.className = "conversation";
-      button.textContent = otherName;
-
-      button.addEventListener("click", () => {
-        openConversation({
-          uid: otherUid,
-          displayName: otherName
-        }, conversationDoc.id);
+      snapshot.forEach(conversationDoc => {
+        conversations.push({
+          id: conversationDoc.id,
+          ...conversationDoc.data()
+        });
       });
 
-      conversationList.appendChild(button);
-    });
+      conversations.sort((a, b) => {
+        const timeA = a.lastMessageAt?.toMillis?.() || 0;
+        const timeB = b.lastMessageAt?.toMillis?.() || 0;
 
-  }, (error) => {
-    conversationList.textContent = error.message;
-  });
+        return timeB - timeA;
+      });
+
+      if (conversations.length === 0) {
+        conversationList.textContent = "No conversations yet.";
+        return;
+      }
+
+      conversations.forEach(conversation => {
+        const otherId = conversation.participants.find(
+          id => id !== currentUser.uid
+        );
+
+        const otherName =
+          conversation.participantNames?.[otherId] || "Player";
+
+        const button = document.createElement("button");
+
+        button.innerHTML = `
+          <strong>${escapeHTML(otherName)}</strong>
+          <div>${escapeHTML(conversation.lastMessage || "Start chatting")}</div>
+        `;
+
+        button.addEventListener("click", () => {
+          openConversation(conversation.id, otherName);
+        });
+
+        conversationList.appendChild(button);
+      });
+    },
+    error => console.error("Conversation list error:", error)
+  );
 }
 
 // OPEN CONVERSATION
 
-async function openConversation(targetUser, existingId = null) {
-  try {
-    let conversationId = existingId;
+function openConversation(conversationId, name) {
+  currentConversation = conversationId;
 
-    if (!conversationId) {
-      const q = query(
-        collection(db, "conversations"),
-        where("participants", "array-contains", currentUser.uid)
-      );
+  if (messagesUnsubscribe) {
+    messagesUnsubscribe();
+  }
 
-      const snapshot = await getDocs(q);
+  chatTitle.textContent = name;
 
-      const existing = snapshot.docs.find((item) =>
-        item.data().participants.includes(targetUser.uid)
-      );
+  emptyChat.style.display = "none";
+  activeChat.style.display = "block";
 
-      if (existing) {
-        conversationId = existing.id;
-      } else {
-        const newConversation = await addDoc(
-          collection(db, "conversations"),
-          {
-            participants: [
-              currentUser.uid,
-              targetUser.uid
-            ],
-            participantNames: {
-              [currentUser.uid]:
-                currentUser.displayName || "Player",
-              [targetUser.uid]:
-                targetUser.displayName || "Player"
-            },
-            lastMessage: "",
-            lastMessageAt: serverTimestamp()
-          }
-        );
+  messagesList.innerHTML = "";
 
-        conversationId = newConversation.id;
-      }
-    }
+  const messagesQuery = query(
+    collection(
+      db,
+      "conversations",
+      conversationId,
+      "messages"
+    ),
+    orderBy("createdAt", "asc")
+  );
 
-    activeConversationId = conversationId;
-
-    emptyChat.style.display = "none";
-    activeChat.style.display = "flex";
-
-    const otherName = targetUser.displayName || "Player";
-
-    chatTitle.textContent = otherName;
-
-    chatAvatar.textContent =
-      otherName.charAt(0).toUpperCase();
-
-    if (unsubscribeMessages) {
-      unsubscribeMessages();
-    }
-
-    const messagesQuery = query(
-      collection(db, "conversations", conversationId, "messages"),
-      orderBy("createdAt", "asc")
-    );
-
-    unsubscribeMessages = onSnapshot(messagesQuery, (snapshot) => {
+  messagesUnsubscribe = onSnapshot(
+    messagesQuery,
+    snapshot => {
       messagesList.innerHTML = "";
 
-      snapshot.forEach((messageDoc) => {
-        const data = messageDoc.data();
+      snapshot.forEach(messageDoc => {
+        const message = messageDoc.data();
 
-        const isMine = data.senderId === currentUser.uid;
+        const isMine = message.senderId === currentUser.uid;
 
-        // MESSAGE ROW
+        const senderName = isMine
+          ? publicUserData.displayName || currentUser.displayName || "You"
+          : name;
 
         const row = document.createElement("div");
-        row.className = "message-row";
 
-        if (isMine) {
-          row.classList.add("mine");
-        } else {
-          const avatar = document.createElement("div");
-          avatar.className = "message-avatar";
-          avatar.textContent =
-            otherName.charAt(0).toUpperCase();
+        row.className = isMine
+          ? "message-row own-message"
+          : "message-row";
 
-          row.appendChild(avatar);
-        }
+        row.innerHTML = `
+          <div class="message-avatar">
+            ${escapeHTML(getInitial(senderName))}
+          </div>
 
-        // MESSAGE BUBBLE
+          <div class="message-content">
+            <div class="message-sender">
+              ${escapeHTML(senderName)}
+            </div>
 
-        const bubble = document.createElement("div");
-        bubble.className = "message-bubble";
+            <div class="message-bubble">
+              ${escapeHTML(message.text)}
+            </div>
 
-        // SENDER NAME
-
-        const sender = document.createElement("span");
-        sender.className = "message-sender";
-        sender.textContent = isMine ? "You" : otherName;
-
-        // MESSAGE TEXT
-
-        const content = document.createElement("p");
-        content.className = "message-text";
-        content.textContent = data.text || "";
-
-        bubble.appendChild(sender);
-        bubble.appendChild(content);
-
-        row.appendChild(bubble);
+            <div class="message-time">
+              ${escapeHTML(formatTime(message.createdAt))}
+            </div>
+          </div>
+        `;
 
         messagesList.appendChild(row);
       });
 
       messagesList.scrollTop = messagesList.scrollHeight;
-
-    }, (error) => {
-      messagesList.textContent = error.message;
-    });
-
-  } catch (error) {
-    alert("Couldn't open conversation: " + error.message);
-  }
+    },
+    error => console.error("Message loading error:", error)
+  );
 }
 
 // SEND MESSAGE
 
-messageForm.addEventListener("submit", async (event) => {
+messageForm.addEventListener("submit", async event => {
   event.preventDefault();
 
   const text = messageInput.value.trim();
 
-  if (!text || !activeConversationId) return;
+  if (!text || !currentConversation || !currentUser) return;
 
-  const sendButton = messageForm.querySelector("button");
-  sendButton.disabled = true;
+  messageInput.value = "";
 
   try {
+    const conversationRef = doc(
+      db,
+      "conversations",
+      currentConversation
+    );
+
     await addDoc(
       collection(
         db,
         "conversations",
-        activeConversationId,
+        currentConversation,
         "messages"
       ),
       {
@@ -297,19 +351,14 @@ messageForm.addEventListener("submit", async (event) => {
       }
     );
 
-    await updateDoc(
-      doc(db, "conversations", activeConversationId),
-      {
-        lastMessage: text,
-        lastMessageAt: serverTimestamp()
-      }
-    );
-
-    messageInput.value = "";
+    await updateDoc(conversationRef, {
+      lastMessage: text,
+      lastMessageAt: serverTimestamp()
+    });
 
   } catch (error) {
-    alert("Message failed: " + error.message);
+    console.error("Message sending error:", error);
+    messageInput.value = text;
+    alert("Message could not be sent.");
   }
-
-  sendButton.disabled = false;
 });
