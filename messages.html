@@ -21,14 +21,15 @@ body {
 }
 
 header {
-  height: 75px;
-  padding: 0 6%;
+  min-height: 70px;
+  padding: 15px 5%;
   background: #100d17;
   border-bottom: 1px solid #292333;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
 .logo {
@@ -40,30 +41,29 @@ header {
 
 nav {
   display: flex;
-  gap: 22px;
+  gap: 16px;
   flex-wrap: wrap;
 }
 
 nav a {
   color: #aaa2b5;
   text-decoration: none;
-  font-size: 12px;
-  transition: 0.2s;
+  font-size: 11px;
 }
 
-nav a:hover,
-nav a[href="messages.html"] {
+nav a[href="messages.html"],
+nav a:hover {
   color: #d6a0ff;
 }
 
 .container {
   max-width: 1350px;
   margin: auto;
-  padding: 30px 25px;
+  padding: 25px;
 }
 
 .heading {
-  margin-bottom: 22px;
+  margin-bottom: 20px;
 }
 
 .heading small {
@@ -87,20 +87,20 @@ nav a[href="messages.html"] {
 .chat-layout {
   display: grid;
   grid-template-columns: 290px minmax(0, 1fr);
-  height: 650px;
+  height: 680px;
+  min-height: 0;
   background: #12101a;
   border: 1px solid #292333;
-  border-radius: 16px;
+  border-radius: 14px;
   overflow: hidden;
 }
-
-/* SIDEBAR */
 
 .sidebar {
   background: #100e17;
   border-right: 1px solid #292333;
-  padding: 22px 17px;
+  padding: 20px 16px;
   overflow-y: auto;
+  min-width: 0;
 }
 
 .sidebar h3 {
@@ -112,10 +112,10 @@ nav a[href="messages.html"] {
 
 #userSearch {
   width: 100%;
-  padding: 13px 15px;
+  padding: 13px;
   background: #1b1824;
   border: 1px solid #30283b;
-  border-radius: 10px;
+  border-radius: 9px;
   color: white;
   outline: none;
   font-size: 12px;
@@ -139,13 +139,12 @@ nav a[href="messages.html"] {
   padding: 14px 12px;
   background: transparent;
   border: none;
-  border-radius: 10px;
+  border-radius: 9px;
   color: #c9c1d2;
   font-size: 12px;
   text-align: left;
   cursor: pointer;
   margin-bottom: 5px;
-  transition: 0.2s;
 }
 
 .conversation:hover,
@@ -154,10 +153,9 @@ nav a[href="messages.html"] {
   color: white;
 }
 
-/* CHAT AREA */
-
 .chat-area {
   min-width: 0;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   background: #14111c;
@@ -178,7 +176,6 @@ nav a[href="messages.html"] {
 
 #emptyChat h2 {
   font-size: 17px;
-  letter-spacing: 1px;
   margin-bottom: 10px;
 }
 
@@ -188,66 +185,45 @@ nav a[href="messages.html"] {
   line-height: 1.7;
 }
 
-/* ACTIVE CHAT */
-
 #activeChat {
   display: flex;
   flex-direction: column;
   height: 100%;
   min-height: 0;
   width: 100%;
-  text-align: left;
   overflow: hidden;
 }
 
-#messageForm {
-  display: flex !important;
-  align-items: center;
-  gap: 10px;
-  padding: 15px;
-  min-height: 70px;
-  flex-shrink: 0;
-  background: #15121e;
-  border-top: 1px solid #292333;
-}
-
-#messageInput {
-  display: block !important;
-  flex: 1;
-  min-width: 0;
-  padding: 14px;
-  background: #211d2b;
-  border: 1px solid #342b42;
-  border-radius: 25px;
-  color: white;
-  font-size: 14px;
-}
-
-#messageForm button {
-  display: block !important;
-  flex-shrink: 0;
-}
-
 .chat-header {
-  min-height: 75px;
-  padding: 15px 23px;
+  min-height: 72px;
+  padding: 12px 18px;
   display: flex;
   align-items: center;
-  gap: 13px;
+  gap: 12px;
   border-bottom: 1px solid #292333;
   background: #15121e;
+  flex-shrink: 0;
+}
+
+#backToMessages {
+  display: none;
+  background: transparent;
+  border: none;
+  color: #d6a0ff;
+  font-size: 27px;
+  cursor: pointer;
+  padding: 5px 10px;
 }
 
 .chat-avatar {
-  width: 43px;
-  height: 43px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   background: #30243d;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #d6a0ff;
-  font-size: 17px;
   flex-shrink: 0;
 }
 
@@ -258,9 +234,11 @@ nav a[href="messages.html"] {
 
 #chatTitle {
   font-size: 15px;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
+  overflow-wrap: anywhere;
 }
 
+#typingIndicator,
 .chat-status {
   color: #93899e;
   font-size: 11px;
@@ -271,27 +249,72 @@ nav a[href="messages.html"] {
   font-size: 19px;
 }
 
-/* MESSAGES */
+#messagesList {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.message-row {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 10px;
+}
+
+.message-row.mine {
+  justify-content: flex-end;
+}
+
+.message-bubble {
+  width: fit-content;
+  max-width: 75%;
+  padding: 11px 15px;
+  background: #262230;
+  border-radius: 15px;
+  color: #eee8f5;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.message-row.mine .message-bubble {
+  background: #7045a5;
+  color: white;
+}
+
+.message-sender {
+  display: block;
+  font-size: 10px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.message-text {
+  font-size: 13px;
+  line-height: 1.5;
+}
 
 .message-time {
   display: block;
-  font-size: 9px !important;
-  line-height: 12px !important;
-  font-weight: normal !important;
-  margin-top: 4px;
+  font-size: 9px;
+  line-height: 12px;
+  margin-top: 5px;
   opacity: 0.65;
   text-align: right;
 }
-
-/* MESSAGE INPUT */
 
 #messageForm {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 17px 22px;
+  padding: 14px;
   background: #15121e;
   border-top: 1px solid #292333;
+  flex-shrink: 0;
 }
 
 #messageInput {
@@ -304,7 +327,6 @@ nav a[href="messages.html"] {
   color: white;
   outline: none;
   font-size: 13px;
-  margin: 0;
 }
 
 #messageForm button {
@@ -316,21 +338,12 @@ nav a[href="messages.html"] {
   color: white;
   font-size: 18px;
   cursor: pointer;
-  transition: 0.2s;
   flex-shrink: 0;
-}
-
-#messageForm button:hover {
-  background: #a875d4;
-  transform: scale(1.05);
 }
 
 #messageForm button:disabled {
   opacity: 0.5;
-  cursor: not-allowed;
 }
-
-/* PRIVACY */
 
 .privacy {
   margin-top: 17px;
@@ -355,112 +368,11 @@ footer {
   letter-spacing: 2px;
 }
 
-/* MOBILE */
-
-@media(max-width: 700px) {
-  header {
-    height: auto;
-    padding: 18px 5%;
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  nav {
-    gap: 13px;
-  }
-
-  .container {
-    padding: 20px 12px;
-  }
-
-  .chat-layout {
-    grid-template-columns: 1fr;
-    height: 700px;
-  }
-
-  .sidebar {
-    max-height: 210px;
-    border-right: none;
-    border-bottom: 1px solid #292333;
-  }
-
-  .chat-area {
-    min-height: 0;
-  }
-
-  #messagesList {
-    padding: 15px;
-  }
-
-  .message-bubble {
-    max-width: 82%;
-  }
-
-  #messageForm {
-    padding: 12px;
-  }
-}
-  /* AFTER DARK MESSAGE FIX */
-
-.message-bubble {
-  display: block !important;
-  width: fit-content;
-  max-width: 75%;
-  padding: 11px 15px !important;
-  background: #262230 !important;
-  border-radius: 16px !important;
-  color: #eee8f5 !important;
-  font-size: 13px !important;
-  line-height: 1.5 !important;
-}
-
-.message-row.mine .message-bubble {
-  background: #7045a5 !important;
-  color: white !important;
-}
-
-.message-sender {
-  display: block !important;
-  font-size: 10px !important;
-  line-height: 13px !important;
-  font-weight: bold !important;
-  margin-bottom: 4px !important;
-}
-
-.message-text {
-  display: block !important;
-  font-size: 13px !important;
-  line-height: 1.5 !important;
-}
-
-.message-time {
-  display: block !important;
-  font-size: 9px !important;
-  line-height: 12px !important;
-  margin-top: 5px !important;
-  opacity: 0.65;
-}
-
-.message-row {
-  display: flex !important;
-  align-items: flex-end !important;
-  margin-bottom: 12px !important;
-}
-
-.message-row.mine {
-  justify-content: flex-end !important;
-}
-#backToMessages {
-  display: none;
-  background: transparent;
-  border: none;
-  color: #d6a0ff;
-  font-size: 24px;
-  cursor: pointer;
-}
+/* FULL SCREEN DM */
 
 .chat-layout.dm-open {
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
+  height: 680px;
 }
 
 .chat-layout.dm-open .sidebar {
@@ -469,10 +381,89 @@ footer {
 
 .chat-layout.dm-open .chat-area {
   width: 100%;
+  height: 100%;
 }
 
 .chat-layout.dm-open #backToMessages {
   display: block;
+}
+
+/* MOBILE */
+
+@media(max-width: 700px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  nav {
+    gap: 12px;
+  }
+
+  .container {
+    padding: 18px 10px;
+  }
+
+  .heading {
+    margin-bottom: 15px;
+  }
+
+  .chat-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 210px minmax(0, 1fr);
+    height: calc(100dvh - 190px);
+    min-height: 480px;
+    border-radius: 10px;
+  }
+
+  .sidebar {
+    border-right: none;
+    border-bottom: 1px solid #292333;
+    padding: 13px;
+    min-height: 0;
+  }
+
+  .chat-area {
+    min-height: 0;
+  }
+
+  .chat-layout.dm-open {
+    display: block;
+    height: calc(100dvh - 105px);
+    min-height: 480px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+
+  .chat-layout.dm-open .chat-area {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .chat-layout.dm-open #messagesList {
+    padding: 14px;
+  }
+
+  .message-bubble {
+    max-width: 85%;
+  }
+
+  #messageForm {
+    padding: 10px;
+  }
+}
+
+@media(max-width: 380px) {
+  .chat-layout.dm-open {
+    height: calc(100dvh - 90px);
+  }
+
+  .chat-header {
+    padding: 10px;
+    gap: 8px;
+  }
 }
 </style>
 </head>
@@ -481,7 +472,6 @@ footer {
 
 <header>
   <div class="logo">AFTER DARK</div>
-
   <nav>
     <a href="index.html">HOME</a>
     <a href="discover.html">DISCOVER</a>
@@ -503,7 +493,6 @@ footer {
   <div class="chat-layout">
 
     <aside class="sidebar">
-
       <h3>FIND PLAYERS</h3>
 
       <input
@@ -519,7 +508,6 @@ footer {
       <div id="conversationList">
         No conversations yet.
       </div>
-
     </aside>
 
     <section class="chat-area">
@@ -536,9 +524,8 @@ footer {
       <div id="activeChat" style="display:none;">
 
         <div class="chat-header">
-<button id="backToMessages" type="button">
-  ←
-</button>
+          <button id="backToMessages" type="button" aria-label="Back to conversations">←</button>
+
           <div class="chat-avatar">✦</div>
 
           <div class="chat-user-info">
@@ -548,13 +535,11 @@ footer {
           </div>
 
           <div class="chat-actions">•••</div>
-
         </div>
 
         <div id="messagesList"></div>
 
         <form id="messageForm">
-
           <input
             id="messageInput"
             type="text"
@@ -562,30 +547,23 @@ footer {
             placeholder="Message..."
             required
           >
-
           <button type="submit" aria-label="Send message">➤</button>
-
         </form>
 
       </div>
 
     </section>
-
   </div>
 
   <div class="privacy">
     <strong>PRIVACY NOTICE</strong><br>
     Keep personal information private.
     Only connect with people you trust.
-    Blocking and reporting tools will be part of
-    the messaging system.
   </div>
 
 </div>
 
-<footer>
-  AFTER DARK © 2026
-</footer>
+<footer>AFTER DARK © 2026</footer>
 
 <script type="module" src="messages.js"></script>
 
