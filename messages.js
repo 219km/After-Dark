@@ -38,6 +38,7 @@ const messagesList = document.getElementById("messagesList");
 const messageForm = document.getElementById("messageForm");
 const messageInput = document.getElementById("messageInput");
 const typingIndicator = document.getElementById("typingIndicator");
+
 const chatLayout = document.querySelector(".chat-layout");
 const backToMessages = document.getElementById("backToMessages");
 
@@ -54,112 +55,8 @@ let typingTimeout = null;
 let isSending = false;
 
 // =====================================
-// EXTRA STYLING
-// =====================================
-
-const extraStyles = document.createElement("style");
-
-extraStyles.textContent = `
-  #messagesList {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    scroll-behavior: smooth;
-  }
-
-  .message-row {
-    width: 100%;
-    display: flex;
-    align-items: flex-end;
-    gap: 9px;
-    margin-bottom: 8px;
-  }
-
-  .message-row.mine {
-    justify-content: flex-end;
-  }
-
-  .message-bubble {
-    max-width: min(78%, 520px);
-    width: fit-content;
-    min-width: 45px;
-    padding: 11px 15px;
-    font-size: 14px;
-    line-height: 1.55;
-    overflow-wrap: anywhere;
-    word-break: break-word;
-  }
-
-  .message-text {
-    white-space: pre-wrap;
-  }
-
-  .message-time {
-    display: block;
-    font-size: 9px;
-    opacity: 0.65;
-    margin-top: 6px;
-    text-align: right;
-  }
-
-  .message-avatar {
-    flex-shrink: 0;
-  }
-
-  .conversation {
-    display: block;
-    width: 100%;
-    text-align: left;
-    overflow-wrap: anywhere;
-  }
-
-  .conversation small {
-    display: block;
-    margin-top: 5px;
-    color: #81798d;
-    font-size: 10px;
-  }
-
-  #typingIndicator {
-    min-height: 13px;
-    color: #c49be6;
-    font-size: 10px;
-    margin-bottom: 3px;
-  }
-
-  #searchResults button {
-    display: block;
-    text-align: left;
-  }
-
-  .message-date {
-    text-align: center;
-    color: #81798d;
-    font-size: 10px;
-    margin: 14px 0;
-  }
-
-  @media(max-width: 700px) {
-    .message-bubble {
-      max-width: 84%;
-      padding: 10px 13px;
-    }
-
-    #messagesList {
-      padding: 13px;
-    }
-  }
-`;
-
-document.head.appendChild(extraStyles);
-
-// =====================================
 // HELPERS
 // =====================================
-
-function showError(message) {
-  searchResults.textContent = message;
-}
 
 function getInitial(name) {
   return (name || "?").charAt(0).toUpperCase();
@@ -176,20 +73,20 @@ function formatTime(timestamp) {
   });
 }
 
-function formatDate(timestamp) {
-  if (!timestamp || !timestamp.toDate) {
-    return "";
+function stopMessageListeners() {
+  if (unsubscribeMessages) {
+    unsubscribeMessages();
+    unsubscribeMessages = null;
   }
 
-  return timestamp.toDate().toLocaleDateString([], {
-    month: "short",
-    day: "numeric",
-    year: "numeric"
-  });
+  if (unsubscribeTyping) {
+    unsubscribeTyping();
+    unsubscribeTyping = null;
+  }
 }
 
-function getOtherParticipant(participants) {
-  return participants.find(uid => uid !== currentUser.uid);
+function showSearchMessage(message) {
+  searchResults.textContent = message;
 }
 
 // =====================================
@@ -212,7 +109,9 @@ userSearch.addEventListener("input", () => {
 });
 
 async function searchUsers(search) {
-  searchResults.textContent = "Searching...";
+  if (!currentUser) return;
+
+  showSearchMessage("Searching...");
 
   try {
     const usersQuery = query(
@@ -228,11 +127,11 @@ async function searchUsers(search) {
     searchResults.innerHTML = "";
 
     const users = snapshot.docs.filter(
-      userDoc => userDoc.id !== currentUser.uid
+      item => item.id !== currentUser.uid
     );
 
     if (users.length === 0) {
-      searchResults.textContent = "No players found.";
+      showSearchMessage("No players found.");
       return;
     }
 
@@ -240,12 +139,11 @@ async function searchUsers(search) {
       const user = userDoc.data();
 
       const button = document.createElement("button");
-
       button.type = "button";
-      button.innerHTML = "";
 
       const name = document.createElement("strong");
-      name.textContent = user.displayName || user.username || "Player";
+      name.textContent =
+        user.displayName || user.username || "Player";
 
       const username = document.createElement("small");
       username.textContent = "@" + (user.username || "player");
@@ -261,7 +159,7 @@ async function searchUsers(search) {
 
   } catch (error) {
     console.error("Search error:", error);
-    searchResults.textContent = "Couldn't search players. Check Firestore rules.";
+    showSearchMessage("Couldn't search players.");
   }
 }
 
@@ -273,8 +171,6 @@ async function openConversation(userId, userData) {
   if (!currentUser || userId === currentUser.uid) return;
 
   try {
-    const participants = [currentUser.uid, userId];
-
     const existingQuery = query(
       collection(db, "conversations"),
       where("participants", "array-contains", currentUser.uid)
@@ -282,8 +178,8 @@ async function openConversation(userId, userData) {
 
     const existing = await getDocs(existingQuery);
 
-    const match = existing.docs.find(conversation => {
-      const data = conversation.data();
+    const match = existing.docs.find(item => {
+      const data = item.data();
 
       return data.participants &&
         data.participants.includes(userId);
@@ -294,7 +190,9 @@ async function openConversation(userId, userData) {
     if (match) {
       conversationId = match.id;
     } else {
-      conversationId = [currentUser.uid, userId].sort().join("_");
+      conversationId = [currentUser.uid, userId]
+        .sort()
+        .join("_");
 
       const conversationRef = doc(
         db,
@@ -303,14 +201,20 @@ async function openConversation(userId, userData) {
       );
 
       await setDoc(conversationRef, {
-        participants,
+        participants: [currentUser.uid, userId],
+
         participantNames: {
           [currentUser.uid]:
-            currentUser.displayName || currentUser.email || "Player",
+            currentUser.displayName ||
+            currentUser.email ||
+            "Player",
 
           [userId]:
-            userData.displayName || userData.username || "Player"
+            userData.displayName ||
+            userData.username ||
+            "Player"
         },
+
         lastMessage: "",
         lastMessageAt: serverTimestamp(),
         createdAt: serverTimestamp()
@@ -319,13 +223,16 @@ async function openConversation(userId, userData) {
 
     currentConversation = conversationId;
     otherUser = userId;
-chatLayout.classList.add("dm-open");
-    const displayName =
+
+    chatLayout.classList.add("dm-open");
+
+    chatTitle.textContent =
       userData.displayName ||
       userData.username ||
       "Player";
 
-    chatTitle.textContent = displayName;
+    const avatar = document.querySelector(".chat-avatar");
+    avatar.textContent = getInitial(chatTitle.textContent);
 
     emptyChat.style.display = "none";
     activeChat.style.display = "flex";
@@ -340,7 +247,7 @@ chatLayout.classList.add("dm-open");
 
   } catch (error) {
     console.error("Conversation error:", error);
-    showError("Couldn't open conversation. Check Firestore rules.");
+    showSearchMessage("Couldn't open conversation.");
   }
 }
 
@@ -349,6 +256,10 @@ chatLayout.classList.add("dm-open");
 // =====================================
 
 function listenForConversations() {
+  if (unsubscribeConversations) {
+    unsubscribeConversations();
+  }
+
   const conversationsQuery = query(
     collection(db, "conversations"),
     where("participants", "array-contains", currentUser.uid)
@@ -356,6 +267,7 @@ function listenForConversations() {
 
   unsubscribeConversations = onSnapshot(
     conversationsQuery,
+
     snapshot => {
       conversationList.innerHTML = "";
 
@@ -377,15 +289,16 @@ function listenForConversations() {
       });
 
       conversations.forEach(conversation => {
-        const otherId = getOtherParticipant(
-          conversation.participants || []
+        const otherId = conversation.participants.find(
+          uid => uid !== currentUser.uid
         );
+
+        if (!otherId) return;
 
         const name =
           conversation.participantNames?.[otherId] || "Player";
 
         const button = document.createElement("button");
-
         button.className = "conversation";
         button.type = "button";
 
@@ -404,7 +317,7 @@ function listenForConversations() {
               doc(db, "publicUsers", otherId)
             );
 
-            openConversation(
+            await openConversation(
               otherId,
               publicUser.exists()
                 ? publicUser.data()
@@ -412,13 +325,14 @@ function listenForConversations() {
             );
 
           } catch (error) {
-            console.error(error);
+            console.error("Open conversation error:", error);
           }
         });
 
         conversationList.appendChild(button);
       });
     },
+
     error => {
       console.error("Conversation listener:", error);
       conversationList.textContent =
@@ -434,6 +348,7 @@ function listenForConversations() {
 function listenForMessages() {
   if (unsubscribeMessages) {
     unsubscribeMessages();
+    unsubscribeMessages = null;
   }
 
   messagesList.innerHTML = "";
@@ -450,6 +365,7 @@ function listenForMessages() {
 
   unsubscribeMessages = onSnapshot(
     messagesQuery,
+
     snapshot => {
       messagesList.innerHTML = "";
 
@@ -459,31 +375,35 @@ function listenForMessages() {
 
       messagesList.scrollTop = messagesList.scrollHeight;
     },
+
     error => {
       console.error("Messages listener:", error);
       messagesList.textContent =
-        "Couldn't load messages. Check Firestore rules.";
+        "Couldn't load messages.";
     }
   );
 }
 
 // =====================================
-// DISPLAY MESSAGE
+// DISPLAY MESSAGES
 // =====================================
-
 
 function renderMessage(message) {
   const mine = message.senderId === currentUser.uid;
 
   const row = document.createElement("div");
-  row.className = mine ? "message-row mine" : "message-row";
+  row.className = mine
+    ? "message-row mine"
+    : "message-row";
 
   const bubble = document.createElement("div");
   bubble.className = "message-bubble";
 
   const sender = document.createElement("span");
   sender.className = "message-sender";
-  sender.textContent = mine ? "YOU" : chatTitle.textContent;
+  sender.textContent = mine
+    ? "YOU"
+    : chatTitle.textContent;
 
   const text = document.createElement("div");
   text.className = "message-text";
@@ -493,25 +413,24 @@ function renderMessage(message) {
   time.className = "message-time";
   time.textContent = formatTime(message.createdAt);
 
-  bubble.appendChild(sender);
-  bubble.appendChild(text);
-  bubble.appendChild(time);
-
+  bubble.append(sender, text, time);
   row.appendChild(bubble);
+
   messagesList.appendChild(row);
 }
 
-
 // =====================================
-// SEND MESSAGE
+// SEND MESSAGES
 // =====================================
-
 
 messageForm.addEventListener("submit", async event => {
   event.preventDefault();
 
-  if (isSending || !currentUser || !currentConversation) {
-    console.error("No active conversation or user.");
+  if (
+    isSending ||
+    !currentUser ||
+    !currentConversation
+  ) {
     return;
   }
 
@@ -550,6 +469,7 @@ messageForm.addEventListener("submit", async event => {
     });
 
     messageInput.value = "";
+
     setTypingStatus(false);
 
   } catch (error) {
@@ -563,9 +483,8 @@ messageForm.addEventListener("submit", async event => {
   }
 });
 
-
 // =====================================
-// TYPING INDICATOR
+// TYPING STATUS
 // =====================================
 
 async function setTypingStatus(status) {
@@ -610,9 +529,14 @@ messageInput.addEventListener("blur", () => {
   setTypingStatus(false);
 });
 
+// =====================================
+// LISTEN FOR TYPING
+// =====================================
+
 function listenForTyping() {
   if (unsubscribeTyping) {
     unsubscribeTyping();
+    unsubscribeTyping = null;
   }
 
   typingIndicator.textContent = "";
@@ -627,13 +551,14 @@ function listenForTyping() {
 
   unsubscribeTyping = onSnapshot(
     typingRef,
+
     snapshot => {
-      if (snapshot.exists() && snapshot.data().isTyping) {
-        typingIndicator.textContent = "Typing...";
-      } else {
-        typingIndicator.textContent = "";
-      }
+      typingIndicator.textContent =
+        snapshot.exists() && snapshot.data().isTyping
+          ? "Typing..."
+          : "";
     },
+
     error => {
       console.error("Typing listener:", error);
     }
@@ -641,26 +566,16 @@ function listenForTyping() {
 }
 
 // =====================================
-// LOGIN CHECK
+// BACK TO CONVERSATIONS
 // =====================================
 
-onAuthStateChanged(auth, user => {
-  if (unsubscribeMessages) unsubscribeMessages();
-  if (unsubscribeTyping) unsubscribeTyping();
-  if (unsubscribeConversations) unsubscribeConversations();
+backToMessages.addEventListener("click", async () => {
+  clearTimeout(typingTimeout);
 
-  currentUser = user;
+  await setTypingStatus(false);
 
-  if (!user) {
-    emptyChat.style.display = "block";
-    activeChat.style.display = "none";
-    conversationList.textContent = "Log in to view conversations.";
-    return;
-  }
+  stopMessageListeners();
 
-  listenForConversations();
-});
-backToMessages.addEventListener("click", () => {
   chatLayout.classList.remove("dm-open");
 
   activeChat.style.display = "none";
@@ -669,9 +584,41 @@ backToMessages.addEventListener("click", () => {
   currentConversation = null;
   otherUser = null;
 
-  if (unsubscribeMessages) unsubscribeMessages();
-  if (unsubscribeTyping) unsubscribeTyping();
+  messagesList.innerHTML = "";
+  typingIndicator.textContent = "";
+});
+
+// =====================================
+// LOGIN CHECK
+// =====================================
+
+onAuthStateChanged(auth, user => {
+  stopMessageListeners();
+
+  if (unsubscribeConversations) {
+    unsubscribeConversations();
+    unsubscribeConversations = null;
+  }
+
+  currentUser = user;
+
+  currentConversation = null;
+  otherUser = null;
+
+  chatLayout.classList.remove("dm-open");
+
+  activeChat.style.display = "none";
+  emptyChat.style.display = "block";
 
   messagesList.innerHTML = "";
   typingIndicator.textContent = "";
+
+  if (!user) {
+    conversationList.textContent =
+      "Log in to view conversations.";
+
+    return;
+  }
+
+  listenForConversations();
 });
