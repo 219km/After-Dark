@@ -179,8 +179,16 @@ async function uploadImage(file, field) {
     const imageUrl = result.secure_url;
 
     await updateDoc(doc(db, "users", currentUser.uid), {
-      [field]: imageUrl
-    });
+  [field]: imageUrl
+});
+
+if (field === "profilePicture") {
+  await setDoc(doc(db, "publicUsers", currentUser.uid), {
+    displayName: profileData.displayName || "Player",
+    username: profileData.username || "",
+    profilePicture: imageUrl
+  });
+}
 
     profileData[field] = imageUrl;
     showProfile();
