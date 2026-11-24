@@ -119,56 +119,7 @@ function listenForTyping() {
       : "";
   });
 }
-async function setTypingStatus(status) {
-  if (!currentConversation || !currentUser) return;
 
-  const typingRef = doc(
-    db,
-    "conversations",
-    currentConversation,
-    "typing",
-    currentUser.uid
-  );
-
-  try {
-    await setDoc(typingRef, {
-      isTyping: status,
-      updatedAt: serverTimestamp()
-    });
-  } catch (error) {
-    console.error("Typing status error:", error);
-  }
-}
-
-function listenForTyping() {
-  const typingIndicator = document.getElementById("typingIndicator");
-
-  if (!typingIndicator) return;
-
-  const typingRef = collection(
-    db,
-    "conversations",
-    currentConversation,
-    "typing"
-  );
-
-  typingUnsubscribe = onSnapshot(typingRef, snapshot => {
-    let someoneTyping = false;
-
-    snapshot.forEach(userDoc => {
-      if (
-        userDoc.id !== currentUser.uid &&
-        userDoc.data().isTyping === true
-      ) {
-        someoneTyping = true;
-      }
-    });
-
-    typingIndicator.textContent = someoneTyping
-      ? "Typing..."
-      : "";
-  });
-}
 // LOAD CURRENT USER
 
 onAuthStateChanged(auth, async user => {
