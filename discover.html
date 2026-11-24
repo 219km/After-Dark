@@ -543,10 +543,12 @@ import {
   query,
   orderBy,
   onSnapshot,
-  addDoc,
+    addDoc,
   serverTimestamp,
   doc,
-  getDoc
+  getDocs,
+  setDoc,
+  deleteDoc
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
 // GAME SEARCH
@@ -646,6 +648,7 @@ onAuthStateChanged(auth, user => {
 });
 
 // DISPLAY POSTS
+
 async function displayPost(postId, postData) {
   const card = document.createElement("div");
 
@@ -686,16 +689,12 @@ async function displayPost(postId, postData) {
   time.style.marginTop = "4px";
 
   try {
-    const profileRef = doc(
-      db,
-      "publicUsers",
-      postData.authorId
+    const profileDoc = await getDoc(
+      doc(db, "publicUsers", postData.authorId)
     );
 
-    const profileSnap = await getDoc(profileRef);
-
-    if (profileSnap.exists()) {
-      const profile = profileSnap.data();
+    if (profileDoc.exists()) {
+      const profile = profileDoc.data();
 
       name.textContent =
         profile.displayName || profile.username || "Player";
@@ -742,8 +741,76 @@ async function displayPost(postId, postData) {
   message.style.lineHeight = "1.6";
   message.style.whiteSpace = "pre-wrap";
 
-  card.append(header, message);
+  const likeButton = document.createElement("button");
+  likeButton.style.marginTop = "12px";
+  likeButton.style.padding = "8px 13px";
+  likeButton.style.background = "#281426";
+  likeButton.style.border = "1px solid #54213e";
+  likeButton.style.borderRadius = "5px";
+  likeButton.style.color = "#ff315e";
+  likeButton.style.cursor = "pointer";
 
+  const likeRef = currentUser
+    ? doc(db, "posts", postId, "likes", currentUser.uid)
+    : null;
+
+  let liked = false;
+  let likeCount = 0;
+
+  try {
+    const likesSnapshot = await getDocs(
+      collection(db, "posts", postId, "likes")
+    );
+
+    likeCount = likesSnapshot.size;
+
+    if (likeRef) {
+      liked = likesSnapshot.docs.some(
+        item => item.id === currentUser.uid
+      );
+    }
+  } catch (error) {
+    console.error("Like loading error:", error);
+  }
+
+  function updateLikeButton() {
+    likeButton.textContent =
+      (liked ? "♥ Liked " : "♡ Like ") +
+      "(" + likeCount + ")";
+  }
+
+  updateLikeButton();
+
+  likeButton.disabled = !currentUser;
+
+  likeButton.addEventListener("click", async () => {
+    if (!currentUser) return;
+
+    likeButton.disabled = true;
+
+    try {
+      if (liked) {
+        await deleteDoc(likeRef);
+        liked = false;
+        likeCount--;
+      } else {
+        await setDoc(likeRef, {
+          createdAt: serverTimestamp()
+        });
+        liked = true;
+        likeCount++;
+      }
+
+      updateLikeButton();
+
+    } catch (error) {
+      console.error("Like error:", error);
+    }
+
+    likeButton.disabled = false;
+  });
+
+  card.append(header, message, likeButton);
   playerFeed.appendChild(card);
 }
 
