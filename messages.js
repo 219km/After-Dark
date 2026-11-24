@@ -121,7 +121,7 @@ function listenForTyping() {
 }
 
 // LOAD CURRENT USER
-
+console.log("AFTER DARK messages.js loaded");
 onAuthStateChanged(auth, async user => {
   if (!user) {
     currentUser = null;
