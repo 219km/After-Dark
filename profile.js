@@ -123,8 +123,13 @@ saveButton.addEventListener("click", async () => {
 
     await updateProfile(currentUser, { displayName });
 
-    profileData = { ...profileData, displayName, username, bio };
+await setDoc(doc(db, "publicUsers", currentUser.uid), {
+  displayName,
+  username,
+  profilePicture: profileData.profilePicture || ""
+});
 
+profileData = { ...profileData, displayName, username, bio };
     showProfile();
     message.textContent = "Profile saved!";
 
