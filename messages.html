@@ -450,6 +450,30 @@ footer {
 .message-row.mine {
   justify-content: flex-end !important;
 }
+#backToMessages {
+  display: none;
+  background: transparent;
+  border: none;
+  color: #d6a0ff;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.chat-layout.dm-open {
+  grid-template-columns: 1fr;
+}
+
+.chat-layout.dm-open .sidebar {
+  display: none;
+}
+
+.chat-layout.dm-open .chat-area {
+  width: 100%;
+}
+
+.chat-layout.dm-open #backToMessages {
+  display: block;
+}
 </style>
 </head>
 
@@ -512,7 +536,9 @@ footer {
       <div id="activeChat" style="display:none;">
 
         <div class="chat-header">
-
+<button id="backToMessages" type="button">
+  ←
+</button>
           <div class="chat-avatar">✦</div>
 
           <div class="chat-user-info">
