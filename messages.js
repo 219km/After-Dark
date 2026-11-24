@@ -660,3 +660,18 @@ onAuthStateChanged(auth, user => {
 
   listenForConversations();
 });
+backToMessages.addEventListener("click", () => {
+  chatLayout.classList.remove("dm-open");
+
+  activeChat.style.display = "none";
+  emptyChat.style.display = "block";
+
+  currentConversation = null;
+  otherUser = null;
+
+  if (unsubscribeMessages) unsubscribeMessages();
+  if (unsubscribeTyping) unsubscribeTyping();
+
+  messagesList.innerHTML = "";
+  typingIndicator.textContent = "";
+});
