@@ -492,50 +492,37 @@ footer {
     No games found.
   </div>
 
-  <div class="section-title">
-    <h2>PLAYER ACTIVITY</h2>
-    <span>COMMUNITY UPDATES</span>
+
+<div class="section-title">
+  <h2>PLAYER FEED</h2>
+  <span>WHAT'S HAPPENING</span>
+</div>
+
+<div class="activity-card">
+  <h3>CREATE A POST</h3>
+  <textarea
+    id="postInput"
+    maxlength="500"
+    placeholder="What's happening?"
+    style="width:100%; min-height:100px; margin-top:15px; padding:13px; background:#09050e; border:1px solid #54213e; color:white; resize:vertical; font-family:Arial;"
+  ></textarea>
+
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
+    <small style="color:#8f7b94;">500 characters max</small>
+    <button
+      id="postButton"
+      style="background:#ff315e; color:white; border:0; padding:11px 20px; cursor:pointer; border-radius:5px;"
+    >
+      POST
+    </button>
   </div>
+  <p id="postStatus" style="margin-top:10px; color:#a99aad;"></p>
+</div>
 
-  <div class="activity-grid">
+<div id="playerFeed" style="display:grid; gap:15px; margin-top:18px;">
+  <p style="color:#a99aad;">Loading posts...</p>
+</div>
 
-    <div class="activity-card">
-      <div class="activity-top">
-        <div class="avatar">A</div>
-        <div>
-          <h3>AFTER DARK PLAYER</h3>
-          <small>Community highlight</small>
-        </div>
-      </div>
-      <p>What game are you playing lately? Share what you're exploring with the community.</p>
-      <div class="activity-note">PLAYER FEED PREVIEW</div>
-    </div>
-
-    <div class="activity-card">
-      <div class="activity-top">
-        <div class="avatar">G</div>
-        <div>
-          <h3>GAMING COMMUNITY</h3>
-          <small>Community highlight</small>
-        </div>
-      </div>
-      <p>Discover new games, meet other players and find your next favorite world.</p>
-      <div class="activity-note">COMMUNITY PREVIEW</div>
-    </div>
-
-    <div class="activity-card">
-      <div class="activity-top">
-        <div class="avatar">N</div>
-        <div>
-          <h3>NEW DISCOVERIES</h3>
-          <small>Community highlight</small>
-        </div>
-      </div>
-      <p>There's always something new to explore inside AFTER DARK.</p>
-      <div class="activity-note">MORE ACTIVITY COMING SOON</div>
-    </div>
-
-  </div>
 
 </main>
 
@@ -543,7 +530,26 @@ footer {
   AFTER DARK © 2026
 </footer>
 
-<script>
+<script type="module">
+
+import { auth, db } from "./firebase.js";
+
+import {
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+
+import {
+  collection,
+  query,
+  orderBy,
+  onSnapshot,
+  addDoc,
+  serverTimestamp,
+  doc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+// GAME SEARCH
 const searchInput = document.getElementById("gameSearch");
 const cards = document.querySelectorAll(".game-card");
 const categoryButtons = document.querySelectorAll(".categories button");
@@ -589,6 +595,198 @@ categoryButtons.forEach(button => {
     filterGames();
   });
 });
+
+// SOCIAL FEED
+const postInput = document.getElementById("postInput");
+const postButton = document.getElementById("postButton");
+const postStatus = document.getElementById("postStatus");
+const playerFeed = document.getElementById("playerFeed");
+
+let currentUser = null;
+let unsubscribeFeed = null;
+
+onAuthStateChanged(auth, user => {
+  currentUser = user;
+
+  if (unsubscribeFeed) {
+    unsubscribeFeed();
+    unsubscribeFeed = null;
+  }
+
+  if (!user) {
+    postStatus.textContent = "Log in to create posts.";
+    playerFeed.textContent = "Log in to view player posts.";
+    postButton.disabled = true;
+    return;
+  }
+
+  postButton.disabled = false;
+
+  const postsQuery = query(
+    collection(db, "posts"),
+    orderBy("createdAt", "desc")
+  );
+
+  unsubscribeFeed = onSnapshot(postsQuery, snapshot => {
+    playerFeed.innerHTML = "";
+
+    if (snapshot.empty) {
+      playerFeed.textContent = "No posts yet. Be the first to post!";
+      return;
+    }
+
+    snapshot.forEach(postDoc => {
+      displayPost(postDoc.id, postDoc.data());
+    });
+
+  }, error => {
+    console.error(error);
+    playerFeed.textContent = "Couldn't load posts.";
+  });
+});
+
+// DISPLAY POSTS
+async function displayPost(postId, postData) {
+  const card = document.createElement("div");
+
+  card.style.background = "#160d1e";
+  card.style.border = "1px solid #49203e";
+  card.style.borderRadius = "9px";
+  card.style.padding = "17px";
+
+  const header = document.createElement("div");
+  header.style.display = "flex";
+  header.style.alignItems = "center";
+  header.style.gap = "12px";
+  header.style.marginBottom = "14px";
+
+  const avatar = document.createElement("div");
+  avatar.style.width = "40px";
+  avatar.style.height = "40px";
+  avatar.style.borderRadius = "50%";
+  avatar.style.background = "#54213e";
+  avatar.style.display = "flex";
+  avatar.style.alignItems = "center";
+  avatar.style.justifyContent = "center";
+  avatar.style.overflow = "hidden";
+  avatar.textContent = "?";
+
+  const details = document.createElement("div");
+
+  const name = document.createElement("strong");
+  name.style.fontSize = "13px";
+
+  const username = document.createElement("div");
+  username.style.color = "#a99aad";
+  username.style.fontSize = "11px";
+
+  const time = document.createElement("div");
+  time.style.color = "#8f7b94";
+  time.style.fontSize = "10px";
+  time.style.marginTop = "4px";
+
+  try {
+    const profileRef = doc(
+      db,
+      "publicUsers",
+      postData.authorId
+    );
+
+    const profileSnap = await getDoc(profileRef);
+
+    if (profileSnap.exists()) {
+      const profile = profileSnap.data();
+
+      name.textContent =
+        profile.displayName || profile.username || "Player";
+
+      username.textContent =
+        "@" + (profile.username || "player");
+
+      if (profile.profilePicture) {
+        const image = document.createElement("img");
+        image.src = profile.profilePicture;
+        image.alt = "Profile picture";
+        image.style.width = "100%";
+        image.style.height = "100%";
+        image.style.objectFit = "cover";
+        avatar.textContent = "";
+        avatar.appendChild(image);
+      } else {
+        avatar.textContent =
+          name.textContent.charAt(0).toUpperCase();
+      }
+    } else {
+      name.textContent = "AFTER DARK PLAYER";
+      username.textContent = "";
+      avatar.textContent = "?";
+    }
+  } catch (error) {
+    name.textContent = "AFTER DARK PLAYER";
+    username.textContent = "";
+  }
+
+  if (postData.createdAt) {
+    time.textContent = postData.createdAt
+      .toDate()
+      .toLocaleString();
+  }
+
+  details.append(name, username, time);
+  header.append(avatar, details);
+
+  const message = document.createElement("p");
+  message.textContent = postData.text;
+  message.style.color = "#e4d8e8";
+  message.style.fontSize = "14px";
+  message.style.lineHeight = "1.6";
+  message.style.whiteSpace = "pre-wrap";
+
+  card.append(header, message);
+
+  playerFeed.appendChild(card);
+}
+
+// CREATE POST
+postButton.addEventListener("click", async () => {
+  if (!currentUser) {
+    postStatus.textContent = "Please log in first.";
+    return;
+  }
+
+  const text = postInput.value.trim();
+
+  if (!text) {
+    postStatus.textContent = "Write something first.";
+    return;
+  }
+
+  if (text.length > 500) {
+    postStatus.textContent = "Posts must be 500 characters or less.";
+    return;
+  }
+
+  postButton.disabled = true;
+  postStatus.textContent = "Posting...";
+
+  try {
+    await addDoc(collection(db, "posts"), {
+      authorId: currentUser.uid,
+      text: text,
+      createdAt: serverTimestamp()
+    });
+
+    postInput.value = "";
+    postStatus.textContent = "Post published!";
+
+  } catch (error) {
+    console.error(error);
+    postStatus.textContent = "Couldn't publish your post.";
+  }
+
+  postButton.disabled = false;
+});
+
 </script>
 
 </body>
