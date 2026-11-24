@@ -16,6 +16,7 @@ import {
   addDoc,
   getDocs,
   updateDoc,
+  setDoc,
   serverTimestamp,
   limit
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
@@ -36,7 +37,9 @@ let messagesUnsubscribe = null;
 let conversationsUnsubscribe = null;
 
 let publicUserData = {};
-
+let typingUnsubscribe = null;
+let typingTimeout = null;
+let isCurrentlyTyping = false;
 function escapeHTML(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
     "&": "&amp;",
@@ -59,7 +62,113 @@ function formatTime(timestamp) {
     minute: "2-digit"
   });
 }
+async function setTypingStatus(status) {
+  if (!currentConversation || !currentUser) return;
 
+  const typingRef = doc(
+    db,
+    "conversations",
+    currentConversation,
+    "typing",
+    currentUser.uid
+  );
+
+  try {
+    if (status) {
+      await setDoc(typingRef, {
+        isTyping: true,
+        updatedAt: serverTimestamp()
+      });
+    } else {
+      await setDoc(typingRef, {
+        isTyping: false,
+        updatedAt: serverTimestamp()
+      });
+    }
+  } catch (error) {
+    console.error("Typing status error:", error);
+  }
+}
+
+function listenForTyping() {
+  const typingIndicator = document.getElementById("typingIndicator");
+
+  if (!typingIndicator) return;
+
+  const typingRef = collection(
+    db,
+    "conversations",
+    currentConversation,
+    "typing"
+  );
+
+  typingUnsubscribe = onSnapshot(typingRef, snapshot => {
+    let someoneTyping = false;
+
+    snapshot.forEach(userDoc => {
+      if (
+        userDoc.id !== currentUser.uid &&
+        userDoc.data().isTyping === true
+      ) {
+        someoneTyping = true;
+      }
+    });
+
+    typingIndicator.textContent = someoneTyping
+      ? "Typing..."
+      : "";
+  });
+}
+async function setTypingStatus(status) {
+  if (!currentConversation || !currentUser) return;
+
+  const typingRef = doc(
+    db,
+    "conversations",
+    currentConversation,
+    "typing",
+    currentUser.uid
+  );
+
+  try {
+    await setDoc(typingRef, {
+      isTyping: status,
+      updatedAt: serverTimestamp()
+    });
+  } catch (error) {
+    console.error("Typing status error:", error);
+  }
+}
+
+function listenForTyping() {
+  const typingIndicator = document.getElementById("typingIndicator");
+
+  if (!typingIndicator) return;
+
+  const typingRef = collection(
+    db,
+    "conversations",
+    currentConversation,
+    "typing"
+  );
+
+  typingUnsubscribe = onSnapshot(typingRef, snapshot => {
+    let someoneTyping = false;
+
+    snapshot.forEach(userDoc => {
+      if (
+        userDoc.id !== currentUser.uid &&
+        userDoc.data().isTyping === true
+      ) {
+        someoneTyping = true;
+      }
+    });
+
+    typingIndicator.textContent = someoneTyping
+      ? "Typing..."
+      : "";
+  });
+}
 // LOAD CURRENT USER
 
 onAuthStateChanged(auth, async user => {
@@ -248,7 +357,11 @@ function loadConversations() {
 
 function openConversation(conversationId, name) {
   currentConversation = conversationId;
+if (typingUnsubscribe) {
+  typingUnsubscribe();
+}
 
+listenForTyping();
   if (messagesUnsubscribe) {
     messagesUnsubscribe();
   }
@@ -320,7 +433,21 @@ function openConversation(conversationId, name) {
 }
 
 // SEND MESSAGE
+messageInput.addEventListener("input", () => {
+  if (!currentConversation) return;
 
+  if (!isCurrentlyTyping) {
+    isCurrentlyTyping = true;
+    setTypingStatus(true);
+  }
+
+  clearTimeout(typingTimeout);
+
+  typingTimeout = setTimeout(() => {
+    isCurrentlyTyping = false;
+    setTypingStatus(false);
+  }, 2000);
+});
 messageForm.addEventListener("submit", async event => {
   event.preventDefault();
 
@@ -329,7 +456,9 @@ messageForm.addEventListener("submit", async event => {
   if (!text || !currentConversation || !currentUser) return;
 
   messageInput.value = "";
-
+clearTimeout(typingTimeout);
+isCurrentlyTyping = false;
+setTypingStatus(false);
   try {
     const conversationRef = doc(
       db,
