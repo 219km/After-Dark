@@ -1,0 +1,24 @@
+
+{
+  "name": "AFTER DARK",
+  "short_name": "AFTER DARK",
+  "description": "Welcome to AFTER DARK.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#09050e",
+  "theme_color": "#09050e",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
