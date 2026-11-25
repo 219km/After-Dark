@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -250,7 +249,8 @@ nav a:hover {
   padding: 17px;
 }
 
-.delete-post-button {
+.delete-post-button,
+.delete-comment-button {
   margin-top: 12px;
   margin-left: 8px;
   padding: 8px 13px;
@@ -262,13 +262,138 @@ nav a:hover {
   font-size: 12px;
 }
 
-.delete-post-button:hover {
+.delete-post-button:hover,
+.delete-comment-button:hover {
   background: #501326;
 }
 
-.delete-post-button:disabled {
+.delete-post-button:disabled,
+.delete-comment-button:disabled {
   opacity: .5;
   cursor: not-allowed;
+}
+
+/* COMMENTS */
+
+.comments-section {
+  margin-top: 18px;
+  padding-top: 15px;
+  border-top: 1px solid #49203e;
+}
+
+.comments-heading {
+  color: #ed568a;
+  font-size: 12px;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.comment-list {
+  display: grid;
+  gap: 12px;
+}
+
+.comment-item {
+  background: #100914;
+  border: 1px solid #32182d;
+  border-radius: 7px;
+  padding: 11px;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 8px;
+}
+
+.comment-avatar {
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  border-radius: 50%;
+  background: #54213e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.comment-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.comment-player-name {
+  font-size: 12px;
+}
+
+.comment-time {
+  color: #8f7b94;
+  font-size: 10px;
+  margin-top: 3px;
+}
+
+.comment-text {
+  color: #e4d8e8;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.comment-form {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.comment-input {
+  width: 100%;
+  min-height: 65px;
+  resize: vertical;
+  padding: 11px;
+  background: #09050e;
+  border: 1px solid #54213e;
+  border-radius: 6px;
+  color: white;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  outline: none;
+}
+
+.comment-input:focus {
+  border-color: #ff315e;
+}
+
+.comment-submit {
+  align-self: flex-end;
+  background: #ff315e;
+  color: white;
+  border: 0;
+  padding: 9px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.comment-submit:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.comment-status {
+  color: #a99aad;
+  font-size: 11px;
+}
+
+.no-comments {
+  color: #8f7b94;
+  font-size: 12px;
 }
 
 footer {
@@ -594,6 +719,17 @@ const playerFeed = document.getElementById("playerFeed");
 let currentUser = null;
 let unsubscribeFeed = null;
 
+// Keep track of comment listeners so they can be stopped.
+const commentUnsubscribers = new Map();
+
+function clearCommentListeners() {
+  commentUnsubscribers.forEach(unsubscribe => {
+    unsubscribe();
+  });
+
+  commentUnsubscribers.clear();
+}
+
 // =====================================
 // LOGIN CHECK AND FEED LISTENER
 // =====================================
@@ -605,6 +741,8 @@ onAuthStateChanged(auth, user => {
     unsubscribeFeed();
     unsubscribeFeed = null;
   }
+
+  clearCommentListeners();
 
   if (!user) {
     postStatus.textContent = "Log in to create posts.";
@@ -623,6 +761,7 @@ onAuthStateChanged(auth, user => {
   unsubscribeFeed = onSnapshot(
     postsQuery,
     snapshot => {
+      clearCommentListeners();
       playerFeed.innerHTML = "";
 
       if (snapshot.empty) {
@@ -718,7 +857,6 @@ async function displayPost(postId, postData) {
 
   card.append(header, message, likeButton);
 
-  // Add the card immediately to preserve post order.
   playerFeed.appendChild(card);
 
   // =====================================
@@ -726,14 +864,9 @@ async function displayPost(postId, postData) {
   // =====================================
 
   try {
-    console.log("STARTING PROFILE LOOKUP");
-
     const profileDoc = await getDoc(
       doc(db, "publicUsers", postData.authorId)
     );
-
-    console.log("PROFILE LOOKUP FINISHED");
-    console.log("PROFILE FOUND:", profileDoc.exists());
 
     if (profileDoc.exists()) {
 
@@ -795,63 +928,60 @@ async function displayPost(postId, postData) {
       .toLocaleString();
   }
 
-// =====================================
-// DELETE OWN POST
-// =====================================
+  // =====================================
+  // DELETE OWN POST
+  // =====================================
 
-console.log("CURRENT USER:", currentUser?.uid);
-console.log("POST AUTHOR:", postData.authorId);
+  if (
+    currentUser &&
+    currentUser.uid === postData.authorId
+  ) {
 
-if (
-  currentUser &&
-  currentUser.uid === postData.authorId
-) {
+    const deleteButton = document.createElement("button");
 
-  const deleteButton = document.createElement("button");
+    deleteButton.type = "button";
+    deleteButton.textContent = "DELETE POST";
+    deleteButton.className = "delete-post-button";
 
-  deleteButton.type = "button";
-  deleteButton.textContent = "DELETE POST";
-  deleteButton.className = "delete-post-button";
+    deleteButton.addEventListener("click", async () => {
 
-  deleteButton.addEventListener("click", async () => {
+      if (
+        !currentUser ||
+        currentUser.uid !== postData.authorId
+      ) {
+        return;
+      }
 
-    if (
-      !currentUser ||
-      currentUser.uid !== postData.authorId
-    ) {
-      return;
-    }
-
-    const confirmed = confirm(
-      "Are you sure you want to delete this post?"
-    );
-
-    if (!confirmed) return;
-
-    deleteButton.disabled = true;
-    deleteButton.textContent = "DELETING...";
-
-    try {
-
-      await deleteDoc(
-        doc(db, "posts", postId)
+      const confirmed = confirm(
+        "Are you sure you want to delete this post?"
       );
 
-    } catch (error) {
+      if (!confirmed) return;
 
-      console.error("DELETE POST ERROR:", error);
+      deleteButton.disabled = true;
+      deleteButton.textContent = "DELETING...";
 
-      deleteButton.disabled = false;
-      deleteButton.textContent = "DELETE POST";
+      try {
 
-      alert("Couldn't delete your post: " + error.message);
+        await deleteDoc(
+          doc(db, "posts", postId)
+        );
 
-    }
+      } catch (error) {
 
-  });
+        console.error("DELETE POST ERROR:", error);
 
-  card.appendChild(deleteButton);
-}
+        deleteButton.disabled = false;
+        deleteButton.textContent = "DELETE POST";
+
+        alert("Couldn't delete your post: " + error.message);
+
+      }
+
+    });
+
+    card.appendChild(deleteButton);
+  }
 
   // =====================================
   // LOAD LIKES
@@ -936,6 +1066,308 @@ if (
 
   });
 
+  // =====================================
+  // COMMENTS SECTION
+  // =====================================
+
+  const commentsSection = document.createElement("div");
+  commentsSection.className = "comments-section";
+
+  const commentsHeading = document.createElement("h4");
+  commentsHeading.className = "comments-heading";
+  commentsHeading.textContent = "COMMENTS";
+
+  const commentList = document.createElement("div");
+  commentList.className = "comment-list";
+
+  const commentForm = document.createElement("div");
+  commentForm.className = "comment-form";
+
+  const commentInput = document.createElement("textarea");
+  commentInput.className = "comment-input";
+  commentInput.maxLength = 500;
+  commentInput.placeholder = "Write a comment...";
+
+  const commentSubmit = document.createElement("button");
+  commentSubmit.className = "comment-submit";
+  commentSubmit.type = "button";
+  commentSubmit.textContent = "COMMENT";
+
+  const commentStatus = document.createElement("p");
+  commentStatus.className = "comment-status";
+
+  commentForm.append(
+    commentInput,
+    commentSubmit,
+    commentStatus
+  );
+
+  commentsSection.append(
+    commentsHeading,
+    commentList,
+    commentForm
+  );
+
+  card.appendChild(commentsSection);
+
+  // =====================================
+  // CREATE COMMENT
+  // =====================================
+
+  commentSubmit.addEventListener("click", async () => {
+
+    if (!currentUser) {
+      commentStatus.textContent = "Please log in first.";
+      return;
+    }
+
+    const commentText = commentInput.value.trim();
+
+    if (!commentText) {
+      commentStatus.textContent = "Write a comment first.";
+      return;
+    }
+
+    if (commentText.length > 500) {
+      commentStatus.textContent =
+        "Comments must be 500 characters or less.";
+      return;
+    }
+
+    commentSubmit.disabled = true;
+    commentStatus.textContent = "Sending...";
+
+    try {
+
+      await addDoc(
+        collection(db, "posts", postId, "comments"),
+        {
+          authorId: currentUser.uid,
+          text: commentText,
+          createdAt: serverTimestamp()
+        }
+      );
+
+      commentInput.value = "";
+      commentStatus.textContent = "Comment posted!";
+
+    } catch (error) {
+
+      console.error("COMMENT ERROR:", error);
+
+      commentStatus.textContent =
+        "Couldn't post comment: " + error.message;
+
+    }
+
+    commentSubmit.disabled = false;
+
+  });
+
+  // =====================================
+  // DISPLAY ONE COMMENT
+  // =====================================
+
+  async function displayComment(commentId, commentData) {
+
+    const commentItem = document.createElement("div");
+    commentItem.className = "comment-item";
+
+    const commentHeader = document.createElement("div");
+    commentHeader.className = "comment-header";
+
+    const commentAvatar = document.createElement("div");
+    commentAvatar.className = "comment-avatar";
+    commentAvatar.textContent = "?";
+
+    const commentDetails = document.createElement("div");
+
+    const commentName = document.createElement("strong");
+    commentName.className = "comment-player-name";
+    commentName.textContent = "Loading player...";
+
+    const commentTime = document.createElement("div");
+    commentTime.className = "comment-time";
+
+    commentDetails.append(commentName, commentTime);
+
+    commentHeader.append(
+      commentAvatar,
+      commentDetails
+    );
+
+    const commentTextElement = document.createElement("p");
+    commentTextElement.className = "comment-text";
+    commentTextElement.textContent = commentData.text || "";
+
+    commentItem.append(
+      commentHeader,
+      commentTextElement
+    );
+
+    commentList.appendChild(commentItem);
+
+    // Load comment author's profile.
+    try {
+
+      const commentProfile = await getDoc(
+        doc(db, "publicUsers", commentData.authorId)
+      );
+
+      if (commentProfile.exists()) {
+
+        const profile = commentProfile.data();
+
+        commentName.textContent =
+          profile.displayName ||
+          profile.username ||
+          "Player";
+
+        if (profile.profilePicture) {
+
+          const image = document.createElement("img");
+
+          image.src = profile.profilePicture;
+          image.alt = "Profile picture";
+
+          commentAvatar.textContent = "";
+          commentAvatar.appendChild(image);
+
+        } else {
+
+          commentAvatar.textContent =
+            commentName.textContent.charAt(0).toUpperCase();
+
+        }
+
+      } else {
+
+        commentName.textContent = "AFTER DARK PLAYER";
+
+      }
+
+    } catch (error) {
+
+      console.error("COMMENT PROFILE ERROR:", error);
+      commentName.textContent = "AFTER DARK PLAYER";
+
+    }
+
+    // Comment timestamp.
+    if (commentData.createdAt) {
+      commentTime.textContent =
+        commentData.createdAt.toDate().toLocaleString();
+    }
+
+    // =====================================
+    // DELETE OWN COMMENT
+    // =====================================
+
+    if (
+      currentUser &&
+      currentUser.uid === commentData.authorId
+    ) {
+
+      const deleteCommentButton =
+        document.createElement("button");
+
+      deleteCommentButton.type = "button";
+      deleteCommentButton.className = "delete-comment-button";
+      deleteCommentButton.textContent = "DELETE COMMENT";
+
+      deleteCommentButton.addEventListener("click", async () => {
+
+        if (
+          !currentUser ||
+          currentUser.uid !== commentData.authorId
+        ) {
+          return;
+        }
+
+        const confirmed = confirm(
+          "Are you sure you want to delete this comment?"
+        );
+
+        if (!confirmed) return;
+
+        deleteCommentButton.disabled = true;
+        deleteCommentButton.textContent = "DELETING...";
+
+        try {
+
+          await deleteDoc(
+            doc(
+              db,
+              "posts",
+              postId,
+              "comments",
+              commentId
+            )
+          );
+
+        } catch (error) {
+
+          console.error("DELETE COMMENT ERROR:", error);
+
+          deleteCommentButton.disabled = false;
+          deleteCommentButton.textContent = "DELETE COMMENT";
+
+          alert("Couldn't delete comment: " + error.message);
+
+        }
+
+      });
+
+      commentItem.appendChild(deleteCommentButton);
+    }
+  }
+
+  // =====================================
+  // LIVE COMMENT LISTENER
+  // =====================================
+
+  const commentsQuery = query(
+    collection(db, "posts", postId, "comments"),
+    orderBy("createdAt", "asc")
+  );
+
+  const unsubscribeComments = onSnapshot(
+    commentsQuery,
+    snapshot => {
+
+      commentList.innerHTML = "";
+
+      if (snapshot.empty) {
+
+        const noComments = document.createElement("p");
+        noComments.className = "no-comments";
+        noComments.textContent = "No comments yet.";
+
+        commentList.appendChild(noComments);
+
+        return;
+      }
+
+      snapshot.forEach(commentDoc => {
+        displayComment(
+          commentDoc.id,
+          commentDoc.data()
+        );
+      });
+
+    },
+    error => {
+
+      console.error("COMMENTS LOADING ERROR:", error);
+
+      commentList.textContent =
+        "Couldn't load comments.";
+
+    }
+  );
+
+  commentUnsubscribers.set(postId, unsubscribeComments);
+
 }
 
 // =====================================
@@ -990,4 +1422,4 @@ postButton.addEventListener("click", async () => {
 </script>
 
 </body>
-</html>
+  </html>
