@@ -60,6 +60,8 @@ await setDoc(doc(db, "publicUsers", user.uid), {
   profilePicture: profileData.profilePicture || ""
 });
 
+console.log("PUBLIC PROFILE CREATED:", user.uid);
+
 showProfile();
 
   } catch (error) {
