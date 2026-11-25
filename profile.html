@@ -294,6 +294,70 @@ h2 {
   opacity: .45;
 }
 
+/* SETTINGS */
+
+.settings-item {
+  background: #190e22;
+  border: 1px solid #49203e;
+  padding: 17px;
+  margin-bottom: 12px;
+}
+
+.settings-item h3 {
+  font-size: 13px;
+  color: #f08ab0;
+  margin-bottom: 7px;
+}
+
+.settings-item p {
+  font-size: 11px;
+  color: #a99aad;
+  line-height: 1.6;
+  margin-bottom: 13px;
+}
+
+.settings-btn {
+  width: 100%;
+  padding: 13px;
+  background: #35152e;
+  border: 1px solid #87345f;
+  color: white;
+  cursor: pointer;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.settings-btn:hover {
+  background: #642344;
+}
+
+.settings-btn.danger {
+  background: #40101c;
+  border-color: #a52a45;
+}
+
+.settings-btn.danger:hover {
+  background: #701d32;
+}
+
+.settings-panel {
+  display: none;
+  background: #0d0712;
+  border: 1px solid #49203e;
+  padding: 15px;
+  margin-top: 12px;
+}
+
+.settings-panel p {
+  color: #c9b9d1;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.settings-panel a {
+  color: #ff80a8;
+}
+
 footer {
   text-align: center;
   padding: 30px;
@@ -350,31 +414,16 @@ footer {
     </p>
 
     <div class="upload-buttons">
+      <label for="pictureInput">CHANGE PROFILE PICTURE</label>
+      <input type="file" id="pictureInput"
+        accept="image/png,image/jpeg,image/webp">
 
-      <label for="pictureInput">
-        CHANGE PROFILE PICTURE
-      </label>
-
-      <input
-        type="file"
-        id="pictureInput"
-        accept="image/png,image/jpeg,image/webp"
-      >
-
-      <label for="bannerInput">
-        CHANGE BANNER
-      </label>
-
-      <input
-        type="file"
-        id="bannerInput"
-        accept="image/png,image/jpeg,image/webp"
-      >
-
+      <label for="bannerInput">CHANGE BANNER</label>
+      <input type="file" id="bannerInput"
+        accept="image/png,image/jpeg,image/webp">
     </div>
 
     <div class="stats">
-
       <div class="stat">
         <strong>0</strong>
         <span>LEVEL</span>
@@ -389,7 +438,6 @@ footer {
         <strong id="gamesPlayed">0</strong>
         <span>GAMES PLAYED</span>
       </div>
-
     </div>
 
   </div>
@@ -400,31 +448,20 @@ footer {
 
     <div class="edit-field">
       <label>DISPLAY NAME</label>
-      <input
-        type="text"
-        id="editName"
-        maxlength="30"
-        placeholder="Your display name"
-      >
+      <input type="text" id="editName"
+        maxlength="30" placeholder="Your display name">
     </div>
 
     <div class="edit-field">
       <label>USERNAME</label>
-      <input
-        type="text"
-        id="editUsername"
-        maxlength="20"
-        placeholder="Your username"
-      >
+      <input type="text" id="editUsername"
+        maxlength="20" placeholder="Your username">
     </div>
 
     <div class="edit-field">
       <label>BIO</label>
-      <textarea
-        id="editBio"
-        maxlength="250"
-        placeholder="Tell everyone about yourself..."
-      ></textarea>
+      <textarea id="editBio" maxlength="250"
+        placeholder="Tell everyone about yourself..."></textarea>
     </div>
 
     <button class="save-btn" id="saveProfile">
@@ -432,7 +469,6 @@ footer {
     </button>
 
     <p id="profileMessage"></p>
-
   </div>
 
   <h2>PLAYER CREDITS</h2>
@@ -449,7 +485,6 @@ footer {
   <h2>BADGE COLLECTION</h2>
 
   <div class="badges">
-
     <div class="badge-card">
       <div class="badge-icon">✦</div>
       <h3>FIRST STEPS</h3>
@@ -473,15 +508,72 @@ footer {
       <h3>COLLECTOR</h3>
       <p>Collect 10 badges</p>
     </div>
-
   </div>
 
   <h2>FAVORITE WORLDS</h2>
 
   <div class="section">
     <p>JUJUTSU KAISEN</p>
+    <br>
     <p>FIVE NIGHTS AT FREDDY'S</p>
+    <br>
     <p>MORE WORLDS COMING SOON</p>
+  </div>
+
+  <!-- SETTINGS -->
+
+  <h2>ACCOUNT SETTINGS</h2>
+
+  <div class="section">
+
+    <div class="settings-item">
+      <h3>PRIVACY SETTINGS</h3>
+      <p>Learn what profile information is visible to other players.</p>
+      <button class="settings-btn" id="privacyToggle">
+        VIEW PRIVACY INFORMATION
+      </button>
+
+      <div class="settings-panel" id="privacyPanel">
+        <p>
+          Your public profile can show your display name,
+          username and profile picture to signed-in players.
+          Your bio and banner are stored in your private user
+          profile document.
+        </p>
+      </div>
+    </div>
+
+    <div class="settings-item">
+      <h3>ACCOUNT SETTINGS</h3>
+      <p>View your account information.</p>
+      <button class="settings-btn" id="accountToggle">
+        VIEW ACCOUNT INFORMATION
+      </button>
+
+      <div class="settings-panel" id="accountPanel">
+        <p id="accountInfo">Loading account information...</p>
+      </div>
+    </div>
+
+    <div class="settings-item">
+      <h3>LOG OUT</h3>
+      <p>Sign out of your AFTER DARK account on this device.</p>
+      <button class="settings-btn" id="logoutButton">
+        LOG OUT
+      </button>
+    </div>
+
+    <div class="settings-item">
+      <h3>DELETE ACCOUNT</h3>
+      <p>
+        Permanently deleting your account is a serious action.
+        This option requires additional verification.
+      </p>
+      <button class="settings-btn danger" id="deleteAccountButton">
+        DELETE ACCOUNT
+      </button>
+    </div>
+
   </div>
 
 </div>
@@ -500,6 +592,19 @@ document.getElementById("creditBalance").textContent =
 
 document.getElementById("gamesPlayed").textContent =
   playerData.gamesPlayed;
+
+function togglePanel(buttonId, panelId) {
+  const button = document.getElementById(buttonId);
+  const panel = document.getElementById(panelId);
+
+  button.addEventListener("click", () => {
+    panel.style.display =
+      panel.style.display === "block" ? "none" : "block";
+  });
+}
+
+togglePanel("privacyToggle", "privacyPanel");
+togglePanel("accountToggle", "accountPanel");
 </script>
 
 <script type="module" src="profile.js"></script>
