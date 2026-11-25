@@ -137,17 +137,15 @@
   <p>WELCOME TO THE UNKNOWN.</p>
 </footer>
 
-<script src="script.js"></script>
-
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./service-worker.js")
-      .catch(error => console.error("Service Worker Error:", error));
+      .then(() => console.log("AFTER DARK is ready!"))
+      .catch(error => console.error("Service worker error:", error));
   });
 }
 </script>
-</body>
 
 </body>
 </html>
