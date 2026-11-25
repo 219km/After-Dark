@@ -692,7 +692,8 @@ async function displayPost(postId, postData) {
     const profileDoc = await getDoc(
       doc(db, "publicUsers", postData.authorId)
     );
-
+console.log("POST AUTHOR ID:", postData.authorId);
+console.log("PROFILE FOUND:", profileDoc.exists());
     if (profileDoc.exists()) {
       const profile = profileDoc.data();
 
