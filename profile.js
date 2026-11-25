@@ -42,7 +42,7 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   currentUser = user;
-
+console.log("SIGNED IN USER:", user.uid);
   try {
     const userRef = doc(db, "users", user.uid);
     const snapshot = await getDoc(userRef);
