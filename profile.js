@@ -65,6 +65,7 @@ const checkProfile = await getDoc(
 );
 
 console.log("PUBLIC PROFILE EXISTS:", checkProfile.exists());
+    console.log("MY PUBLIC PROFILE:", checkProfile.data());
 message.textContent = "PUBLIC PROFILE EXISTS: " + checkProfile.exists();
 showProfile();
 
