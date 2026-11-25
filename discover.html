@@ -650,6 +650,7 @@ onAuthStateChanged(auth, user => {
 // DISPLAY POSTS
 
 async function displayPost(postId, postData) {
+  console.log("DISPLAY POST RUNNING:", postId);
   const card = document.createElement("div");
 
   card.style.background = "#160d1e";
