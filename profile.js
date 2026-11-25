@@ -3,8 +3,10 @@ import { auth, db } from "./firebase.js";
 
 import {
   onAuthStateChanged,
-  updateProfile
+  updateProfile,
+  signOut
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+
 import {
   doc,
   getDoc,
@@ -14,6 +16,8 @@ import {
 
 const CLOUD_NAME = "lyewttef";
 const UPLOAD_PRESET = "afterdark_profiles";
+
+// PROFILE ELEMENTS
 
 const profileName = document.getElementById("profileName");
 const profileUsername = document.getElementById("profileUsername");
@@ -32,8 +36,18 @@ const bannerInput = document.getElementById("bannerInput");
 const saveButton = document.getElementById("saveProfile");
 const message = document.getElementById("profileMessage");
 
+// SETTINGS ELEMENTS
+
+const logoutButton = document.getElementById("logoutButton");
+const deleteAccountButton = document.getElementById("deleteAccountButton");
+const accountInfo = document.getElementById("accountInfo");
+
+// VARIABLES
+
 let currentUser = null;
 let profileData = {};
+
+// LOGIN CHECK
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
@@ -42,7 +56,7 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   currentUser = user;
-console.log("SIGNED IN USER:", user.uid);
+
   try {
     const userRef = doc(db, "users", user.uid);
     const snapshot = await getDoc(userRef);
@@ -54,29 +68,28 @@ console.log("SIGNED IN USER:", user.uid);
 
     profileData = snapshot.data();
 
-await setDoc(doc(db, "publicUsers", user.uid), {
-  displayName: profileData.displayName || "Player",
-  username: profileData.username || "",
-  profilePicture: profileData.profilePicture || ""
-});
+    await setDoc(doc(db, "publicUsers", user.uid), {
+      displayName: profileData.displayName || "Player",
+      username: profileData.username || "",
+      profilePicture: profileData.profilePicture || ""
+    });
 
-const checkProfile = await getDoc(
-  doc(db, "publicUsers", user.uid)
-);
-
-console.log("PUBLIC PROFILE EXISTS:", checkProfile.exists());
-    console.log("MY PUBLIC PROFILE:", checkProfile.data());
-message.textContent = "PUBLIC PROFILE EXISTS: " + checkProfile.exists();
-showProfile();
+    showProfile();
+    showAccountInfo();
 
   } catch (error) {
     message.textContent = error.message;
   }
 });
 
+// SHOW PROFILE
+
 function showProfile() {
   profileName.textContent = profileData.displayName || "Player";
-  profileUsername.textContent = "@" + (profileData.username || "");
+
+  profileUsername.textContent =
+    "@" + (profileData.username || "");
+
   profileBio.textContent = profileData.bio || "";
 
   editName.value = profileData.displayName || "";
@@ -93,10 +106,22 @@ function showProfile() {
   }
 }
 
+// SHOW ACCOUNT INFORMATION
+
+function showAccountInfo() {
+  if (!currentUser || !accountInfo) return;
+
+  accountInfo.textContent =
+    "Email: " + (currentUser.email || "Not available");
+}
+
+// SAVE PROFILE
+
 saveButton.addEventListener("click", async () => {
   if (!currentUser) return;
 
   const displayName = editName.value.trim();
+
   const username = editUsername.value.trim()
     .toLowerCase()
     .replace(/^@/, "");
@@ -109,12 +134,14 @@ saveButton.addEventListener("click", async () => {
   }
 
   if (!/^[a-z0-9_]{3,20}$/.test(username)) {
-    message.textContent = "Username must be 3-20 characters.";
+    message.textContent =
+      "Username must be 3-20 characters.";
     return;
   }
 
   if (bio.length > 250) {
-    message.textContent = "Bio must be under 250 characters.";
+    message.textContent =
+      "Bio must be under 250 characters.";
     return;
   }
 
@@ -128,15 +155,23 @@ saveButton.addEventListener("click", async () => {
       bio
     });
 
-    await updateProfile(currentUser, { displayName });
+    await updateProfile(currentUser, {
+      displayName
+    });
 
-await setDoc(doc(db, "publicUsers", currentUser.uid), {
-  displayName,
-  username,
-  profilePicture: profileData.profilePicture || ""
-});
+    await setDoc(doc(db, "publicUsers", currentUser.uid), {
+      displayName,
+      username,
+      profilePicture: profileData.profilePicture || ""
+    });
 
-profileData = { ...profileData, displayName, username, bio };
+    profileData = {
+      ...profileData,
+      displayName,
+      username,
+      bio
+    };
+
     showProfile();
     message.textContent = "Profile saved!";
 
@@ -147,10 +182,10 @@ profileData = { ...profileData, displayName, username, bio };
   saveButton.disabled = false;
 });
 
-async function uploadImage(file, field) {
-  if (!currentUser) return;
+// UPLOAD PROFILE PICTURE OR BANNER
 
-  if (!file) return;
+async function uploadImage(file, field) {
+  if (!currentUser || !file) return;
 
   if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
     message.textContent = "Use JPG, PNG or WEBP images.";
@@ -166,6 +201,7 @@ async function uploadImage(file, field) {
 
   try {
     const formData = new FormData();
+
     formData.append("file", file);
     formData.append("upload_preset", UPLOAD_PRESET);
 
@@ -180,24 +216,27 @@ async function uploadImage(file, field) {
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.error?.message || "Upload failed.");
+      throw new Error(
+        result.error?.message || "Upload failed."
+      );
     }
 
     const imageUrl = result.secure_url;
 
     await updateDoc(doc(db, "users", currentUser.uid), {
-  [field]: imageUrl
-});
+      [field]: imageUrl
+    });
 
-if (field === "profilePicture") {
-  await setDoc(doc(db, "publicUsers", currentUser.uid), {
-    displayName: profileData.displayName || "Player",
-    username: profileData.username || "",
-    profilePicture: imageUrl
-  });
-}
+    if (field === "profilePicture") {
+      await setDoc(doc(db, "publicUsers", currentUser.uid), {
+        displayName: profileData.displayName || "Player",
+        username: profileData.username || "",
+        profilePicture: imageUrl
+      });
+    }
 
     profileData[field] = imageUrl;
+
     showProfile();
 
     message.textContent = "Image uploaded successfully!";
@@ -214,5 +253,39 @@ pictureInput.addEventListener("change", () => {
 bannerInput.addEventListener("change", () => {
   uploadImage(bannerInput.files[0], "banner");
 });
+
+// LOG OUT
+
+logoutButton.addEventListener("click", async () => {
+  const confirmed = confirm(
+    "Are you sure you want to log out?"
+  );
+
+  if (!confirmed) return;
+
+  try {
+    await signOut(auth);
+    window.location.href = "account.html";
+  } catch (error) {
+    alert("Could not log out: " + error.message);
+  }
+});
+
+// DELETE ACCOUNT
+
+deleteAccountButton.addEventListener("click", () => {
+  const confirmed = confirm(
+    "Account deletion needs secure server-side cleanup. " +
+    "This button will not delete your account or data yet. " +
+    "Would you like to continue to the account page?"
+  );
+
+  if (confirmed) {
+    alert(
+      "Your account has NOT been deleted. " +
+      "A secure deletion system still needs to be set up."
+    );
+  }
+});
+
 console.log("AFTER DARK PROFILE JS LOADED");
-console.log("CURRENT USER:", currentUser?.uid);
