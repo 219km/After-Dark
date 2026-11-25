@@ -60,7 +60,11 @@ await setDoc(doc(db, "publicUsers", user.uid), {
   profilePicture: profileData.profilePicture || ""
 });
 
-console.log("PUBLIC PROFILE CREATED:", user.uid);
+const checkProfile = await getDoc(
+  doc(db, "publicUsers", user.uid)
+);
+
+console.log("PUBLIC PROFILE EXISTS:", checkProfile.exists());
 
 showProfile();
 
