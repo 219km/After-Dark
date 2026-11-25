@@ -690,6 +690,7 @@ async function displayPost(postId, postData) {
   time.style.marginTop = "4px";
 
   try {
+    console.log("STARTING PROFILE LOOKUP");
     const profileDoc = await getDoc(
       doc(db, "publicUsers", postData.authorId)
     );
