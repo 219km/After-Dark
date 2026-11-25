@@ -236,10 +236,11 @@ nav a:hover {
   letter-spacing: 1px;
 }
 
-.activity-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 15px;
+.empty-message {
+  display: none;
+  color: #a99aad;
+  padding: 25px;
+  text-align: center;
 }
 
 .activity-card {
@@ -247,52 +248,6 @@ nav a:hover {
   border: 1px solid #49203e;
   border-radius: 9px;
   padding: 17px;
-}
-
-.activity-top {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 13px;
-}
-
-.avatar {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #ff315e, #6d3191);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-}
-
-.activity-top h3 {
-  font-size: 13px;
-}
-
-.activity-top small {
-  color: #8f7b94;
-  font-size: 10px;
-}
-
-.activity-card p {
-  color: #c9b9d1;
-  font-size: 12px;
-  line-height: 1.6;
-}
-
-.activity-note {
-  color: #8f7b94;
-  font-size: 11px;
-  margin-top: 12px;
-}
-
-.empty-message {
-  display: none;
-  color: #a99aad;
-  padding: 25px;
-  text-align: center;
 }
 
 footer {
@@ -492,37 +447,38 @@ footer {
     No games found.
   </div>
 
-
-<div class="section-title">
-  <h2>PLAYER FEED</h2>
-  <span>WHAT'S HAPPENING</span>
-</div>
-
-<div class="activity-card">
-  <h3>CREATE A POST</h3>
-  <textarea
-    id="postInput"
-    maxlength="500"
-    placeholder="What's happening?"
-    style="width:100%; min-height:100px; margin-top:15px; padding:13px; background:#09050e; border:1px solid #54213e; color:white; resize:vertical; font-family:Arial;"
-  ></textarea>
-
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
-    <small style="color:#8f7b94;">500 characters max</small>
-    <button
-      id="postButton"
-      style="background:#ff315e; color:white; border:0; padding:11px 20px; cursor:pointer; border-radius:5px;"
-    >
-      POST
-    </button>
+  <div class="section-title">
+    <h2>PLAYER FEED</h2>
+    <span>WHAT'S HAPPENING</span>
   </div>
-  <p id="postStatus" style="margin-top:10px; color:#a99aad;"></p>
-</div>
 
-<div id="playerFeed" style="display:grid; gap:15px; margin-top:18px;">
-  <p style="color:#a99aad;">Loading posts...</p>
-</div>
+  <div class="activity-card">
+    <h3>CREATE A POST</h3>
 
+    <textarea
+      id="postInput"
+      maxlength="500"
+      placeholder="What's happening?"
+      style="width:100%; min-height:100px; margin-top:15px; padding:13px; background:#09050e; border:1px solid #54213e; color:white; resize:vertical; font-family:Arial;"
+    ></textarea>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
+      <small style="color:#8f7b94;">500 characters max</small>
+
+      <button
+        id="postButton"
+        style="background:#ff315e; color:white; border:0; padding:11px 20px; cursor:pointer; border-radius:5px;"
+      >
+        POST
+      </button>
+    </div>
+
+    <p id="postStatus" style="margin-top:10px; color:#a99aad;"></p>
+  </div>
+
+  <div id="playerFeed" style="display:grid; gap:15px; margin-top:18px;">
+    <p style="color:#a99aad;">Loading posts...</p>
+  </div>
 
 </main>
 
@@ -537,21 +493,27 @@ import { auth, db } from "./firebase.js";
 import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-console.log("DISCOVER SCRIPT LOADED");
+
 import {
   collection,
   query,
   orderBy,
   onSnapshot,
-    addDoc,
+  addDoc,
   serverTimestamp,
   doc,
+  getDoc,
   getDocs,
   setDoc,
   deleteDoc
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-  
+
+console.log("DISCOVER SCRIPT LOADED");
+
+// =====================================
 // GAME SEARCH
+// =====================================
+
 const searchInput = document.getElementById("gameSearch");
 const cards = document.querySelectorAll(".game-card");
 const categoryButtons = document.querySelectorAll(".categories button");
@@ -588,17 +550,21 @@ searchInput.addEventListener("input", filterGames);
 
 categoryButtons.forEach(button => {
   button.addEventListener("click", () => {
-    categoryButtons.forEach(item =>
-      item.classList.remove("active")
-    );
+    categoryButtons.forEach(item => {
+      item.classList.remove("active");
+    });
 
     button.classList.add("active");
     selectedCategory = button.dataset.category;
+
     filterGames();
   });
 });
 
+// =====================================
 // SOCIAL FEED
+// =====================================
+
 const postInput = document.getElementById("postInput");
 const postButton = document.getElementById("postButton");
 const postStatus = document.getElementById("postStatus");
@@ -606,6 +572,10 @@ const playerFeed = document.getElementById("playerFeed");
 
 let currentUser = null;
 let unsubscribeFeed = null;
+
+// =====================================
+// LOGIN CHECK AND FEED LISTENER
+// =====================================
 
 onAuthStateChanged(auth, user => {
   currentUser = user;
@@ -629,28 +599,37 @@ onAuthStateChanged(auth, user => {
     orderBy("createdAt", "desc")
   );
 
-  unsubscribeFeed = onSnapshot(postsQuery, snapshot => {
-    playerFeed.innerHTML = "";
+  unsubscribeFeed = onSnapshot(
+    postsQuery,
+    snapshot => {
+      playerFeed.innerHTML = "";
 
-    if (snapshot.empty) {
-      playerFeed.textContent = "No posts yet. Be the first to post!";
-      return;
+      if (snapshot.empty) {
+        playerFeed.textContent =
+          "No posts yet. Be the first to post!";
+        return;
+      }
+
+      snapshot.forEach(postDoc => {
+        displayPost(postDoc.id, postDoc.data());
+      });
+
+    },
+    error => {
+      console.error("FEED ERROR:", error);
+      playerFeed.textContent = "Couldn't load posts.";
     }
-
-    snapshot.forEach(postDoc => {
-      displayPost(postDoc.id, postDoc.data());
-    });
-
-  }, error => {
-    console.error(error);
-    playerFeed.textContent = "Couldn't load posts.";
-  });
+  );
 });
 
+// =====================================
 // DISPLAY POSTS
+// =====================================
 
 async function displayPost(postId, postData) {
+
   console.log("DISPLAY POST RUNNING:", postId);
+
   const card = document.createElement("div");
 
   card.style.background = "#160d1e";
@@ -659,26 +638,32 @@ async function displayPost(postId, postData) {
   card.style.padding = "17px";
 
   const header = document.createElement("div");
+
   header.style.display = "flex";
   header.style.alignItems = "center";
   header.style.gap = "12px";
   header.style.marginBottom = "14px";
 
   const avatar = document.createElement("div");
+
   avatar.style.width = "40px";
   avatar.style.height = "40px";
+  avatar.style.minWidth = "40px";
   avatar.style.borderRadius = "50%";
   avatar.style.background = "#54213e";
   avatar.style.display = "flex";
   avatar.style.alignItems = "center";
   avatar.style.justifyContent = "center";
+  avatar.style.fontWeight = "bold";
   avatar.style.overflow = "hidden";
+
   avatar.textContent = "?";
 
   const details = document.createElement("div");
 
   const name = document.createElement("strong");
   name.style.fontSize = "13px";
+  name.textContent = "Loading player...";
 
   const username = document.createElement("div");
   username.style.color = "#a99aad";
@@ -689,64 +674,19 @@ async function displayPost(postId, postData) {
   time.style.fontSize = "10px";
   time.style.marginTop = "4px";
 
-  try {
-    console.log("STARTING PROFILE LOOKUP");
-    const profileDoc = await getDoc(
-      doc(db, "publicUsers", postData.authorId)
-    );
-    console.log("PROFILE LOOKUP FINISHED");
-    console.log("PROFILE FOUND:", profileDoc.exists());
-console.log("POST AUTHOR ID:", postData.authorId);
-console.log("PROFILE FOUND:", profileDoc.exists());
-    if (profileDoc.exists()) {
-      const profile = profileDoc.data();
-
-      name.textContent =
-        profile.displayName || profile.username || "Player";
-
-      username.textContent =
-        "@" + (profile.username || "player");
-
-      if (profile.profilePicture) {
-        const image = document.createElement("img");
-        image.src = profile.profilePicture;
-        image.alt = "Profile picture";
-        image.style.width = "100%";
-        image.style.height = "100%";
-        image.style.objectFit = "cover";
-        avatar.textContent = "";
-        avatar.appendChild(image);
-      } else {
-        avatar.textContent =
-          name.textContent.charAt(0).toUpperCase();
-      }
-    } else {
-      name.textContent = "AFTER DARK PLAYER";
-      username.textContent = "";
-      avatar.textContent = "?";
-    }
-  } catch (error) {
-    name.textContent = "AFTER DARK PLAYER";
-    username.textContent = "";
-  }
-
-  if (postData.createdAt) {
-    time.textContent = postData.createdAt
-      .toDate()
-      .toLocaleString();
-  }
-
   details.append(name, username, time);
   header.append(avatar, details);
 
   const message = document.createElement("p");
-  message.textContent = postData.text;
+
+  message.textContent = postData.text || "";
   message.style.color = "#e4d8e8";
   message.style.fontSize = "14px";
   message.style.lineHeight = "1.6";
   message.style.whiteSpace = "pre-wrap";
 
   const likeButton = document.createElement("button");
+
   likeButton.style.marginTop = "12px";
   likeButton.style.padding = "8px 13px";
   likeButton.style.background = "#281426";
@@ -754,6 +694,89 @@ console.log("PROFILE FOUND:", profileDoc.exists());
   likeButton.style.borderRadius = "5px";
   likeButton.style.color = "#ff315e";
   likeButton.style.cursor = "pointer";
+
+  card.append(header, message, likeButton);
+
+  // Add the card immediately to preserve post order.
+  playerFeed.appendChild(card);
+
+  // =====================================
+  // LOAD PLAYER PROFILE
+  // =====================================
+
+  try {
+    console.log("STARTING PROFILE LOOKUP");
+
+    const profileDoc = await getDoc(
+      doc(db, "publicUsers", postData.authorId)
+    );
+
+    console.log("PROFILE LOOKUP FINISHED");
+    console.log("PROFILE FOUND:", profileDoc.exists());
+
+    if (profileDoc.exists()) {
+
+      const profile = profileDoc.data();
+
+      name.textContent =
+        profile.displayName ||
+        profile.username ||
+        "Player";
+
+      username.textContent =
+        profile.username
+          ? "@" + profile.username
+          : "";
+
+      if (profile.profilePicture) {
+
+        const image = document.createElement("img");
+
+        image.src = profile.profilePicture;
+        image.alt = "Profile picture";
+        image.style.width = "100%";
+        image.style.height = "100%";
+        image.style.objectFit = "cover";
+
+        avatar.textContent = "";
+        avatar.appendChild(image);
+
+      } else {
+        avatar.textContent =
+          name.textContent.charAt(0).toUpperCase();
+      }
+
+    } else {
+
+      name.textContent = "AFTER DARK PLAYER";
+      username.textContent = "";
+      avatar.textContent = "?";
+
+    }
+
+  } catch (error) {
+
+    console.error("PROFILE LOOKUP ERROR:", error);
+
+    name.textContent = "AFTER DARK PLAYER";
+    username.textContent = "";
+    avatar.textContent = "?";
+
+  }
+
+  // =====================================
+  // POST TIMESTAMP
+  // =====================================
+
+  if (postData.createdAt) {
+    time.textContent = postData.createdAt
+      .toDate()
+      .toLocaleString();
+  }
+
+  // =====================================
+  // LOAD LIKES
+  // =====================================
 
   const likeRef = currentUser
     ? doc(db, "posts", postId, "likes", currentUser.uid)
@@ -763,6 +786,7 @@ console.log("PROFILE FOUND:", profileDoc.exists());
   let likeCount = 0;
 
   try {
+
     const likesSnapshot = await getDocs(
       collection(db, "posts", postId, "likes")
     );
@@ -774,9 +798,11 @@ console.log("PROFILE FOUND:", profileDoc.exists());
         item => item.id === currentUser.uid
       );
     }
+
   } catch (error) {
-    console.error("PROFILE ERROR:", error);
-    console.error("Like loading error:", error);
+
+    console.error("LIKE LOADING ERROR:", error);
+
   }
 
   function updateLikeButton() {
@@ -789,39 +815,56 @@ console.log("PROFILE FOUND:", profileDoc.exists());
 
   likeButton.disabled = !currentUser;
 
+  // =====================================
+  // LIKE AND UNLIKE
+  // =====================================
+
   likeButton.addEventListener("click", async () => {
+
     if (!currentUser) return;
 
     likeButton.disabled = true;
 
     try {
+
       if (liked) {
+
         await deleteDoc(likeRef);
+
         liked = false;
         likeCount--;
+
       } else {
+
         await setDoc(likeRef, {
           createdAt: serverTimestamp()
         });
+
         liked = true;
         likeCount++;
+
       }
 
       updateLikeButton();
 
     } catch (error) {
-      console.error("Like error:", error);
+
+      console.error("LIKE ERROR:", error);
+
     }
 
     likeButton.disabled = false;
+
   });
 
-  card.append(header, message, likeButton);
-  playerFeed.appendChild(card);
 }
 
+// =====================================
 // CREATE POST
+// =====================================
+
 postButton.addEventListener("click", async () => {
+
   if (!currentUser) {
     postStatus.textContent = "Please log in first.";
     return;
@@ -835,7 +878,8 @@ postButton.addEventListener("click", async () => {
   }
 
   if (text.length > 500) {
-    postStatus.textContent = "Posts must be 500 characters or less.";
+    postStatus.textContent =
+      "Posts must be 500 characters or less.";
     return;
   }
 
@@ -843,6 +887,7 @@ postButton.addEventListener("click", async () => {
   postStatus.textContent = "Posting...";
 
   try {
+
     await addDoc(collection(db, "posts"), {
       authorId: currentUser.uid,
       text: text,
@@ -853,11 +898,14 @@ postButton.addEventListener("click", async () => {
     postStatus.textContent = "Post published!";
 
   } catch (error) {
-    console.error(error);
+
+    console.error("POST ERROR:", error);
     postStatus.textContent = "Couldn't publish your post.";
+
   }
 
   postButton.disabled = false;
+
 });
 
 </script>
