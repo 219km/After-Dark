@@ -1,5 +1,6 @@
 
 {
+  "id": "./",
   "name": "AFTER DARK",
   "short_name": "AFTER DARK",
   "description": "Welcome to AFTER DARK.",
@@ -11,14 +12,16 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "./icons/icon-192.png",
+      "src": "./images/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "./icons/icon-512.png",
+      "src": "./images/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
