@@ -250,6 +250,27 @@ nav a:hover {
   padding: 17px;
 }
 
+.delete-post-button {
+  margin-top: 12px;
+  margin-left: 8px;
+  padding: 8px 13px;
+  background: #2a101b;
+  border: 1px solid #a52c50;
+  border-radius: 5px;
+  color: #ff6688;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.delete-post-button:hover {
+  background: #501326;
+}
+
+.delete-post-button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
 footer {
   text-align: center;
   padding: 35px;
@@ -772,6 +793,70 @@ async function displayPost(postId, postData) {
     time.textContent = postData.createdAt
       .toDate()
       .toLocaleString();
+  }
+
+  // =====================================
+  // DELETE OWN POST
+  // =====================================
+
+  if (
+    currentUser &&
+    currentUser.uid === postData.authorId
+  ) {
+
+    const deleteButton = document.createElement("button");
+
+    deleteButton.type = "button";
+    deleteButton.textContent = "DELETE POST";
+    deleteButton.className = "delete-post-button";
+
+    deleteButton.addEventListener("click", async () => {
+
+      // Check ownership again before deleting.
+      if (
+        console.log("CURRENT USER:", currentUser?.uid);
+console.log("POST AUTHOR:", postData.authorId);
+
+if (
+  currentUser &&
+  currentUser.uid === postData.authorId
+) {
+        return;
+      }
+
+      const confirmed = confirm(
+        "Are you sure you want to delete this post? This cannot be undone."
+      );
+
+      if (!confirmed) return;
+
+      deleteButton.disabled = true;
+      deleteButton.textContent = "DELETING...";
+
+      try {
+
+        await deleteDoc(
+          doc(db, "posts", postId)
+        );
+
+        // The feed listener will remove the post automatically.
+
+      } catch (error) {
+
+        console.error("DELETE POST ERROR:", error);
+
+        deleteButton.disabled = false;
+        deleteButton.textContent = "DELETE POST";
+
+        alert(
+          "Couldn't delete your post: " + error.message
+        );
+
+      }
+
+    });
+
+    card.appendChild(deleteButton);
   }
 
   // =====================================
