@@ -775,6 +775,7 @@ console.log("PROFILE FOUND:", profileDoc.exists());
       );
     }
   } catch (error) {
+    console.error("PROFILE ERROR:", error);
     console.error("Like loading error:", error);
   }
 
