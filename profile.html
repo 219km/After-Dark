@@ -617,6 +617,13 @@ togglePanel("accountToggle", "accountPanel");
 </script>
 
 <script type="module" src="profile.js"></script>
-
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js")
+      .catch(error => console.error("Service Worker Error:", error));
+  });
+}
+</script>
 </body>
 </html>
